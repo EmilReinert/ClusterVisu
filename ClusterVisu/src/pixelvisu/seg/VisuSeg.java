@@ -1,0 +1,403 @@
+package pixelvisu.seg;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+
+public class VisuSeg implements MouseListener,MouseMotionListener,MouseWheelListener{
+
+	private int width, height; // width, height for diagram
+	
+	Data data;
+	
+	Color bg_color;
+	int group_count =10; 
+	int new_group_count=group_count;
+	int mouse_y = 0;
+	
+	public VisuSeg(int w, int h, Data d, Color bg_c) {
+		width = w;
+		height = h;
+		data = d;
+		bg_color= bg_c;
+		
+	}
+
+	/// GET AND SETTER ///
+	public int getHeight() {
+		return height;
+	}
+	
+	/// GEOMETRIC FUNCTIONS ///
+
+	public int vec2Int(Vec2 v) {
+		return (int) ((v.x-1)*width+v.y);
+	}
+	
+	public Vec2 int2Vec(int i) {
+		// x is downwards 
+		// y is sidewards
+		int x =(i-i%width)/width;
+		int y= i%width;
+		return new Vec2(x, y);
+	}
+
+	public Vec2 getLinFunction(Vec2 first , Vec2 second) {
+		// return m and t for a linear function f = m*x+t with  function a-> b
+		//Greradenfunktion
+		double m; //STEIGUNG
+		if(first.y>second.y)m=-1;
+		else m = 1;
+		
+		if(second.x-first.x!=0)
+			m*=Math.abs((second.y-first.y)/(second.x-first.x));
+		double t= first.y-first.x*m; //x verschiebung		
+		return new Vec2(m, t);
+	}
+	
+	
+	/// DRAW FUNCTIONS ///	
+	public int mixColors(int ca, int cb, float ratio) {
+		    float iRatio = 1.0f - ratio;
+
+		    double weight0 = ratio;
+	    	double weight1 = iRatio;
+
+		    Color c0 = new Color(ca);
+		    Color c1 = new Color(cb);
+
+		    double r = weight0 * c0.getRed() + weight1 * c1.getRed();
+		    double g = weight0 * c0.getGreen() + weight1 * c1.getGreen();
+		    double b = weight0 * c0.getBlue() + weight1 * c1.getBlue();
+
+		    if(r>255) r=255;
+		    if(g>255) g=255;
+		    if(b>255) b=255;
+		    
+		    return new Color((int) r, (int) g, (int) b,1).getRGB();
+	}
+	public int addColors(int ca, int cb ) {
+	    Color c0 = new Color(ca);
+	    Color c1 = new Color(cb);
+
+	    double r = c0.getRed() +c1.getRed();
+	    double g =c0.getGreen() + c1.getGreen();
+	    double b =  c0.getBlue() +  c1.getBlue();
+
+	    if(r>255) r=255;
+	    if(g>255) g=255;
+	    if(b>255) b=255;
+	    
+	    return new Color((int)r, (int) g, (int) b,1).getRGB();
+}
+	
+	public void drawPoint(int[] pixels,Vec2 a, int color) {
+		drawPoint(pixels,vec2Int(a),color);
+	}
+	
+	
+	public void drawPoint(int[] pixels, int a, int color) {
+		// draws 6*6 pixels point
+		if(a>width+1)pixels[a-width-1]=pixels[a-width]=pixels[a-width+1]=color;
+		if(a>1)pixels[a-1]=pixels[a]=pixels[a+1]=color;
+		if(a+width+1<pixels.length&&a>width)pixels[a+width-1]=pixels[a+width]=pixels[a+width+1]=color;
+	}
+	
+	public void drawDot(int[] pixels, int a, int color) {pixels[a]=pixels[a+1]=color;
+		pixels[a]=color;
+	}
+	
+
+	public void drawLine(int[] pixels,int a, int b, int color,float alpha ) {
+		// draw line for int values
+		Vec2 vec_a = int2Vec(a);
+		Vec2 vec_b = int2Vec(b);
+		drawLine(pixels,vec_a, vec_b, color,alpha);
+	}
+	
+	public void drawLine(int[] pixels,Vec2 a, Vec2 b,int color, float alpha ) {
+		//draws line on screen by manipulating pixel values
+		Vec2 first,second;//System.out.println(a.x+" "+b.x);
+		if (a.x<b.x) {first = a;second=b;}
+		else {first=b;second=a;}
+		
+		//Greradenfunktion
+		Vec2 mt = getLinFunction(first, second);
+		double m = mt.x;
+		double t = mt.y;
+		float x,y,f_x;
+		if(Math.abs(m)<1) {
+			for(int n=0; n<pixels.length; n++) {
+				x = (n-n%width)/width;
+				y = n%width;
+				f_x = (float) (m*x+t);
+				//line starts
+				if (x>=first.x&&x<=second.x) {
+					if((int)y==(int)f_x) {pixels[n]=mixColors( color,pixels[n], alpha);}
+				}
+			}	
+		}
+		else {
+			// inverse line drawing
+			if (a.y<b.y) {first = a;second=b;}
+			else {first=b;second=a;}
+			//steigung
+			if(first.x>second.x)m=-1;
+			else m = 1;
+			m*=Math.abs((second.x-first.x)/(second.y-first.y));
+			t= first.x-first.y*m; //x verschiebung
+			
+			for(int n=0; n<pixels.length; n++) {
+				x = (n-n%width)/width;
+				y = n%width;
+				f_x = (float) (m*y+t);
+				if (y>=first.y&&y<=second.y) {
+					if((int)x==(int)f_x) {pixels[n]=mixColors( color,pixels[n], alpha);}
+				}
+			}						 	
+		}
+	}
+	
+	public void drawBackground(int[] pixels) {
+		//draw background
+		for(int n=0; n<pixels.length; n++) {pixels[n] = bg_color.getRGB();}
+	}
+	
+	
+	
+	
+	// UPDATE ----------------------------------------------------
+	
+	public void update(int[] pixels, int w,int h,int off) {
+		width=w; height = h-off;
+		group_count=new_group_count;
+		off = w*off;
+		data.compress(group_count);
+		
+		drawBackground(pixels);
+
+		drawData(pixels,data.sequences,off,width*height/3+off);
+		drawData(pixels,data.sequences_w,width*height/3+off,off+2*width*height/3);
+		drawData(pixels,data.sequences_diff,off+2*width*height/3,pixels.length);
+		//System.out.println("cat drawn");
+		//drawLine(pixels, new Vec2(0,0), new Vec2(2000,2000), Color.red.getRGB());
+		drawSections(pixels,data.sequences,off+width/4,width*height/3+off+width/4);
+		drawSections(pixels,data.sequences_w,width*height/3+off+width/4,width*2*height/3+off+width/4);
+		drawSections(pixels,data.sequences_diff,width*2*height/3+off+width/4,pixels.length);
+		//System.out.println("lines drawn");
+		drawCompressed(pixels,off+width/4,off+width/4+2*width*height/3);
+		return ;
+	}	
+
+	// ----------------------------------------------------
+	
+	public void drawData(int[] pixels, Sequences seqs, int start, int end){
+		//drawing both cat images
+		int col_hold=0;
+		for(int n=start; n<end-2*width; n++) {
+			col_hold = data.getColor(seqs,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
+			if(col_hold>=0)
+				pixels[n] =col_hold;
+		}
+	}
+
+
+	public void drawSections(int[] pixels,Group seqs, int start, int end) {
+		int top_off =start ;
+		int graph_color = Color.black.getRGB();
+		
+		
+		
+		
+		
+		
+		//drawing density distribution
+				//AND
+		//drawing sections
+		ArrayList<Integer> sec = seqs.getSections(group_count);
+		float sec_idx=0;
+		for(int i = 0; i<sec.size();i++) {
+			sec_idx =sec.get(i);
+			// drawing horizontal section
+			drawLine(pixels,  (int) (width*sec_idx+top_off)-width/4,
+					(int) (width*sec_idx+top_off), graph_color,0.5f);
+
+		}
+		
+	}
+
+
+	public void drawCompressed(int[] pixels, int start, int end) {
+		int step = (end-start)/2;
+//
+//		drawBars(pixels, data.d_compressed, start, start+step);
+//		drawBars(pixels, data.d_compressed_o, start+step, start+step/2+step);
+		
+		drawBarsDen(pixels, data.d_compressed,start+width/4, start+step+width/4);
+		drawBarsDen(pixels, data.d_compressed_w, start+step+width/4, start+2*step+width/4);
+
+		drawBarsDen(pixels, data.d_compressed_diff, start+2*step+width/4, end);
+	}
+	
+	public void drawBars(int[] pixels, Bundle seqs, int start, int end) {
+		
+		int jump =0;
+		for(int i=0; i<seqs.getDepth();i++) {
+			drawDataBar(pixels, seqs, start+jump*width+ width, i,8);
+			//System.out.println(int2Vec(start+(jump)*width).x+" "+mouse_y);
+			if( int2Vec(start+jump*width).x <=mouse_y &&int2Vec(start+(jump+16)*width).x>=mouse_y) {
+				drawDataBar(pixels, seqs, start+jump*width+ width, i,16);
+				jump+=8;
+			}
+			jump+=10;
+			
+		}
+	}
+
+	public void drawBarsDen(int[] pixels, Bundle seqs, int start, int end) {
+
+		ArrayList<Integer> dens = seqs.densities;
+		
+		int jump =0;
+		int jumping =0;
+		int den = 0;
+		for(int i=0; i<seqs.getDepth();i++) {
+			den = (dens.get(i)+10)/3;// 10; //for static sizes
+
+			// hover bar //TODO show original data
+			if( int2Vec(start+jump*width).x <=mouse_y &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
+				
+				drawDataSec(pixels, seqs, start+jump*width, i,dens.get(i));
+
+				jumping=dens.get(i)+2;
+			}
+			//normal
+			else {
+				drawDataBar(pixels, seqs, start+jump*width, i,den);
+				jumping=den+2;
+			}
+			//drawing density dots
+			drawDots(pixels, start+jump*width+width/4 , dens.get(i));
+			jump+=jumping;
+			
+		}
+	}
+	
+	public void drawDataBar(int[] pixels, Bundle seqs, int startpos,int dataRowIdx, int lenght) {
+		// draw a bar with same data
+		int col_hold =0;
+		int diff_color = 0;
+		for (int n = startpos; n<startpos+lenght*width;n++) {
+			int pos = ((n%width)-startpos%width);
+			col_hold = data.getColor(seqs,dataRowIdx,pos);
+			if(col_hold>=0) {
+				diff_color =seqs.getDiff(dataRowIdx,pos);
+				if(diff_color>255)diff_color =255;
+				diff_color = new Color(diff_color,0,0).getRGB();
+				pixels[n] =addColors(col_hold,diff_color);//System.out.println("hi");
+				}
+		}
+	}
+	
+	public void drawDataSec(int[] pixels, Bundle seqs, int startpos,int sec_idx, int length) {
+		// draw a section of data
+		int col_hold =0;
+		// iterate over rows : start and end _idx
+		// and then over individual data values
+		for (int n =0; n<length;n++) {
+			for(int i =0;i<data.getLength();i++) {
+				col_hold = data.getOrColor(seqs,sec_idx,n,i);
+
+				//System.out.println(n+" "+i+" "+col_hold);
+				if(col_hold>=0) {
+					pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
+					}
+			}
+		}
+	}
+	
+	public void drawDots(int[] pixels, int start, int den ) {
+		int step = 4;
+		int jump =0;
+		int pos = (step/2)*width+start+step/2;
+		for (int i = 0; i<den; i++) {
+			if((pos)%width>6.5*width/8) {pos= (step/2)*width+start+step/2;jump++;}
+			drawPoint(pixels, width*(jump*step)+pos, Color.gray.getRGB());
+			pos += step;
+		}
+	}
+	
+	public void drawTopLine(Graphics g2) {
+		g2.setColor(Color.green);
+	    g2.fillRect(0, 0,width, height);
+		
+		g2.setColor(Color.BLACK);
+	}
+	
+	
+	
+	//INTERACTIONS----------------------------------------------------------------------------
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		// TODO Auto-generated method stub
+		if((new_group_count-e.getPreciseWheelRotation()>0)&&(new_group_count-e.getPreciseWheelRotation()<255))
+			new_group_count -=e.getPreciseWheelRotation();
+		System.out.println(new_group_count);
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		mouse_y = e.getY();
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
