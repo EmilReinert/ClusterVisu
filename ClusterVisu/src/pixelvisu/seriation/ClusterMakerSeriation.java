@@ -8,7 +8,12 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferByte;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -94,9 +99,39 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 			render();//displays to the screen unrestricted time
 		}
 	}
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		String path ="Data/Memory usage.json";
-		Data d= new Data(path);
+		
+		Data d;
+		/*
+		try {
+			d = serializeDataIn(); 
+		}
+		catch(Exception e) {
+			d = new Data(path); serializeDataOut(d);
+		}*/
+		d = new Data(path);
 		ClusterMakerSeriation clum = new ClusterMakerSeriation(d, path);
+	}
+	
+	
+	
+	
+	
+	public static void serializeDataOut(Data ish)throws IOException{
+	    String fileName= "save/data.txt";
+	    FileOutputStream fos = new FileOutputStream(fileName);
+	    ObjectOutputStream oos = new ObjectOutputStream(fos);
+	    oos.writeObject(ish);
+	    oos.close();
+	}
+
+	public static Data serializeDataIn() throws IOException, ClassNotFoundException{
+	    String fileName= "save/data.txt";
+	   FileInputStream fin = new FileInputStream(fileName);
+	   ObjectInputStream ois = new ObjectInputStream(fin);
+	   Data loadData= (Data) ois.readObject();
+	   ois.close();
+	   return loadData;
 	}
 }

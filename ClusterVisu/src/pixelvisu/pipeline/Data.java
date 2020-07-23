@@ -59,8 +59,8 @@ public class Data {
 	public Data(String path) throws IOException {
 		sequences = new Group(group_count);
 
-//		readData(path);
-		testCat();
+		readData(path);
+//		testCat();
 		
 		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean");
 		single_maximum = new Cluster(sequences,"agglomerative","single","maximum");

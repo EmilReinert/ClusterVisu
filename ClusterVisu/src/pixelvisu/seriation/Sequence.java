@@ -1,6 +1,7 @@
 package pixelvisu.seriation;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Sequence {
+public class Sequence implements Serializable {
 	ArrayList<Integer> data;
 	String name ="";
 

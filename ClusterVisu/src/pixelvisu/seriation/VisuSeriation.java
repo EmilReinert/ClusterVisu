@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 
+
+
+
 public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWheelListener{
 
 	private int width, height; // width, height for diagram
@@ -25,7 +28,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	Data data;
 	
 	Color bg_color;
-	int group_count =10; 
+	int group_count =44; // percent of maximum similarity that is considered a group
 	int new_group_count=group_count;
 	Vec2 mouse_click = new Vec2(0,0);
 	
@@ -37,6 +40,223 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		
 	}
 
+	
+	
+	// UPDATE ----------------------------------------------------
+	
+	public void update(int[] pixels, int w,int h,int off) {
+		if(w!=width) System.out.println(width);
+		width=w; height = h-off;
+		group_count=new_group_count;
+		off = w*off;
+		data.section(group_count);
+		
+		drawBackground(pixels);
+		
+		
+		// DATA
+
+		// for single
+//		drawData(pixels, data.single_euclid.flat, off, width*height/3+off);
+//		drawData(pixels, data.single_maximum.flat, off+width/5, width*height/3+off);
+//		drawData(pixels, data.single_weight.flat, off+2*width/5, width*height/3+off);
+//		drawData(pixels, data.single_trivial.flat, off+3*width/5, width*height/3+off);
+//		drawData(pixels, data.single_manhattan.flat, off+4*width/5, width*height/3+off);
+//
+//		
+//		//for complete
+//		drawData(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
+//		drawData(pixels, data.complete_maximum.flat, width*height/3+off+width/5, off+2*width*height/3);
+//		drawData(pixels, data.complete_weight.flat, width*height/3+off+2*width/5, off+2*width*height/3);
+//		drawData(pixels, data.complete_trivial.flat, width*height/3+off+3*width/5, off+2*width*height/3);
+//		drawData(pixels, data.complete_manhattan.flat, width*height/3+off+4*width/5, off+2*width*height/3);
+//		
+//		//for average
+//		drawData(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
+//		drawData(pixels, data.average_maximum.flat, 2*width*height/3+off+width/5, pixels.length);
+//		drawData(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
+//		drawData(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
+//		drawData(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
+		
+		
+		//SECTIONS
+		
+//		// for single
+//		drawSections(pixels, data.single_euclid.flat, off, width*height/3+off);
+//		drawSections(pixels, data.single_maximum.flat, off+width/5, width*height/3+off);
+//		drawSections(pixels, data.single_weight.flat, off+2*width/5, width*height/3+off);
+//		drawSections(pixels, data.single_trivial.flat, off+3*width/5, width*height/3+off);
+//		drawSections(pixels, data.single_manhattan.flat, off+4*width/5, width*height/3+off);
+//
+//		
+//		//for complete
+//		drawSections(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
+//		drawSections(pixels, data.complete_maximum.flat, width*height/3+off+width/5, off+2*width*height/3);
+//		drawSections(pixels, data.complete_weight.flat, width*height/3+off+2*width/5, off+2*width*height/3);
+//		drawSections(pixels, data.complete_trivial.flat, width*height/3+off+3*width/5, off+2*width*height/3);
+//		drawSections(pixels, data.complete_manhattan.flat, width*height/3+off+4*width/5, off+2*width*height/3);
+//		
+//		//for average
+//		drawSections(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
+//		drawSections(pixels, data.average_maximum.flat, 2*width*height/3+off+width/5, pixels.length);
+//		drawSections(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
+//		drawSections(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
+//		drawSections(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
+//		
+		//COMPRESSED
+		
+		// for single
+		drawBarsDen(pixels, data.single_euclid.flat_c, off, width*height/3+off);
+		drawBarsDen(pixels, data.single_maximum.flat_c, off+width/5, width*height/3+off);
+		drawBarsDen(pixels, data.single_weight.flat_c, off+2*width/5, width*height/3+off);
+		drawBarsDen(pixels, data.single_trivial.flat_c, off+3*width/5, width*height/3+off);
+		drawBarsDen(pixels, data.single_manhattan.flat_c, off+4*width/5, width*height/3+off);
+
+		
+		//for complete
+		drawBarsDen(pixels, data.complete_euclid.flat_c, width*height/3+off, off+2*width*height/3);
+		drawBarsDen(pixels, data.complete_maximum.flat_c, width*height/3+off+width/5, off+2*width*height/3);
+		drawBarsDen(pixels, data.complete_weight.flat_c, width*height/3+off+2*width/5, off+2*width*height/3);
+		drawBarsDen(pixels, data.complete_trivial.flat_c, width*height/3+off+3*width/5, off+2*width*height/3);
+		drawBarsDen(pixels, data.complete_manhattan.flat_c, width*height/3+off+4*width/5, off+2*width*height/3);
+		
+		//for average
+		drawBarsDen(pixels, data.average_euclid.flat_c, 2*width*height/3+off, pixels.length);
+		drawBarsDen(pixels, data.average_maximum.flat_c, 2*width*height/3+off+width/5, pixels.length);
+		drawBarsDen(pixels, data.average_weight.flat_c, 2*width*height/3+off+2*width/5, pixels.length);
+		drawBarsDen(pixels, data.average_trivial.flat_c, 2*width*height/3+off+3*width/5, pixels.length);
+		drawBarsDen(pixels, data.average_manhattan.flat_c, 2*width*height/3+off+4*width/5, pixels.length);
+		
+		
+		return ;
+	}	
+
+	// ----------------------------------------------------
+	
+	public void drawData(int[] pixels, Group seqs, int start, int end){
+		//drawing both cat images
+		int col_hold=0;
+		for(int n=start; n<end-2*width; n++) {
+			col_hold = data.getColor(seqs,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
+			if(col_hold>=0)
+				pixels[n] =col_hold;
+		}
+	}
+
+	public void drawSections(int[] pixels,Group seqs, int start, int end) {
+		int top_off =start ;
+		int graph_color = Color.red.getRGB();
+		
+		//drawing density distribution
+				//AND
+		//drawing sections
+		ArrayList<Integer> sec = seqs.sections;
+		float sec_idx=0;
+		for(int i = 0; i<sec.size();i++) {
+			sec_idx =sec.get(i);
+			// drawing horizontal section
+			drawLine(pixels,  (int) (width*sec_idx+top_off),
+					(int) (width*sec_idx+top_off)+getLength()-1, graph_color,0.8f);
+
+		}
+		
+	}
+
+	public void drawBarsDen(int[] pixels, Bundle seqs, int start, int end) {
+
+		ArrayList<Integer> dens = seqs.densities;
+		
+		int jump =0;
+		int jumping =0;
+		int den = 0;
+		for(int i=0; i<seqs.getDepth();i++) {
+			den = 10;//(dens.get(i)+10)/3;// 10; //for static sizes
+
+			// hover bar 
+			//if( int2Vec(start+jump*width).x <=mouse_y &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
+			if (isInsideSquare(start+jump*width,start+(jump+den)*width+getLength())) {
+				drawDataSec(pixels, seqs, start+jump*width, i,dens.get(i));
+
+				jumping=dens.get(i);//+2;
+			}
+			//normal
+			else {
+				drawDataBar(pixels, seqs, start+jump*width, i,den);
+				jumping=den;//+2;
+			}
+			//drawing density dots
+			drawDots2(pixels, start+jump*width+ getLength() , dens.get(i));
+			jump+=jumping;
+			
+		}
+	}
+	
+	public void drawDataBar(int[] pixels, Bundle seqs, int startpos,int dataRowIdx, int lenght) {
+		// draw a bar with same data
+		int col_hold =0;
+		int diff_color = 0;
+		int diff_fade =0;
+		for (int n = startpos; n<startpos+lenght*width&&n<pixels.length;n++) {
+			int pos = ((n%width)-startpos%width);
+			col_hold = data.getColor(seqs,dataRowIdx,pos);
+			if(col_hold>=0) {
+				diff_color =6*seqs.getDiff(dataRowIdx,pos);
+				diff_fade =(int) Math.pow(diff_color*0.005,4);
+				if(diff_color>255)diff_color =255;
+				if(diff_fade>255)diff_fade =255;
+				diff_color = new Color(diff_fade,0, diff_color).getRGB();
+				pixels[n] =mixColors(col_hold,diff_color,0.8f);
+				}
+		}
+	}
+	
+	public void drawDataSec(int[] pixels, Bundle seqs, int startpos,int sec_idx, int length) {
+		// draw an ORIGINAL section of data
+		int col_hold =0;
+		// iterate over rows : start and end _idx
+		// and then over individual data values
+		for (int n =0; n<length;n++) {
+			for(int i =0;i<data.getLength();i++) {
+				col_hold = data.getOrColor(seqs,sec_idx,n,i);
+
+				//System.out.println(n+" "+i+" "+col_hold);
+				if(col_hold>=0) {
+					pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
+					}
+				else pixels[startpos+n*width+i] = 0;
+			}
+		}
+	}
+	
+	
+
+	public void drawDots2(int[] pixels, int start, int den ) {
+		int step = 3;
+		int jump =0;
+		int dotlength = 100;
+		int pos = start+step/2;
+		for (int i = 0; i<den; i++) {
+			if((pos)%width>start%width+dotlength) {pos= start+step/2;jump++;}
+			if( width*(jump*step)+pos< pixels.length-3*width)drawDot2(pixels, width*(jump*step)+pos, Color.gray.getRGB());
+			pos += step;
+		}
+	}
+	
+	public void drawDots3(int[] pixels, int start, int den ) {
+		int step = 4;
+		int jump =0;
+		int dotlength = 100;
+		int pos = (1)*width+start+step/2;
+		for (int i = 0; i<den; i++) {
+			if((pos)%width>start%width+dotlength) {pos= (1)*width+start+step/2;jump++;}
+			if( width*(jump*step)+pos< pixels.length-3*width)drawDot3(pixels, width*(jump*step)+pos, Color.gray.getRGB());
+			pos += step;
+		}
+	}
+	
+	
+	
+	
 	/// GET AND SETTER ///
 	public int getHeight() {
 		return height;
@@ -153,14 +373,20 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	}
 	
 	
-	public void drawPoint(int[] pixels, int a, int color) {
+	public void drawDot3(int[] pixels, int a, int color) {
 		// draws 6*6 pixels point
 		if(a>width+1)pixels[a-width-1]=pixels[a-width]=pixels[a-width+1]=color;
 		if(a>1)pixels[a-1]=pixels[a]=pixels[a+1]=color;
 		if(a+width+1<pixels.length&&a>width)pixels[a+width-1]=pixels[a+width]=pixels[a+width+1]=color;
 	}
 	
-	public void drawDot(int[] pixels, int a, int color) {pixels[a]=pixels[a+1]=color;
+	public void drawDot2(int[] pixels, int a, int color) {
+		// draws 6*6 pixels point
+		if(a>1)pixels[a]=pixels[a+1]=color;
+		if(a+width+1<pixels.length&&a>width)pixels[a+width]=pixels[a+width+1]=color;
+	}
+	
+	public void drawPoint(int[] pixels, int a, int color) {pixels[a]=pixels[a+1]=color;
 		pixels[a]=color;
 	}
 	
@@ -222,208 +448,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	
 	
 	
-	
-	// UPDATE ----------------------------------------------------
-	
-	public void update(int[] pixels, int w,int h,int off) {
-		if(w!=width) System.out.println(width);
-		width=w; height = h-off;
-		group_count=new_group_count;
-		off = w*off;
-		data.section(group_count);
-		
-		drawBackground(pixels);
-		
 
-		
-		// for single
-		drawData(pixels, data.single_euclid.flat, off, width*height/3+off);
-		drawData(pixels, data.single_maximum.flat, off+width/5, width*height/3+off);
-		drawData(pixels, data.single_weight.flat, off+2*width/5, width*height/3+off);
-		drawData(pixels, data.single_trivial.flat, off+3*width/5, width*height/3+off);
-		drawData(pixels, data.single_manhattan.flat, off+4*width/5, width*height/3+off);
-
-		
-		//for complete
-		drawData(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
-		drawData(pixels, data.complete_maximum.flat, width*height/3+off+width/5, off+2*width*height/3);
-		drawData(pixels, data.complete_weight.flat, width*height/3+off+2*width/5, off+2*width*height/3);
-		drawData(pixels, data.complete_trivial.flat, width*height/3+off+3*width/5, off+2*width*height/3);
-		drawData(pixels, data.complete_manhattan.flat, width*height/3+off+4*width/5, off+2*width*height/3);
-		
-		//for average
-		drawData(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
-		drawData(pixels, data.average_maximum.flat, 2*width*height/3+off+width/5, pixels.length);
-		drawData(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
-		drawData(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
-		drawData(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
-		
-		/*
-		// for single
-		drawSections(pixels, data.single_euclid.flat, off, width*height/3+off);
-		drawSections(pixels, data.single_maximum.flat, off+width/5, width*height/3+off);
-		drawSections(pixels, data.single_weight.flat, off+2*width/5, width*height/3+off);
-		drawSections(pixels, data.single_trivial.flat, off+3*width/5, width*height/3+off);
-		drawSections(pixels, data.single_manhattan.flat, off+4*width/5, width*height/3+off);
-
-		
-		//for complete
-		drawSections(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
-		drawSections(pixels, data.complete_maximum.flat, width*height/3+off+width/5, off+2*width*height/3);
-		drawSections(pixels, data.complete_weight.flat, width*height/3+off+2*width/5, off+2*width*height/3);
-		drawSections(pixels, data.complete_trivial.flat, width*height/3+off+3*width/5, off+2*width*height/3);
-		drawSections(pixels, data.complete_manhattan.flat, width*height/3+off+4*width/5, off+2*width*height/3);
-		
-		//for average
-		drawSections(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
-		drawSections(pixels, data.average_maximum.flat, 2*width*height/3+off+width/5, pixels.length);
-		drawSections(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
-		drawSections(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
-		drawSections(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
-		*/
-	
-		
-		return ;
-	}	
-
-	// ----------------------------------------------------
-	
-	public void drawData(int[] pixels, Group seqs, int start, int end){
-		//drawing both cat images
-		int col_hold=0;
-		for(int n=start; n<end-2*width; n++) {
-			col_hold = data.getColor(seqs,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
-			if(col_hold>=0)
-				pixels[n] =col_hold;
-		}
-	}
-
-	public void drawSections(int[] pixels,Group seqs, int start, int end) {
-		int top_off =start ;
-		int graph_color = Color.red.getRGB();
-		
-		//drawing density distribution
-				//AND
-		//drawing sections
-		ArrayList<Integer> sec = seqs.sections;
-		float sec_idx=0;
-		for(int i = 0; i<sec.size();i++) {
-			sec_idx =sec.get(i);
-			// drawing horizontal section
-			drawLine(pixels,  (int) (width*sec_idx+top_off),
-					(int) (width*sec_idx+top_off)+getLength()-1, graph_color,0.8f);
-
-		}
-		
-	}
-
-/*
-	public void drawCompressed(int[] pixels, int start, int end) {
-		int step = (end-start)/2;
-//
-//		drawBars(pixels, data.d_compressed, start, start+step);
-//		drawBars(pixels, data.d_compressed_o, start+step, start+step/2+step);
-		
-		drawBarsDen(pixels, data.d_compressed,start+width/4, start+step+width/4);
-		drawBarsDen(pixels, data.d_compressed_w, start+step+width/4, start+2*step+width/4);
-
-		drawBarsDen(pixels, data.d_compressed_diff, start+2*step+width/4, end);
-	}	
-	
-	public void drawCompressedS(int[] pixels, int start, int end) {
-		int step = (end-start)/2;
-//
-//		drawBars(pixels, data.d_compressed, start, start+step);
-//		drawBars(pixels, data.d_compressed_o, start+step, start+step/2+step);
-		
-		drawBarsDen(pixels, data.d_scompressed,start+width/4, start+step+width/4);
-		drawBarsDen(pixels, data.d_scompressed_w, start+step+width/4, start+2*step+width/4);
-
-		drawBarsDen(pixels, data.d_scompressed_diff, start+2*step+width/4, end);
-	}
-	
-	
-	
-	
-	public void drawBarsDen(int[] pixels, Bundle seqs, int start, int end) {
-
-		ArrayList<Integer> dens = seqs.densities;
-		
-		int jump =0;
-		int jumping =0;
-		int den = 0;
-		for(int i=0; i<seqs.getDepth();i++) {
-			den = (dens.get(i)+10)/3;// 10; //for static sizes
-
-			// hover bar 
-			//if( int2Vec(start+jump*width).x <=mouse_y &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
-			if (isInsideSquare(start+jump*width,start+(jump+den)*width+getLength())) {
-				drawDataSec(pixels, seqs, start+jump*width, i,dens.get(i));
-
-				jumping=dens.get(i)+2;
-			}
-			//normal
-			else {
-				drawDataBar(pixels, seqs, start+jump*width, i,den);
-				jumping=den+2;
-			}
-			//drawing density dots
-			drawDots(pixels, start+jump*width+ getLength() , dens.get(i));
-			jump+=jumping;
-			
-		}
-	}
-	
-	public void drawDataBar(int[] pixels, Bundle seqs, int startpos,int dataRowIdx, int lenght) {
-		// draw a bar with same data
-		int col_hold =0;
-		int diff_color = 0;
-		int diff_fade =0;
-		for (int n = startpos; n<startpos+lenght*width&&n<pixels.length;n++) {
-			int pos = ((n%width)-startpos%width);
-			col_hold = data.getColor(seqs,dataRowIdx,pos);
-			if(col_hold>=0) {
-				diff_color =6*seqs.getDiff(dataRowIdx,pos);
-				diff_fade =(int) Math.pow(diff_color*0.005,4);
-				if(diff_color>255)diff_color =255;
-				if(diff_fade>255)diff_fade =255;
-				diff_color = new Color(diff_fade,0, diff_color).getRGB();
-				pixels[n] =mixColors(col_hold,diff_color,0.8f);
-				}
-		}
-	}
-	public void drawDataSec(int[] pixels, Bundle seqs, int startpos,int sec_idx, int length) {
-		// draw an ORIGINAL section of data
-		int col_hold =0;
-		// iterate over rows : start and end _idx
-		// and then over individual data values
-		for (int n =0; n<length;n++) {
-			for(int i =0;i<data.getLength();i++) {
-				col_hold = data.getOrColor(seqs,sec_idx,n,i);
-
-				//System.out.println(n+" "+i+" "+col_hold);
-				if(col_hold>=0) {
-					pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
-					}
-				else pixels[startpos+n*width+i] = 0;
-			}
-		}
-	}
-	*/
-	
-	
-	public void drawDots(int[] pixels, int start, int den ) {
-		int step = 4;
-		int jump =0;
-		int dotlength = 50;
-		int pos = (1)*width+start+step/2;
-		for (int i = 0; i<den; i++) {
-			if((pos)%width>start%width+dotlength) {pos= (1)*width+start+step/2;jump++;}
-			if( width*(jump*step)+pos< pixels.length-3*width)drawPoint(pixels, width*(jump*step)+pos, Color.gray.getRGB());
-			pos += step;
-		}
-	}
-	
 	public void drawTopLine(Graphics g2) {
 		g2.setColor(Color.green);
 	    g2.fillRect(0, 0,width, height);
@@ -437,8 +462,8 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// TODO Auto-generated method stub
-		if((new_group_count-e.getPreciseWheelRotation()>0)&&(new_group_count-e.getPreciseWheelRotation()<255))
-			new_group_count -=e.getPreciseWheelRotation();
+		if((new_group_count-e.getPreciseWheelRotation()>0))
+			new_group_count -=1*e.getPreciseWheelRotation();
 		System.out.println(new_group_count);
 	}
 
@@ -456,6 +481,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
+		data.order("density");
 		mouse_click = new Vec2(e.getY(), e.getX());
 	}
 

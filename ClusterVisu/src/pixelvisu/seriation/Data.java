@@ -5,6 +5,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Dictionary;
+
 import javax.imageio.ImageIO;
 
 import org.json.JSONArray;
@@ -13,10 +17,11 @@ import org.json.JSONObject;
 
 
 
-public class Data {
+public class Data implements Serializable{
 	Group sequences;// unordered weights // image
 	Group sequences_diff; // ordered by similarity
 	
+	ArrayList<Cluster> clusters;
 	
 	Cluster single_euclid;
 	Cluster single_maximum;
@@ -59,8 +64,12 @@ public class Data {
 	public Data(String path) throws IOException {
 		sequences = new Group(group_count);
 
-//		readData(path);
-		testCat();
+		readData(path);
+//		testCat();
+
+		
+		clusters = new ArrayList<Cluster>();
+
 		
 		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean");
 		single_maximum = new Cluster(sequences,"agglomerative","single","maximum");
@@ -82,8 +91,26 @@ public class Data {
 		average_trivial = new Cluster(sequences,"agglomerative","average","trivial");
 		average_manhattan = new Cluster(sequences,"agglomerative","average","manhattan");
 		
+
+		clusters.add(single_euclid);
+		clusters.add(single_maximum);
+		clusters.add(single_weight);
+		clusters.add(single_trivial);
+		clusters.add(single_manhattan);
+
+		clusters.add(complete_euclid);
+		clusters.add(complete_maximum);
+		clusters.add(complete_weight);
+		clusters.add(complete_trivial);
+		clusters.add(complete_manhattan);
+
+		clusters.add(average_euclid);
+		clusters.add(average_maximum);
+		clusters.add(average_weight);
+		clusters.add(average_trivial);
+		clusters.add(average_manhattan);
 		
-		
+
 	}
 	
 	private void readData(String path) throws IOException {
@@ -106,6 +133,7 @@ public class Data {
 		
 
 	}
+	
 	
 	private void testCat() throws IOException {
 		// creating test data based on input cat image
@@ -138,23 +166,16 @@ public class Data {
 		if(group_count == this.group_count) return;
 		this.group_count = group_count;
 		
-		single_euclid.makeSections(group_count);
-		single_maximum.makeSections(group_count);
-		single_weight.makeSections(group_count);
-		single_trivial.makeSections(group_count);
-		single_manhattan.makeSections(group_count);
-		
-		complete_euclid.makeSections(group_count);
-		complete_maximum.makeSections(group_count);
-		complete_weight.makeSections(group_count);
-		complete_trivial.makeSections(group_count);
-		complete_manhattan.makeSections(group_count);
-		
-		average_euclid.makeSections(group_count);
-		average_maximum.makeSections(group_count);
-		average_weight.makeSections(group_count);
-		average_trivial.makeSections(group_count);
-		average_manhattan.makeSections(group_count);
+		for(Cluster c:clusters)
+			c.makeSections(group_count);
+	}
+	
+	public void order(String mode) {
+		for(Cluster c:clusters) {
+			if(mode == "density")
+				c.flat_c.densityOrder();
+			
+		}
 	}
 	
 	
@@ -198,9 +219,5 @@ public class Data {
 	} 
 	
 	
-	public Vec2 getColorBounds() {
-		//returns possivle bounds
-		return new Vec2( sequences.getLength()*(Color.white.getRGB()/1000000), sequences.getLength()*(Color.BLACK.getRGB()/1000000));
-	}
 	
 }

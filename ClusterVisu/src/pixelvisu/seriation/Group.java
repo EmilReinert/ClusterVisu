@@ -1,18 +1,61 @@
 package pixelvisu.seriation;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class Group {
+public class Group implements Serializable{
 	// Group contains collection of sequences and
 
 	ArrayList<Integer> sections; // holder for same threshold section calculation
+	ArrayList<Integer> densities;
 	int group_count=0;
 	ArrayList<Sequence> sequences ; // already ordered list of sequences
 	ArrayList<Integer> weights;
+		
+	public Group(int group) {
+		group_count = group;
+		densities = new ArrayList<Integer>();
+		sections = new ArrayList<Integer>();
+		sequences = new ArrayList<Sequence>();
+		makeWeights();
+		
+	}
+	public Group() {
+		group_count = 0;
+		sections = new ArrayList<Integer>();
+		sequences = new ArrayList<Sequence>();
+		densities = new ArrayList<Integer>();
+		makeWeights();
+		
+	}
+	public Group(ArrayList<Sequence> s, int group) {
+		group_count =0;
+		sequences = copySeqs(s);
+		densities = new ArrayList<Integer>();
+		makeWeights();
+		sections = new ArrayList<Integer>();
+	}
+
+	public Group(Group other) {
+		//copy constructor
+		group_count =other.group_count;
+		sequences =copySeqs(other.sequences) ;
+		densities = other.densities;
+		makeWeights();
+		sections = new ArrayList<Integer>();
+	}
 	
+	public void makeDensities(ArrayList<Integer> halfden) {
+		// takes densities and fits them to sequence size by repeating denisty size
+		densities = new ArrayList<Integer>();
+		for(int i = 0; i<halfden.size();i++) {
+			for(int j =0;j<halfden.get(i);j++)
+				densities.add(halfden.get(i));
+		}
+	}
 	public void makeWeights() {
 		weights = new ArrayList<>();
 		for(int i = 0; i<sequences.size();i++) {
@@ -159,36 +202,6 @@ public class Group {
 		
 		//System.out.println(start+" "+end);
 		return combineSequences(s);
-	}
-	
-	
-	public Group(int group) {
-		group_count = group;
-		sections = new ArrayList<Integer>();
-		sequences = new ArrayList<Sequence>();
-		makeWeights();
-		
-	}
-	public Group() {
-		group_count = 0;
-		sections = new ArrayList<Integer>();
-		sequences = new ArrayList<Sequence>();
-		makeWeights();
-		
-	}
-	public Group(ArrayList<Sequence> s, int group) {
-		group_count =0;
-		sequences = copySeqs(s);
-		makeWeights();
-		sections = new ArrayList<Integer>();
-	}
-
-	public Group(Group other) {
-		//copy constructor
-		group_count =other.group_count;
-		sequences =copySeqs(other.sequences) ;
-		makeWeights();
-		sections = new ArrayList<Integer>();
 	}
 	
 	public void weightOrder() {
