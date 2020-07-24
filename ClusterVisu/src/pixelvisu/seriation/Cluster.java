@@ -12,13 +12,14 @@ public class Cluster implements Serializable {
 
 	String name;
 	Node tree;
+	Node treeorder;
 	Group flat;
 	Bundle flat_c;
 
 	ArrayList<Group> sections;
 	int maxdepth;
 	int size;
-	int group_count = -10;
+	int group_count = -10; // SIMILARITY CUT
 
 	public Cluster(Group sequences, String clustering, String link, String sim) throws IOException {
 		name = link+sim;
@@ -29,10 +30,19 @@ public class Cluster implements Serializable {
 			tree = new Node(sequences, clustering, link, sim);
 			serializeDataOut("save/trees/"+name,tree);
 		}
-
-		// printClusterSim();
+		
 		flat = tree.getFlatBranchesDepth();
+
 		System.out.println("Cluster size:" + tree.branches.size() + " and Size" + flat.getDepth());
+//		tree.printClusterSim();
+		try {
+			treeorder = serializeDataIn("save/trees/"+name+"_o");
+		}
+		catch(Exception e) {
+			treeorder = new Node(flat, clustering, link, sim);
+			serializeDataOut("save/trees/"+name+"_o",treeorder);
+		}
+		System.out.println("Ordered Tree");
 	}
 
 	public void makeSections(int maxsim) {
@@ -44,6 +54,7 @@ public class Cluster implements Serializable {
 		double maxsim_local = tree.getMaxSim() * 0.01 * maxsim;
 		System.out.println("Sectioning with similarity: " + maxsim_local);
 		ArrayList<Node> groups = new ArrayList<Node>();
+		ArrayList<Node> singles = new ArrayList<Node>();
 		ArrayList<Node> plane = tree.branches;
 		for (int i = 0; i < 100000; i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
@@ -63,6 +74,7 @@ public class Cluster implements Serializable {
 						else
 							hold.add(c);
 					}
+//					else singles.add(c);
 				}
 			}
 			plane = hold;
@@ -81,6 +93,7 @@ public class Cluster implements Serializable {
 					secs.add(pos);
 
 				}
+				for(Node n: singles) {pos++;flat.add(n.data);secs.add(pos);}// if we dont look at singles like own groups
 				flat.sections = secs;
 				flat.densities = dens;
 				flat_c = new Bundle(flat);

@@ -39,6 +39,8 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
 		
+		addKeyListener(visu);
+		
 		setSize(WIDTH, HEIGHT);
 		setTitle("Pixel Clustering - Visualization /"+path+" IGNORE SINGLES");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -103,14 +105,14 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 		String path ="Data/Memory usage.json";
 		
 		Data d;
-		/*
+		
 		try {
-			d = serializeDataIn(); 
+			d = serializeDataIn("save/data/data");
 		}
 		catch(Exception e) {
-			d = new Data(path); serializeDataOut(d);
-		}*/
-		d = new Data(path);
+			d = new Data(path);
+			serializeDataOut("save/data/data",d);
+		}
 		ClusterMakerSeriation clum = new ClusterMakerSeriation(d, path);
 	}
 	
@@ -118,20 +120,19 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 	
 	
 	
-	public static void serializeDataOut(Data ish)throws IOException{
-	    String fileName= "save/data.txt";
-	    FileOutputStream fos = new FileOutputStream(fileName);
-	    ObjectOutputStream oos = new ObjectOutputStream(fos);
-	    oos.writeObject(ish);
-	    oos.close();
+	public static void serializeDataOut(String savepath, Data d) throws IOException {
+		FileOutputStream fos = new FileOutputStream(savepath);
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(d);
+		oos.close();
 	}
 
-	public static Data serializeDataIn() throws IOException, ClassNotFoundException{
-	    String fileName= "save/data.txt";
-	   FileInputStream fin = new FileInputStream(fileName);
-	   ObjectInputStream ois = new ObjectInputStream(fin);
-	   Data loadData= (Data) ois.readObject();
-	   ois.close();
-	   return loadData;
+	public static Data serializeDataIn(String savepath) throws IOException, ClassNotFoundException {
+		System.out.println("loading full data");
+		FileInputStream fin = new FileInputStream(savepath);
+		ObjectInputStream ois = new ObjectInputStream(fin);
+		Data loadRoot = (Data) ois.readObject();
+		ois.close();
+		return loadRoot;
 	}
 }

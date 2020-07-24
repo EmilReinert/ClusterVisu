@@ -3,6 +3,8 @@ package pixelvisu.seriation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -16,28 +18,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 
 
 
 
-public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWheelListener{
+
+public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWheelListener,KeyListener{
 
 	private int width, height; // width, height for diagram
 	
 	Data data;
+	Panel p;
 	
 	Color bg_color;
 	int group_count =44; // percent of maximum similarity that is considered a group
 	int new_group_count=group_count;
 	Vec2 mouse_click = new Vec2(0,0);
+	int click_cluster;
 	
 	public VisuSeriation(int w, int h, Data d, Color bg_c) {
 		width = w;
 		height = h;
 		data = d;
 		bg_color= bg_c;
-		
+
+		p = new Panel();
 	}
 
 	
@@ -49,34 +56,35 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		width=w; height = h-off;
 		group_count=new_group_count;
 		off = w*off;
-		data.section(group_count);
+//		data.section(group_count);
 		
 		drawBackground(pixels);
 		
-		
+
+//		Panel p = new Panel();
 		// DATA
 
 		// for single
-//		drawData(pixels, data.single_euclid.flat, off, width*height/3+off);
-//		drawData(pixels, data.single_maximum.flat, off+width/5, width*height/3+off);
-//		drawData(pixels, data.single_weight.flat, off+2*width/5, width*height/3+off);
-//		drawData(pixels, data.single_trivial.flat, off+3*width/5, width*height/3+off);
-//		drawData(pixels, data.single_manhattan.flat, off+4*width/5, width*height/3+off);
-//
-//		
-//		//for complete
-//		drawData(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
-//		drawData(pixels, data.complete_maximum.flat, width*height/3+off+width/5, off+2*width*height/3);
-//		drawData(pixels, data.complete_weight.flat, width*height/3+off+2*width/5, off+2*width*height/3);
-//		drawData(pixels, data.complete_trivial.flat, width*height/3+off+3*width/5, off+2*width*height/3);
-//		drawData(pixels, data.complete_manhattan.flat, width*height/3+off+4*width/5, off+2*width*height/3);
-//		
-//		//for average
-//		drawData(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
-//		drawData(pixels, data.average_maximum.flat, 2*width*height/3+off+width/5, pixels.length);
-//		drawData(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
-//		drawData(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
-//		drawData(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
+		drawData(pixels, data.single_euclid, off, width*height/3+off);
+		drawData(pixels, data.single_maximum, off+width/5, width*height/3+off);
+		drawData(pixels, data.single_weight, off+2*width/5, width*height/3+off);
+		drawData(pixels, data.single_trivial, off+3*width/5, width*height/3+off);
+		drawData(pixels, data.single_manhattan, off+4*width/5, width*height/3+off);
+
+		
+		//for complete
+		drawData(pixels, data.complete_euclid, width*height/3+off, off+2*width*height/3);
+		drawData(pixels, data.complete_maximum, width*height/3+off+width/5, off+2*width*height/3);
+		drawData(pixels, data.complete_weight, width*height/3+off+2*width/5, off+2*width*height/3);
+		drawData(pixels, data.complete_trivial, width*height/3+off+3*width/5, off+2*width*height/3);
+		drawData(pixels, data.complete_manhattan, width*height/3+off+4*width/5, off+2*width*height/3);
+		
+		//for average
+		drawData(pixels, data.average_euclid, 2*width*height/3+off, pixels.length);
+		drawData(pixels, data.average_maximum, 2*width*height/3+off+width/5, pixels.length);
+		drawData(pixels, data.average_weight, 2*width*height/3+off+2*width/5, pixels.length);
+		drawData(pixels, data.average_trivial, 2*width*height/3+off+3*width/5, pixels.length);
+		drawData(pixels, data.average_manhattan, 2*width*height/3+off+4*width/5, pixels.length);
 		
 		
 		//SECTIONS
@@ -102,30 +110,30 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 //		drawSections(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
 //		drawSections(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
 //		drawSections(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
-//		
+		
 		//COMPRESSED
 		
 		// for single
-		drawBarsDen(pixels, data.single_euclid.flat_c, off, width*height/3+off);
-		drawBarsDen(pixels, data.single_maximum.flat_c, off+width/5, width*height/3+off);
-		drawBarsDen(pixels, data.single_weight.flat_c, off+2*width/5, width*height/3+off);
-		drawBarsDen(pixels, data.single_trivial.flat_c, off+3*width/5, width*height/3+off);
-		drawBarsDen(pixels, data.single_manhattan.flat_c, off+4*width/5, width*height/3+off);
-
-		
-		//for complete
-		drawBarsDen(pixels, data.complete_euclid.flat_c, width*height/3+off, off+2*width*height/3);
-		drawBarsDen(pixels, data.complete_maximum.flat_c, width*height/3+off+width/5, off+2*width*height/3);
-		drawBarsDen(pixels, data.complete_weight.flat_c, width*height/3+off+2*width/5, off+2*width*height/3);
-		drawBarsDen(pixels, data.complete_trivial.flat_c, width*height/3+off+3*width/5, off+2*width*height/3);
-		drawBarsDen(pixels, data.complete_manhattan.flat_c, width*height/3+off+4*width/5, off+2*width*height/3);
-		
-		//for average
-		drawBarsDen(pixels, data.average_euclid.flat_c, 2*width*height/3+off, pixels.length);
-		drawBarsDen(pixels, data.average_maximum.flat_c, 2*width*height/3+off+width/5, pixels.length);
-		drawBarsDen(pixels, data.average_weight.flat_c, 2*width*height/3+off+2*width/5, pixels.length);
-		drawBarsDen(pixels, data.average_trivial.flat_c, 2*width*height/3+off+3*width/5, pixels.length);
-		drawBarsDen(pixels, data.average_manhattan.flat_c, 2*width*height/3+off+4*width/5, pixels.length);
+//		drawBarsDen(pixels, data.single_euclid.flat_c, off, width*height/3+off);
+//		drawBarsDen(pixels, data.single_maximum.flat_c, off+width/5, width*height/3+off);
+//		drawBarsDen(pixels, data.single_weight.flat_c, off+2*width/5, width*height/3+off);
+//		drawBarsDen(pixels, data.single_trivial.flat_c, off+3*width/5, width*height/3+off);
+//		drawBarsDen(pixels, data.single_manhattan.flat_c, off+4*width/5, width*height/3+off);
+//
+//		
+//		//for complete
+//		drawBarsDen(pixels, data.complete_euclid.flat_c, width*height/3+off, off+2*width*height/3);
+//		drawBarsDen(pixels, data.complete_maximum.flat_c, width*height/3+off+width/5, off+2*width*height/3);
+//		drawBarsDen(pixels, data.complete_weight.flat_c, width*height/3+off+2*width/5, off+2*width*height/3);
+//		drawBarsDen(pixels, data.complete_trivial.flat_c, width*height/3+off+3*width/5, off+2*width*height/3);
+//		drawBarsDen(pixels, data.complete_manhattan.flat_c, width*height/3+off+4*width/5, off+2*width*height/3);
+//		
+//		//for average
+//		drawBarsDen(pixels, data.average_euclid.flat_c, 2*width*height/3+off, pixels.length);
+//		drawBarsDen(pixels, data.average_maximum.flat_c, 2*width*height/3+off+width/5, pixels.length);
+//		drawBarsDen(pixels, data.average_weight.flat_c, 2*width*height/3+off+2*width/5, pixels.length);
+//		drawBarsDen(pixels, data.average_trivial.flat_c, 2*width*height/3+off+3*width/5, pixels.length);
+//		drawBarsDen(pixels, data.average_manhattan.flat_c, 2*width*height/3+off+4*width/5, pixels.length);
 		
 		
 		return ;
@@ -133,11 +141,12 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 
 	// ----------------------------------------------------
 	
-	public void drawData(int[] pixels, Group seqs, int start, int end){
+	public void drawData(int[] pixels, Cluster c, int start, int end){
+		//if(isInsideSquare(start, end+getLength())) click_cluster=c;
 		//drawing both cat images
 		int col_hold=0;
 		for(int n=start; n<end-2*width; n++) {
-			col_hold = data.getColor(seqs,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
+			col_hold = data.getColor(c.flat,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
 			if(col_hold>=0)
 				pixels[n] =col_hold;
 		}
@@ -155,8 +164,8 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		for(int i = 0; i<sec.size();i++) {
 			sec_idx =sec.get(i);
 			// drawing horizontal section
-			drawLine(pixels,  (int) (width*sec_idx+top_off),
-					(int) (width*sec_idx+top_off)+getLength()-1, graph_color,0.8f);
+			//drawLine(pixels,  (int) (width*sec_idx+top_off),(int) (width*sec_idx+top_off)+getLength()-1, graph_color,0.8f);
+			drawPoint(pixels,  (int) (width*sec_idx+top_off)+getLength()-width, graph_color);
 
 		}
 		
@@ -386,8 +395,9 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		if(a+width+1<pixels.length&&a>width)pixels[a+width]=pixels[a+width+1]=color;
 	}
 	
-	public void drawPoint(int[] pixels, int a, int color) {pixels[a]=pixels[a+1]=color;
-		pixels[a]=color;
+	public void drawPoint(int[] pixels, int a, int color) {
+		if(a<pixels.length)
+			pixels[a]=color;
 	}
 	
 
@@ -481,20 +491,21 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		data.order("density");
-		mouse_click = new Vec2(e.getY(), e.getX());
+//		data.order("density");
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
+		mouse_click = new Vec2(e.getY(), e.getX());
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		//p.update(click_cluster);
 	}
 
 	@Override
@@ -505,6 +516,40 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getKeyCode()==37) {
+			if(click_cluster==data.clusters.size())click_cluster--;
+			if(click_cluster==0)click_cluster=data.clusters.size();
+			p.update(data.clusters.get(click_cluster));
+		}
+			
+		if(e.getKeyCode()==39) {
+			if(click_cluster==data.clusters.size())click_cluster=0;
+			if(click_cluster==0)click_cluster++;
+			p.update(data.clusters.get(click_cluster));
+		}
+	}
+
+
+
+	@Override
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

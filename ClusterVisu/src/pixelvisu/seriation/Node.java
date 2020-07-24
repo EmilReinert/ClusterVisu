@@ -11,8 +11,10 @@ public class Node implements Serializable{
 	boolean isLeaf;
 	double similarity=-1; // similarity value of combined clusters
 	int length; // sequence length
+	float x_pos; // horizontal position for tree drawing
 	
 	public Node() {
+		x_pos =0;
 		length = 0;
 		similarity = 0;
 		branches = new ArrayList<Node>();
@@ -20,9 +22,9 @@ public class Node implements Serializable{
 		data = new Sequence();
 	}
 	
-	public Node(Sequence s) {
+	public Node(Sequence s, int idx) {
 		// Making branch
-
+		x_pos = idx;
 		length=s.getLength();
 		similarity = 0;
 		branches = new ArrayList<Node>();
@@ -37,10 +39,17 @@ public class Node implements Serializable{
 		branches =bs ;
 		isLeaf = false;
 		data = new Sequence(length);
+		// xpos center of children
+		x_pos =0;
+		if(bs.size()>0)
+			for(int i = 0; i<bs.size();i++)
+				x_pos+=bs.get(i).x_pos/bs.size();
+//		System.out.print(x_pos+" ");
 	}
 	
 	
 	public Node(Node other) {
+		x_pos = other.x_pos;
 		length=other.length;
 		similarity = other.similarity;
 		isLeaf = other.isLeaf;
@@ -52,18 +61,19 @@ public class Node implements Serializable{
 	
 	public Node(Group sequences,String clustering, String link, String sim) {
 		similarity = -10;
+		x_pos = -10;
 		length = sequences.getLength();
 		isLeaf = false;
 		//branches = mergeSequences(sequences); // adding sequences to depth
 		branches = new ArrayList<Node>();
-		for(Sequence s : sequences.sequences)
-			branches.add(new Node(s));
+		for(int i =0; i< sequences.sequences.size();i++) {
+			branches.add(new Node(sequences.sequences.get(i),i));
+			}
 //		merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);
 		
 		// HERE WE CAN DECIDE DIFFERENT PIPELINE APPROACHES
 		// BOTTOMS UP
 		clusterize(clustering, link,sim);
-
 
 	}
 	
@@ -78,7 +88,7 @@ public class Node implements Serializable{
 			int a =0; int b =0; // indices to most similar clusters
 			double min_diff = 100000000;
 			double hold = min_diff;
-			for (int o = 0; o<=length;o++) {
+			for (int o = 0; o<=100000000;o++) {
 				if(branches.size()<2)return;
 				for (int i = 0; i<branches.size();i++) {
 					for(int j = i+1; j<branches.size();j++) {
@@ -88,7 +98,7 @@ public class Node implements Serializable{
 				}
 				// -> debug
 //				System.out.println(o+" "+branches.size()+" "+min_diff);	System.out.println(a+" "+b);if(branches.size()==200) return;
-				if(o%(int)(length/10)==0)System.out.print(".");
+				if(o%(int)(length/10)==0)System.out.print(",");
 				merge(a,b,min_diff);a=0;b =0; min_diff = 1000000;
 			}
 			System.out.println("\n");//br
@@ -166,7 +176,7 @@ public class Node implements Serializable{
 	
 	public void printCluster() {
 		String s ="";
-		ArrayList<Node> plane = branches;
+		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
 			boolean lastleaf =true;
@@ -189,7 +199,7 @@ public class Node implements Serializable{
 	
 	public void printClusterSim() {
 		String s ="";
-		ArrayList<Node> plane = branches;
+		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
 			boolean lastleaf =true;
@@ -211,7 +221,7 @@ public class Node implements Serializable{
 	}
 	public double getMaxSim() {
 		double max = -1;
-		ArrayList<Node> plane = branches;
+		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
 			boolean lastleaf =true;
@@ -233,7 +243,7 @@ public class Node implements Serializable{
 	}
 	
 	public int getDepth() {
-		ArrayList<Node> plane = branches;
+		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		int depth = 0;
 		for(int i = 0; i<100000;i++) {
 			int size = 0;
@@ -258,7 +268,7 @@ public class Node implements Serializable{
 	}
 	
 	public int getSize() {
-		ArrayList<Node> plane = branches;
+		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		int leaf_sum = 0;
 		for(int i = 0; i<100000;i++) {
 			int size = 0;

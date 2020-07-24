@@ -4,12 +4,17 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Dictionary;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -110,6 +115,8 @@ public class Data implements Serializable{
 		clusters.add(average_trivial);
 		clusters.add(average_manhattan);
 		
+		
+
 
 	}
 	
@@ -218,6 +225,6 @@ public class Data implements Serializable{
 		return sequences.get(i).getWeight();
 	} 
 	
-	
+
 	
 }
