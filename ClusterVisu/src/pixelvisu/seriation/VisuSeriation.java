@@ -36,7 +36,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	int group_count =44; // percent of maximum similarity that is considered a group
 	int new_group_count=group_count;
 	Vec2 mouse_click = new Vec2(0,0);
-	int click_cluster;
+	int click_cluster=0;
 	
 	public VisuSeriation(int w, int h, Data d, Color bg_c) {
 		width = w;
@@ -534,14 +534,14 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getKeyCode()==37) {
-			if(click_cluster==data.clusters.size())click_cluster--;
-			if(click_cluster==0)click_cluster=data.clusters.size();
+			if(click_cluster==0)click_cluster=data.clusters.size()-1;
+			else click_cluster--;
 			p.update(data.clusters.get(click_cluster));
 		}
 			
 		if(e.getKeyCode()==39) {
-			if(click_cluster==data.clusters.size())click_cluster=0;
-			if(click_cluster==0)click_cluster++;
+			if(click_cluster==data.clusters.size()-1)click_cluster=0;
+			else click_cluster++;
 			p.update(data.clusters.get(click_cluster));
 		}
 	}
