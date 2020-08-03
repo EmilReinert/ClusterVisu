@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Sequence implements Serializable {
-	ArrayList<Integer> data;
+	ArrayList<Double> data;
 	String name ="";
 
 	public Sequence(){
@@ -19,9 +19,14 @@ public class Sequence implements Serializable {
 	public Sequence(int size) {
 		data = new ArrayList<>();
 		for(int i = 0; i< size;i++)
-			data.add(0);
+			data.add(0.0);
 	}
-	public Sequence(List<Integer> l) {
+	public Sequence(int size, int val) {
+		data = new ArrayList<>();
+		for(int i = 0; i< size;i++)
+			data.add(0.0);
+	}
+	public Sequence(List<Double> l) {
 
 		data = new ArrayList<>();
 		data.addAll(l);
@@ -63,7 +68,8 @@ public class Sequence implements Serializable {
 				data = new ArrayList<>();
 				for(int i = 0; i<size;i++) {
 					hold = a.getJSONArray(i);
-					data.add((int)((data_hold.get(i)-min)*scale));
+					data.add((double) ((data_hold.get(i)-min)*scale));
+					System.out.println(((data_hold.get(i)-min)*scale));
 				}
 	}
 	
@@ -116,11 +122,11 @@ public class Sequence implements Serializable {
 		return this.name;
 	}
 	
-	public void add(int d) {
+	public void add(double d) {
 		data.add(d);
 	}
 	
-	public int get(int i) {
+	public double get(int i) {
 		return data.get(i);
 	}
 	
@@ -140,8 +146,8 @@ public class Sequence implements Serializable {
 		return data.size();
 	}
 	
-	public int getMin() {
-		int min = 100000;
+	public double getMin() {
+		double min = 100000;
 		for(int i = 0; i<getLength();i++) {
 			if(get(i)<min) {
 				min = get(i);
@@ -154,8 +160,8 @@ public class Sequence implements Serializable {
 		return min;
 	}
 	
-	public int getMax() {
-		int max = -100000;
+	public double getMax() {
+		double max = -100000;
 		for(int i = 0; i<getLength();i++) {
 			if(get(i)>max) {
 				max = get(i);
@@ -231,13 +237,13 @@ public class Sequence implements Serializable {
 		double rate =(double)a.getLength()/(double)getLength();
 		rate = rate*rate*rate*rate;
 		
-		List<Integer> la = new ArrayList<Integer>( a.data); 
-		List<Integer> lb = new ArrayList<Integer>( b.data); 
-		Sequence a1 = new Sequence(la.subList(0,(int)(la.size()/2)));
-		Sequence a2 = new Sequence(la.subList((int)(la.size()/2),la.size()));
+		List<Double> la = new ArrayList<Double>( a.data); 
+		List<Double> lb = new ArrayList<Double>( b.data); 
+		Sequence a1 = new Sequence(la.subList(0,(la.size()/2)));
+		Sequence a2 = new Sequence(la.subList((la.size()/2),la.size()));
 
-		Sequence b1 = new Sequence(lb.subList(0,(int)(lb.size()/2)));
-		Sequence b2 = new Sequence(lb.subList((int)(lb.size()/2),lb.size()));
+		Sequence b1 = new Sequence(lb.subList(0,(lb.size()/2)));
+		Sequence b2 = new Sequence(lb.subList((lb.size()/2),lb.size()));
 		return rate*(compareRecursive(a1, b1)+ compareRecursive(a2, b2));
 		
 
@@ -253,7 +259,7 @@ public class Sequence implements Serializable {
 	}
 
 	
-	public int measureDiff(int a, int b) {
+	public int measureDiff(double a, double b) {
 		double diff = a-b;
 		return (int)(diff*diff/4);
 	}

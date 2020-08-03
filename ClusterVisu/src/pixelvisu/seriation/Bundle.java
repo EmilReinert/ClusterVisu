@@ -112,7 +112,7 @@ public class Bundle extends Group{
 		return (int)(differentials.get(row).get(idx)*.1f);
 	}
 	
-	public int getOriginal(int sec_idx, int i,int j) {
+	public double getOriginal(int sec_idx, int i,int j) {
 		//returns original value with index of compressed data
 		if(i<0||j>getLength())return -1;
 		int sec_sum = 0;

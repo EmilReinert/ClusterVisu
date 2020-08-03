@@ -81,7 +81,7 @@ public class Group implements Serializable{
 		return null;
 	}
 	
-	public int get(int row, int idx) {
+	public double get(int row, int idx) {
 		if(row>=getDepth()) {
 			return Color.white.getRGB();//white
 		}

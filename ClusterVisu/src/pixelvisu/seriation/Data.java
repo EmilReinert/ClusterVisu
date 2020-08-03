@@ -140,6 +140,13 @@ public class Data implements Serializable{
 		
 
 	}
+
+	private void testDataLinear() {
+
+		for (int i = 0; i<270;i++) {
+			sequences.add(new Sequence());
+		}
+	}
 	
 	
 	private void testCat() throws IOException {
@@ -186,7 +193,7 @@ public class Data implements Serializable{
 	}
 	
 	
-	public int getColor(int value) {
+	public int getColor(double value) {
 		if(value>255)
 			value = 255;
 		if(value>=0)
@@ -196,19 +203,19 @@ public class Data implements Serializable{
 
 	public int getColor(Group seqs, int row, int idx) {
 		
-		int value =  getData(seqs, row, idx);
+		double value =  getData(seqs, row, idx);
 		return getColor(value);
 	}
 	public int getOrColor(Group seqs, int sec_idx, int row, int idx) {
 	
-	int value =  seqs.get( row, idx);
+	double value =  seqs.get( row, idx);
 	return getColor(value);
 }
 
 	
 	
 	
-	public int getData(Group seqs, int row, int idx) {
+	public double getData(Group seqs, int row, int idx) {
 		if(row>= seqs.getDepth()||idx>= seqs.getLength()) {
 			return -1;
 		}
