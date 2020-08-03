@@ -62,6 +62,7 @@ public class Panel extends JPanel{
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
 		int depth = c.treeorder.getDepth();
+		f.setTitle(c.name);
 		System.out.println("Painting Cluster "+c.name);
 		double height_ratio = (0.6*h)/c.treeorder.branches.get(0).similarity;
 		double width_ratio = (0.6*w)/c.treeorder.length;

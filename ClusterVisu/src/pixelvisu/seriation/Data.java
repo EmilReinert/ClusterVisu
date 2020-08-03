@@ -71,7 +71,7 @@ public class Data implements Serializable{
 
 		readData(path);
 //		testCat();
-
+//		testDataLinear();
 		
 		clusters = new ArrayList<Cluster>();
 
@@ -144,7 +144,7 @@ public class Data implements Serializable{
 	private void testDataLinear() {
 
 		for (int i = 0; i<270;i++) {
-			sequences.add(new Sequence());
+			sequences.add(new Sequence(175,i));
 		}
 	}
 	

@@ -21,10 +21,10 @@ public class Sequence implements Serializable {
 		for(int i = 0; i< size;i++)
 			data.add(0.0);
 	}
-	public Sequence(int size, int val) {
+	public Sequence(int size, double val) {
 		data = new ArrayList<>();
 		for(int i = 0; i< size;i++)
-			data.add(0.0);
+			data.add(val);
 	}
 	public Sequence(List<Double> l) {
 
@@ -107,11 +107,11 @@ public class Sequence implements Serializable {
 	}
 	
 	public double compareWeight(Sequence other) {
-		return getWeight()/other.getWeight();
+		return Math.abs(other.getWeight()-getWeight());
 	}
 	
 	public double compareMaximum(Sequence other) {
-		return getMax()/other.getMax();
+		return Math.abs(other.getMax()-getMax());
 	}
 	
 	

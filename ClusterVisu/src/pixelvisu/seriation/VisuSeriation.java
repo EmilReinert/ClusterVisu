@@ -113,7 +113,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		
 		//COMPRESSED
 		
-		// for single
+//		// for single
 //		drawBarsDen(pixels, data.single_euclid.flat_c, off, width*height/3+off);
 //		drawBarsDen(pixels, data.single_maximum.flat_c, off+width/5, width*height/3+off);
 //		drawBarsDen(pixels, data.single_weight.flat_c, off+2*width/5, width*height/3+off);
@@ -134,7 +134,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 //		drawBarsDen(pixels, data.average_weight.flat_c, 2*width*height/3+off+2*width/5, pixels.length);
 //		drawBarsDen(pixels, data.average_trivial.flat_c, 2*width*height/3+off+3*width/5, pixels.length);
 //		drawBarsDen(pixels, data.average_manhattan.flat_c, 2*width*height/3+off+4*width/5, pixels.length);
-		
+//		
 		
 		return ;
 	}	
@@ -174,7 +174,6 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	public void drawBarsDen(int[] pixels, Bundle seqs, int start, int end) {
 
 		ArrayList<Integer> dens = seqs.densities;
-		
 		int jump =0;
 		int jumping =0;
 		int den = 0;
