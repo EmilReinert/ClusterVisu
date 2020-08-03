@@ -61,8 +61,9 @@ public class Panel extends JPanel{
 	
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
+		int depth = c.treeorder.getDepth();
 		System.out.println("Painting Cluster "+c.name);
-		double height_ratio = (0.9*h)/c.treeorder.branches.get(0).similarity;
+		double height_ratio = (0.6*h)/c.treeorder.branches.get(0).similarity;
 		double width_ratio = (0.6*w)/c.treeorder.length;
 		ArrayList<Node> plane = c.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
@@ -73,14 +74,29 @@ public class Panel extends JPanel{
 			}}
 			
 			for(Node cc: plane) {for(Node c:cc.branches) {
-				
+				int top_off = 0;
+				int left_off=15;
 				if(!c.isLeaf) hold.add(c);
 				g.setColor(Color.black);
-				// DRAW BRANCHES Lines
-				g.drawLine((int)(cc.x_pos*width_ratio),
-						(int) (cc.similarity*height_ratio),
-						(int) (c.x_pos*width_ratio),
-						(int) (c.similarity*height_ratio));
+//				// DRAW BRANCHES Lines
+//				g.drawLine((int)(cc.x_pos*width_ratio),
+//						(int) (cc.similarity*height_ratio),
+//						(int) (c.x_pos*width_ratio),
+//						(int) (c.similarity*height_ratio));
+			
+				g.drawLine((int)(left_off+top_off+cc.x_pos*width_ratio),
+						(int) (top_off+cc.similarity*height_ratio),
+						(int) (left_off+top_off+c.x_pos*width_ratio),
+						(int) (top_off+cc.similarity*height_ratio));
+				g.drawLine((int)(left_off+top_off+c.x_pos*width_ratio),
+						(int) (top_off+cc.similarity*height_ratio),
+						(int) (left_off+top_off+c.x_pos*width_ratio),
+						(int) (top_off+c.similarity*height_ratio));
+				if(c.isLeaf)
+					g.drawLine((int)(left_off+top_off+c.x_pos*width_ratio),
+						(int) (top_off+cc.similarity*height_ratio),
+						(int) (left_off+top_off+c.x_pos*width_ratio),
+						(int) (0));
 				
 			}
 			
@@ -98,15 +114,16 @@ public class Panel extends JPanel{
 //			g.setColor(Color.white);
 //			g.fillRect((int) (smallx*width_ratio), -10,
 //					(int)((bigx-smallx)*width_ratio), 
-//					(int)(cc.similarity*height_ratio)+3);
+//					(int)(cc.similarity*height_ratio)+3+2*depth);
 //
 //			g.setColor(Color.black);
 //			g.drawRect((int) (smallx*width_ratio), -10,
 //					(int)((bigx-smallx)*width_ratio), 
-//					(int)(cc.similarity*height_ratio)+3);
+//					(int)(cc.similarity*height_ratio)+3+2*depth);
 //			
-			}
 			
+			}
+			depth--;
 			plane =hold;
 			if(lastleaf) {
 

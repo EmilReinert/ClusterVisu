@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferByte;
 import java.awt.image.RenderedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,7 +30,6 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 	public byte[]pixels_b;
 	public VisuSeriation visu; 
 	public Data data;
-
 	public Color bg_color = Color.WHITE;
 	
 	public ClusterMakerSeriation(Data d, String path) throws IOException {
@@ -106,13 +106,16 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 		
 		Data d;
 		
-		try {
-			d = serializeDataIn("save/data/data");
-		}
-		catch(Exception e) {
-			d = new Data(path);
-			serializeDataOut("save/data/data",d);
-		}
+//		try {
+//			d = serializeDataIn("save/data/data");
+//		}
+//		catch(Exception e) {
+//			d = new Data(path);
+//			serializeDataOut("save/data/data",d);
+//		}
+		
+
+		d = new Data(path);
 		ClusterMakerSeriation clum = new ClusterMakerSeriation(d, path);
 	}
 	
@@ -129,9 +132,10 @@ public class ClusterMakerSeriation extends JFrame implements Runnable {
 
 	public static Data serializeDataIn(String savepath) throws IOException, ClassNotFoundException {
 		System.out.println("loading full data");
-		FileInputStream fin = new FileInputStream(savepath);
-		ObjectInputStream ois = new ObjectInputStream(fin);
-		Data loadRoot = (Data) ois.readObject();
+		FileInputStream fin = new FileInputStream(savepath);//System.out.println("file input stream done");
+		BufferedInputStream bis = new BufferedInputStream(fin);
+		ObjectInputStream ois = new ObjectInputStream(bis);//System.out.println("object input stream done");
+		Data loadRoot = (Data) ois.readObject();System.out.println("data transfer done");
 		ois.close();
 		return loadRoot;
 	}

@@ -1,5 +1,6 @@
 package pixelvisu.seriation;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class Cluster implements Serializable {
 		
 		flat = tree.getFlatBranchesDepth();
 
-		System.out.println("Cluster size:" + tree.branches.size() + " and Size" + flat.getDepth());
+		System.out.println("Clusterized: "+name+" : size:" + tree.branches.size() + " and Size" + flat.getDepth());
 //		tree.printClusterSim();
 		try {
 			treeorder = serializeDataIn("save/trees/"+name+"_o");
@@ -42,7 +43,7 @@ public class Cluster implements Serializable {
 			treeorder = new Node(flat, clustering, link, sim);
 			serializeDataOut("save/trees/"+name+"_o",treeorder);
 		}
-		System.out.println("Ordered Tree");
+//		System.out.println("Ordered Tree");
 	}
 
 	public void makeSections(int maxsim) {
@@ -130,7 +131,8 @@ public class Cluster implements Serializable {
 
 	public static Node serializeDataIn(String savepath) throws IOException, ClassNotFoundException {
 		FileInputStream fin = new FileInputStream(savepath);
-		ObjectInputStream ois = new ObjectInputStream(fin);
+		BufferedInputStream bis = new BufferedInputStream(fin);
+		ObjectInputStream ois = new ObjectInputStream(bis);
 		Node loadRoot = (Node) ois.readObject();
 		ois.close();
 		return loadRoot;
