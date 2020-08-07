@@ -26,6 +26,12 @@ public class Sequence implements Serializable {
 		for(int i = 0; i< size;i++)
 			data.add(val);
 	}
+	
+	public Sequence(int size, double val, String random) {
+		data = new ArrayList<>();
+		for(int i = 0; i< size;i++)
+			data.add(Math.random()*100);
+	}
 	public Sequence(List<Double> l) {
 
 		data = new ArrayList<>();
@@ -69,7 +75,7 @@ public class Sequence implements Serializable {
 				for(int i = 0; i<size;i++) {
 					hold = a.getJSONArray(i);
 					data.add((double) ((data_hold.get(i)-min)*scale));
-					System.out.println(((data_hold.get(i)-min)*scale));
+					//System.out.println(((data_hold.get(i)-min)*scale));
 				}
 	}
 	

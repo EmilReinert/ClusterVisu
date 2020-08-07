@@ -44,6 +44,8 @@ public class Cluster implements Serializable {
 			serializeDataOut("save/trees/"+name+"_o",treeorder);
 		}
 //		System.out.println("Ordered Tree");
+
+		System.out.println("Tree Linked\n");//br
 	}
 
 	public void makeSections(int maxsim) {

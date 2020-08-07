@@ -72,6 +72,7 @@ public class Data implements Serializable{
 		readData(path);
 //		testCat();
 //		testDataLinear();
+//		testDataRandom();
 		
 		clusters = new ArrayList<Cluster>();
 
@@ -147,7 +148,12 @@ public class Data implements Serializable{
 			sequences.add(new Sequence(175,i));
 		}
 	}
-	
+	private void testDataRandom() {
+
+		for (int i = 0; i<270;i++) {
+			sequences.add(new Sequence(175,i,"random"));
+		}
+	}
 	
 	private void testCat() throws IOException {
 		// creating test data based on input cat image
@@ -202,8 +208,8 @@ public class Data implements Serializable{
 	}
 
 	public int getColor(Group seqs, int row, int idx) {
-		
 		double value =  getData(seqs, row, idx);
+//		System.out.println(value);
 		return getColor(value);
 	}
 	public int getOrColor(Group seqs, int sec_idx, int row, int idx) {

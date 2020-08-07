@@ -17,6 +17,7 @@ public class Panel extends JPanel{
 	boolean running;
 	Cluster c;
 	JFrame f;
+	int group_count =0; // for horizontal line
 	int w, h;
 	
 	public Panel() {
@@ -31,7 +32,8 @@ public class Panel extends JPanel{
 	
 
 
-	public void update(Cluster c) {
+	public void update(Cluster c,int group_count) {
+		this.group_count = group_count;
 		this.c = c;
 		repaint();
         try
@@ -84,7 +86,9 @@ public class Panel extends JPanel{
 //						(int) (cc.similarity*height_ratio),
 //						(int) (c.x_pos*width_ratio),
 //						(int) (c.similarity*height_ratio));
-			
+				if(cc.similarity<this.c.tree.getMaxSim() * 0.01 * group_count)
+					g.setColor(Color.red);
+				
 				g.drawLine((int)(left_off+top_off+cc.x_pos*width_ratio),
 						(int) (top_off+cc.similarity*height_ratio),
 						(int) (left_off+top_off+c.x_pos*width_ratio),
@@ -127,8 +131,11 @@ public class Panel extends JPanel{
 			depth--;
 			plane =hold;
 			if(lastleaf) {
-
-		        
+				//draw horizontal line
+				double sim =c.tree.getMaxSim() * 0.01 * group_count;
+		        g.setColor(Color.RED);
+		        g.drawLine(0, (int)(sim*height_ratio), w, (int)(sim*height_ratio));
+				
 				return ;}
 		}
 	}
