@@ -1,4 +1,4 @@
-package pixelvisu.seriation;
+package pixelvisu.application;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -30,7 +30,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	private int width, height; // width, height for diagram
 	
 	Data data;
-	Panel p;
+	TreePanel p;
 	
 	Color bg_color;
 	int group_count =44; // percent of maximum similarity that is considered a group
@@ -44,7 +44,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		data = d;
 		bg_color= bg_c;
 
-		p = new Panel();
+		p = new TreePanel();
 		p.update(data.clusters.get(click_cluster),group_count);
 	}
 
