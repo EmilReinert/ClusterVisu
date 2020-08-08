@@ -31,6 +31,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	
 	SingleData data;
 	TreePanel p;
+	Circuit circ;
 	
 	Color bg_color;
 	int group_count =44; // percent of maximum similarity that is considered a group
@@ -38,6 +39,8 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	Vec2 mouse_click = new Vec2(0,0);
 	int click_cluster=0;
 	boolean dataswitch = true;
+	
+	Circuit circuit = new Circuit();
 	
 	
 	public VisuApplication(int w, int h, SingleData d, Color bg_c) {
@@ -47,6 +50,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		bg_color= bg_c;
 
 		p = new TreePanel();
+		circ = new Circuit();
 		p.update(data.c,group_count);
 	}
 
@@ -69,7 +73,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 		// for single
 		if(data.c!=null)
-			drawData(pixels, data.c, off, width*height/3+off);
+			drawData(pixels, data.c, off, width*height);
 		
 		return ;
 	}	
@@ -493,20 +497,22 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-//		if(e.getKeyCode()==37) {
-//			if(click_cluster==0)click_cluster=data.clusters.size()-1;
-//			else click_cluster--;
-//			p.update(data.clusters.get(click_cluster),group_count);
-//		}
-//			
-//		if(e.getKeyCode()==39) {
-//			if(click_cluster==data.clusters.size()-1)click_cluster=0;
-//			else click_cluster++;
-//			p.update(data.clusters.get(click_cluster),group_count);
-//		}
+		if(e.getKeyCode()==39) {
+			circ.up();
+		}
+			
+		if(e.getKeyCode()==37) {
+			circ.down();
+		}
 		
-		
+		try {
+			data.updateClustering(circ.getCurcuit());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		p.update(data.c,group_count);
+		
 	}
 
 

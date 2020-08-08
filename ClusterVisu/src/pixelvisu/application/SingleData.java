@@ -46,10 +46,12 @@ public class SingleData {
 		c = new Cluster(sequences, "agglomerative", "single", "euclidean", dataname, true);
 	}
 	
-	public void updateClustering( String clustering, String link, String sim) throws IOException {
+	public void updateClustering( String []circ) throws IOException {
 		sequences = new Group(group_count);
 		
-		c = new Cluster(sequences,clustering,link,sim,dataname,true);
+		if(circ.length!=3)
+			System.err.println("wrong circuit");
+		c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);
 		
 		
 	}
