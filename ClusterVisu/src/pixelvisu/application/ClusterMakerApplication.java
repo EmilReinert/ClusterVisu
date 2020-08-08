@@ -20,16 +20,15 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class ClusterMakerApplication extends JFrame implements Runnable {
-	public static int WIDTH = 270*2;//TODO make adjustable
+	public static int WIDTH = 270*3;//TODO make adjustable
 	public static int OFF = 40;
-	public static int HEIGHT = 270*2+OFF;	
+	public static int HEIGHT = 270+OFF;	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;
 	public int[] pixels;
 	public byte[]pixels_b;
 	public VisuApplication visu; 
-	public Data data;
 	public Color bg_color = Color.WHITE;
 	
 	public ClusterMakerApplication(SingleData d, String path) throws IOException {

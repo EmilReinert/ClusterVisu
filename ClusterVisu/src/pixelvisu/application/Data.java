@@ -23,6 +23,9 @@ import org.json.JSONObject;
 
 
 public class Data implements Serializable{
+	// DATAMAKER 
+	// ITERATES OVER DIFFERNET CLUSTERS IN ORDER TO MAKE AND SAVE THEM
+	
 	Group sequences;// unordered weights // image
 	Group sequences_diff; // ordered by similarity
 	
@@ -73,14 +76,14 @@ public class Data implements Serializable{
 	
 	public Data(String path) throws IOException {
 		sequences = new Group(group_count);
-		
-		readData(path);
-//		testCat();
+
+		dataname = path.substring(path.lastIndexOf("/")+1);
+//		readData(path);
+		testCat();
 //		testDataLinear();
 //		testDataRandom();
 		
 		clusters = new ArrayList<Cluster>();
-		String dataname = path.substring(path.lastIndexOf("/")+1);
 		
 		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean",dataname,true);
 		single_maximum = new Cluster(sequences,"agglomerative","single","maximum",dataname,true);
@@ -125,14 +128,14 @@ public class Data implements Serializable{
 	
 	public void update(String path) throws IOException {
 		sequences = new Group(group_count);
-		
+
+		dataname = path.substring(path.lastIndexOf("/")+1);
 		readData(path);
 //		testCat();
 //		testDataLinear();
 //		testDataRandom();
 		
 		clusters = new ArrayList<Cluster>();
-		String dataname = path.substring(path.lastIndexOf("/")+1);
 		
 		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean",dataname,true);
 		single_maximum = new Cluster(sequences,"agglomerative","single","maximum",dataname,true);

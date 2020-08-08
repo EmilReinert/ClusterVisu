@@ -151,7 +151,7 @@ public class Group implements Serializable{
 			for (int i = start;i<=end;i++) {
 				sum+=get(i,j);
 			}
-			comb.add((int) (((sum)/(end-start+1))));
+			comb.add((int) (((sum)/(end-start))));
 			
 		}
 		//System.out.println(start+" "+end);

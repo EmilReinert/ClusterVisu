@@ -69,9 +69,9 @@ public class Data implements Serializable{
 	public Data(String path) throws IOException {
 		sequences = new Group(group_count);
 
-		readData(path);
+//		readData(path);
 //		testCat();
-//		testDataLinear();
+		testDataLinear();
 //		testDataRandom();
 		
 		clusters = new ArrayList<Cluster>();

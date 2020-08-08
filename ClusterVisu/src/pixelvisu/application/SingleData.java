@@ -14,32 +14,25 @@ import org.json.JSONObject;
 
 public class SingleData {
 	Group sequences;// unordered weights // image
-	Group sequences_diff; // ordered by similarity
 	
 	
 	Cluster c;
 	String dataname="error";
-	int group_count = -1;
+	int group_count = 44;
 	
 	public SingleData(String path) throws IOException {
+		update(path,44);
+		
+	}
+	
+	public void update(String path, int gc) throws IOException {
+		this.group_count = gc;
 		sequences = new Group(group_count);
 		
 		readData(path);
 //		testCat();
 //		testDataLinear();
 //		testDataRandom();
-		
-		dataname = path.substring(path.lastIndexOf("/")+1);
-		
-		c = new Cluster(sequences,"agglomerative","single","euclidean",dataname,true);		
-
-		
-	}
-	
-	public void update(String path) throws IOException {
-		sequences = new Group(group_count);
-
-		readData(path);
 
 		dataname = path.substring(path.lastIndexOf("/") + 1);
 
@@ -47,7 +40,6 @@ public class SingleData {
 	}
 	
 	public void updateClustering( String []circ) throws IOException {
-		sequences = new Group(group_count);
 		
 		if(circ.length!=3)
 			System.err.println("wrong circuit");
@@ -126,8 +118,8 @@ public class SingleData {
 	}
 	
 	public void order(String mode) {
-			if(mode == "density")
-				c.flat_c.densityOrder();
+		c.makeSections(group_count);
+		if(mode == "density")c.flat_c.densityOrder();
 			
 		
 	}
@@ -146,9 +138,9 @@ public class SingleData {
 //		System.out.println(value);
 		return getColor(value);
 	}
-	public int getOrColor(Group seqs, int sec_idx, int row, int idx) {
+	public int getOrColor(Bundle seqs, int sec_idx, int row, int idx) {
 	
-	double value =  seqs.get( row, idx);
+	double value =  seqs.getOriginal(sec_idx, row, idx);
 	return getColor(value);
 }
 
