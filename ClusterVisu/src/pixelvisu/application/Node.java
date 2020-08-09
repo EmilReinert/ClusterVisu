@@ -1,5 +1,6 @@
 package pixelvisu.application;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,7 +60,7 @@ public class Node implements Serializable{
 		
 	}
 	
-	public Node(Group sequences,String clustering, String link, String sim) {
+	public Node(Group sequences) {
 		similarity = -10;
 		x_pos = -10;
 		length = sequences.getLength();
@@ -69,11 +70,6 @@ public class Node implements Serializable{
 		for(int i =0; i< sequences.sequences.size();i++) {
 			branches.add(new Node(sequences.sequences.get(i),i));
 			}
-//		merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);merge(0,1);
-		
-		// HERE WE CAN DECIDE DIFFERENT PIPELINE APPROACHES
-		// BOTTOMS UP
-		clusterize(clustering, link,sim);
 
 	}
 	
@@ -81,7 +77,7 @@ public class Node implements Serializable{
 	
 
 	public void clusterize(String clustering, String link, String similarity) {
-		// Complete
+		// cluster whole child nodes into tree by given parameters
 		
 		if(clustering == "agglomerative")
 		{
@@ -106,6 +102,10 @@ public class Node implements Serializable{
 		}
 	}
 	
+//	public void clusterize(Node other) {
+//		// cluster current children by already clustered other root-node structure
+//		
+//	}	
 	
 	public double compare(Node other,String link, String sim) {
 		if(link =="complete") {
@@ -171,8 +171,6 @@ public class Node implements Serializable{
 		branches.add(merged);
 	}
 
-	
-	
 	
 	public void printCluster() {
 		String s ="";
@@ -323,13 +321,16 @@ public class Node implements Serializable{
 	
 	public Group getFlatBranchesDepth() {
 		Group cl = new Group();
+		ArrayList<Integer> mapping = new ArrayList<Integer>();
 		if(isLeaf) {cl.add(this.data); return cl;}
 		
 
 		ArrayList<Node> all = getChildrenValues(branches);
 		for (Node c :all){
 			cl.add(c.data);
+			mapping.add((int) c.x_pos);
 		}
+		cl.mapping=mapping;
 		return cl;
 		
 	}	
@@ -342,5 +343,6 @@ public class Node implements Serializable{
 			}
 		return all;
 	}
+
 
 }

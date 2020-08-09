@@ -14,7 +14,8 @@ public class Group implements Serializable{
 	int group_count=0;
 	ArrayList<Sequence> sequences ; // already ordered list of sequences
 	ArrayList<Integer> weights;
-		
+	ArrayList<Integer> mapping; // relevant for clusterized-> flattened representation	
+	
 	public Group(int group) {
 		group_count = group;
 		densities = new ArrayList<Integer>();

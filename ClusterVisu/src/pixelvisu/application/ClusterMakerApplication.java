@@ -31,17 +31,17 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 	public VisuApplication visu; 
 	public Color bg_color = Color.WHITE;
 	
-	public ClusterMakerApplication(SingleData d, String path) throws IOException {
+	public ClusterMakerApplication() throws IOException {
 		thread = new Thread(this);
 		image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		visu = new VisuApplication(WIDTH,HEIGHT,d, bg_color);
+		visu = new VisuApplication(WIDTH,HEIGHT, bg_color);
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
 		
 		addKeyListener(visu);
 		
 		setSize(WIDTH, HEIGHT);
-		setTitle("Pixel Clustering - Visualization /"+path+" IGNORE SINGLES");
+		setTitle("Pixel Clustering");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.black);
 		setLocationRelativeTo(null);		
@@ -103,19 +103,7 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		String path ="Data/Memory usage.json";
 		
-		SingleData d;
-		
-//		try {
-//			d = serializeDataIn("save/data/data");
-//		}
-//		catch(Exception e) {
-//			d = new Data(path);
-//			serializeDataOut("save/data/data",d);
-//		}
-		
-
-		d = new SingleData(path);
-		ClusterMakerApplication clum = new ClusterMakerApplication(d, path);
+		ClusterMakerApplication clum = new ClusterMakerApplication();
 	}
 	
 	

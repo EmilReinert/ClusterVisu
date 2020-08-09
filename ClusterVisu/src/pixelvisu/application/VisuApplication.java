@@ -30,6 +30,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	private int width, height; // width, height for diagram
 	
 	SingleData data;
+	SingleData data_compare; // secondary data to be compared structurally
 	TreePanel p;
 	Circuit circ;
 	
@@ -39,18 +40,23 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	Vec2 mouse_click = new Vec2(0,0);
 	int click_cluster=0;
 	boolean dataswitch = true;
-	
+	boolean unpack_all =false;
 	Circuit circuit = new Circuit();
 	
 	
-	public VisuApplication(int w, int h, SingleData d, Color bg_c) {
+	public VisuApplication(int w, int h, Color bg_c) throws IOException {
 		width = w;
 		height = h;
-		data = d;
 		bg_color= bg_c;
 
 		p = new TreePanel();
 		circ = new Circuit();
+
+		
+		data = new SingleData("Data/Memory usage.json");
+		data_compare = new SingleData("Data/CPU usage.json",data.c);
+		
+
 		p.update(data.c,group_count);
 	}
 
@@ -64,6 +70,9 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		group_count=new_group_count;
 		off = w*off;
 		data.section(group_count);
+		data_compare.c.makeSections(group_count,data.c);
+		
+		
 		drawBackground(pixels);
 		
 //		drawData(pixels, data.sequences, off, width*height/3+off);
@@ -71,13 +80,14 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		// DATA
 
 		// for single
-		if(data.sequences!=null)
-			drawData(pixels,data.sequences,off,pixels.length);
+		drawData(pixels,data.sequences,off,pixels.length);
 		if(data.c!=null) {
-			drawData(pixels, data.c, off+width/4, pixels.length);
-			drawSections(pixels, data.c.flat,off+width/4, pixels.length);
-			drawBarsDen(pixels, data.c, off+width/2, pixels.length);
+			drawBarsDen(pixels, data.c, off+width/4, pixels.length);
 		}
+		if(data_compare.c!=null) {
+			drawBarsDen(pixels, data_compare.c, off+width/2, pixels.length);
+		}
+		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
 		return ;
 	}	
@@ -132,24 +142,29 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		int jumping =0;
 		int den = 0;
 		for(int i=0; i< cl.flat_c.getDepth();i++) {
-			den = 5;//(dens.get(i)+10)/3;// 10; //for static sizes
+			den = 5;// (dens.get(i)+10)/3;// 10; //for static sizes
+			if (unpack_all) {
+				drawDataSec(pixels, cl.flat_c, start + jump * width, i, dens.get(i));
+				jumping = dens.get(i) + 2;
+			} else {
+				// hover bar
+				// if( int2Vec(start+jump*width).x <=mouse_y
+				// &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
+				if (isInsideSquare(start + jump * width, start + (jump + den) * width + getLength())) {
+					drawDataSec(pixels, cl.flat_c, start + jump * width, i, dens.get(i));
 
-			// hover bar 
-			//if( int2Vec(start+jump*width).x <=mouse_y &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
-			if (isInsideSquare(start+jump*width,start+(jump+den)*width+getLength())) {
-				drawDataSec(pixels,  cl.flat_c, start+jump*width, i,dens.get(i));
-
-				jumping=dens.get(i)+2;
-			}
-			//normal
-			else {
-				drawDataBar(pixels,  cl.flat_c, start+jump*width, i,den);
-				jumping=den+2;
-			}
-			//drawing density dots
+					jumping = dens.get(i) + 2;
+				}
+				// normal
+				else {
+					drawDataBar(pixels, cl.flat_c, start + jump * width, i, den);
+					jumping = den + 2;
+				}
+				// drawing density dots
 //			drawDots2(pixels, start+jump*width+ getLength() , dens.get(i));
-			jump+=jumping;
-			
+			}
+			jump += jumping;
+
 		}
 	}
 	
@@ -502,13 +517,17 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode()==39) {
-			circ.up();
-		}
+		if(e.getKeyCode()==85) {
+			if(unpack_all)unpack_all=false;
+			else unpack_all=true;		
 			
-		if(e.getKeyCode()==37) {
-			circ.down();
 		}
+		
+		
+		if(e.getKeyCode()==39) circ.up();
+			
+		if(e.getKeyCode()==37) circ.down();
+		
 		
 		try {
 			data.updateClustering(circ.getCurcuit());
@@ -518,6 +537,8 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		}
 		if(e.getKeyCode()==38) {
 			data.order("density");}
+		
+		
 		p.update(data.c,group_count);
 	}
 

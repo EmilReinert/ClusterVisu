@@ -24,6 +24,9 @@ public class Cluster implements Serializable {
 	int group_count = -10; // SIMILARITY CUT
 
 	public Cluster(Group sequences, String clustering, String link, String sim, String dataname, boolean save) throws IOException {
+		// Cluster creation (saving/loading) happens here
+		// Tree structure is defined as linked node instances
+		
 		name = dataname + "/" + clustering + link + sim;
 
 		//  MAKING FILES
@@ -31,17 +34,19 @@ public class Cluster implements Serializable {
 			try {
 				tree = serializeDataIn("save/trees", name);
 			} catch (Exception e) {
-				tree = new Node(sequences, clustering, link, sim);
+				tree = new Node(sequences);
+				tree.clusterize(clustering, link, sim);
 				serializeDataOut("save/trees" , name, tree);
 			}
-			flat = tree.getFlatBranchesDepth();
+			flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
 			System.out.println(
 					"Clusterized: " + name + " : size:" + tree.branches.size() + " and Size" + flat.getDepth());
 			
 			try {
 				treeorder = serializeDataIn("save/trees", name + "_o");
 			} catch (Exception e) {
-				treeorder = new Node(flat, clustering, link, sim);
+				treeorder = new Node(flat);
+				treeorder.clusterize(clustering, link, sim);
 				serializeDataOut("save/trees" , name  + "_o", treeorder);
 			}
 			System.out.println("Tree Linked\n");
@@ -68,6 +73,33 @@ public class Cluster implements Serializable {
 		}
 	}
 
+	public Cluster(Group sequences,Cluster other) {
+		// projects internal cluster structure to this clusters sequences
+		
+		flat = new Group(other.flat);
+		ArrayList<Sequence> seq = new ArrayList<Sequence>();
+		for(int i:other.flat.mapping) {
+			seq.add(sequences.get(i));
+		}
+		flat.sequences=seq;
+		
+		flat_c = new Bundle(flat);
+		
+		// TODO copy depth and not just flat
+		
+	}
+	
+
+	public void makeSections(int maxsim,Cluster other) {
+
+		if (group_count == maxsim)
+			return;
+		group_count = maxsim;
+
+		flat.sections = other.flat.sections;
+		flat.densities = other.flat.densities;
+		flat_c = new Bundle(flat);
+	}
 	
 	public void makeSections(int maxsim) {
 		// iterates over cluster tree and adds all groups with the min cluster length
@@ -130,7 +162,7 @@ public class Cluster implements Serializable {
 		System.err.println("something went wrong doing sectioning");
 
 	}
-
+	
 	public float getData(int idx) {
 		// returns average data
 		float sum = 0;

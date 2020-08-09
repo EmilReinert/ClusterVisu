@@ -17,6 +17,7 @@ public class SingleData {
 	
 	
 	Cluster c;
+	
 	String dataname="error";
 	int group_count = 44;
 	
@@ -46,6 +47,17 @@ public class SingleData {
 		c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);
 		
 		
+	}
+	public SingleData(String path, Cluster other) throws IOException {
+		sequences = new Group(group_count);
+		
+		readData(path);
+//		testCat();
+//		testDataLinear();
+//		testDataRandom();
+
+		dataname = path.substring(path.lastIndexOf("/") + 1);
+		c = new Cluster(sequences, other);
 	}
 	
 	protected void readData(String path) throws IOException {
