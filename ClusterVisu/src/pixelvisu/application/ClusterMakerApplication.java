@@ -20,22 +20,29 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class ClusterMakerApplication extends JFrame implements Runnable {
-	public static int WIDTH = 270*3;//TODO make adjustable
+	public static int WIDTH = 270*4;//TODO make adjustable
 	public static int OFF = 40;
-	public static int HEIGHT = 270+OFF;	
+	public static int HEIGHT = 300+OFF;	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;
 	public int[] pixels;
 	public byte[]pixels_b;
 	public VisuApplication visu; 
+//	public VisuSeriation visu;
 	public Color bg_color = Color.WHITE;
 	
 	public ClusterMakerApplication() throws IOException {
+
+//		String path ="Data/Memory usage.json";
+//		Data d = new Data(path);
+		
+		
 		thread = new Thread(this);
 		image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		visu = new VisuApplication(WIDTH,HEIGHT, bg_color);
+//		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
 		
 		addKeyListener(visu);
@@ -101,8 +108,6 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 		}
 	}
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		String path ="Data/Memory usage.json";
-		
 		ClusterMakerApplication clum = new ClusterMakerApplication();
 	}
 	

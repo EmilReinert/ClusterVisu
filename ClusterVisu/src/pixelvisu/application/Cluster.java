@@ -92,8 +92,6 @@ public class Cluster implements Serializable {
 
 	public void makeSections(int maxsim,Cluster other) {
 
-		if (group_count == maxsim)
-			return;
 		group_count = maxsim;
 
 		flat.sections = other.flat.sections;
@@ -103,8 +101,6 @@ public class Cluster implements Serializable {
 	
 	public void makeSections(int maxsim) {
 		// iterates over cluster tree and adds all groups with the min cluster length
-		if (group_count == maxsim)
-			return;
 		group_count = maxsim;
 
 		double maxsim_local = tree.getMaxSim() * 0.01 * maxsim;
@@ -130,13 +126,13 @@ public class Cluster implements Serializable {
 						else
 							hold.add(c);
 					}
-//					else singles.add(c);
+					else singles.add(c);
 				}
 			}
 			plane = hold;
 			if (lastleaf) {
-
-				flat = new Group();
+				
+				flat.sequences = new ArrayList<Sequence>();
 				int pos = 0;
 				ArrayList<Integer> secs = new ArrayList<Integer>();
 				ArrayList<Integer> dens = new ArrayList<Integer>();
@@ -149,11 +145,11 @@ public class Cluster implements Serializable {
 					secs.add(pos);
 
 				}
-				for(Node n: singles) {pos++;flat.add(n.data);secs.add(pos);}// if we dont look at singles like own groups
+//				for(Node n: singles) {pos++;flat.add(n.data);secs.add(pos);}// if we dont look at singles like own groups
+				for(Node n: singles) {flat.add(n.data);}secs.add(pos+singles.size());
 				flat.sections = secs;
 				flat.densities = dens;
 				flat_c = new Bundle(flat);
-				System.out.println("sectioning done");
 				return;
 
 			}

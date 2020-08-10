@@ -35,6 +35,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	Circuit circ;
 	
 	Color bg_color;
+	int length ;
 	int group_count =44 ; // percent of maximum similarity that is considered a group
 	int new_group_count=group_count;
 	Vec2 mouse_click = new Vec2(0,0);
@@ -54,10 +55,12 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 		
 		data = new SingleData("Data/Memory usage.json");
+		data.section(group_count);
 		data_compare = new SingleData("Data/CPU usage.json",data.c);
 		
+		length = data.getLength();
 
-		p.update(data.c,group_count);
+		dataUpdate();
 	}
 
 	
@@ -69,8 +72,6 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		width=w; height = h-off;
 		group_count=new_group_count;
 		off = w*off;
-		data.section(group_count);
-		data_compare.c.makeSections(group_count,data.c);
 		
 		
 		drawBackground(pixels);
@@ -81,13 +82,14 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 		// for single
 		drawData(pixels,data.sequences,off,pixels.length);
-		if(data.c!=null) {
-			drawBarsDen(pixels, data.c, off+width/4, pixels.length);
+		drawData(pixels,data.c.flat,off+width/5,pixels.length);
+		if(data.c.flat_c!=null) {
+			drawBarsDen(pixels, data.c, off+2*width/5, pixels.length);
 		}
 		if(data_compare.c!=null) {
-			drawBarsDen(pixels, data_compare.c, off+width/2, pixels.length);
+			drawBarsDen(pixels, data_compare.c, off+3*width/5, pixels.length);
 		}
-		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
+		drawData(pixels,data_compare.sequences,off+4*width/5,pixels.length);
 		
 		return ;
 	}	
@@ -193,14 +195,14 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		// iterate over rows : start and end _idx
 		// and then over individual data values
 		for (int n =0; n<length;n++) {
-			for(int i =0;i<data.getLength();i++) {
+			for(int i =0;i<getLength();i++) {
 				col_hold = data.getOrColor(seqs,sec_idx,n,i);
 
 				//System.out.println(n+" "+i+" "+col_hold);
 				if(col_hold>=0) {
-					pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
+					if(startpos+n*width+i<pixels.length)pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
 					}
-				else pixels[startpos+n*width+i] = 0;
+				else if(startpos+n*width+i<pixels.length)pixels[startpos+n*width+i] = 0;
 			}
 		}
 	}
@@ -240,7 +242,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	}
 	
 	public int getLength() {
-		return data.getLength();
+		return length;
 	}
 	/// GEOMETRIC FUNCTIONS ///
 
@@ -435,7 +437,19 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	}
 	
 	
-	
+	public void dataUpdate()  {
+		data.section(group_count);
+		p.update(data.c,group_count);
+		
+	}
+	public void compareUpdate() {
+		dataUpdate();
+		try {data_compare = new SingleData("Data/CPU usage.json",data.c);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 	//INTERACTIONS----------------------------------------------------------------------------
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -443,7 +457,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		if((new_group_count-e.getPreciseWheelRotation()>0))
 			new_group_count -=1*e.getPreciseWheelRotation();
 		System.out.println(new_group_count);
-		p.update(data.c,new_group_count);
+		dataUpdate();
 	}
 
 	@Override
@@ -460,23 +474,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-
-//		data.order("density");
-//		try {
-//			if(dataswitch)
-//				{data.update("Data/CPU usage.json");
-//				dataswitch=false;
-//				}
-//			else
-//			{data.update("Data/Memory usage.json");
-//			dataswitch=true;
-//			}
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//		}
-//
-//		p.update(data.c,new_group_count);
-
+		compareUpdate();
 	}
 
 	@Override
@@ -529,17 +527,34 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		if(e.getKeyCode()==37) circ.down();
 		
 		
+		if(e.getKeyCode()==88)
+			try {
+				data.update("Data/CPU usage.json", group_count);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		if(e.getKeyCode()==89)
+			try {
+				data.update("Data/Memory usage.json", group_count);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		try {
 			data.updateClustering(circ.getCurcuit());
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
+
+		compareUpdate();
+		
 		if(e.getKeyCode()==38) {
-			data.order("density");}
-		
-		
-		p.update(data.c,group_count);
+			data.order("density");
+			data_compare.order("density");}
 	}
 
 

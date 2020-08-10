@@ -15,6 +15,8 @@ import org.json.JSONObject;
 public class SingleData {
 	Group sequences;// unordered weights // image
 	
+	double min;
+	double max;
 	
 	Cluster c;
 	
@@ -57,7 +59,9 @@ public class SingleData {
 //		testDataRandom();
 
 		dataname = path.substring(path.lastIndexOf("/") + 1);
+
 		c = new Cluster(sequences, other);
+		c.makeSections(group_count,other);
 	}
 	
 	protected void readData(String path) throws IOException {
@@ -75,23 +79,31 @@ public class SingleData {
 
 		for (int i = 0; i<270;i++) {
 			node0 = nodes.getJSONObject(i);
-			se = new Sequence(node0.optJSONArray("values"),175,node0.optJSONObject("metric"));
+			se = new Sequence(node0.optJSONArray("values"),181,node0.optJSONObject("metric"));
 			sequences.add(se);
 		}
 		
+		// getting global min+max
+		min = 10000000;
+		max = -10000000;
+		for(Sequence s:sequences.sequences) {
+			if(s.getMin()<min) min = s.getMin();
+			if(s.getMax()>max) max = s.getMax();
+		}
+		System.out.println(min+" "+max);
 
 	}
 
 	protected void testDataLinear() {
 		dataname = "Linear";
 		for (int i = 0; i<270;i++) {
-			sequences.add(new Sequence(175,i));
+			sequences.add(new Sequence(181,i));
 		}
 	}
 	protected void testDataRandom() {
 		dataname = "Random";
 		for (int i = 0; i<270;i++) {
-			sequences.add(new Sequence(175,i,"random"));
+			sequences.add(new Sequence(181,i,"random"));
 		}
 	}
 	
@@ -130,7 +142,6 @@ public class SingleData {
 	}
 	
 	public void order(String mode) {
-		c.makeSections(group_count);
 		if(mode == "density")c.flat_c.densityOrder();
 			
 		
@@ -138,10 +149,17 @@ public class SingleData {
 	
 	
 	public int getColor(double value) {
+		double scale = (254/(max-min));
+//		
+//		value = ((value-min)*scale);
 		if(value>255)
 			value = 255;
-		if(value>=0)
-			return new Color(0,(int)(value),(int)(value),1).getRGB();
+		if(value>=0) {
+			if(value<min)return 100000;
+			if(value>max) {//System.out.println(value+" "+max);
+			return 200000;}
+			value =((value-min)*scale);
+			return new Color(0,(int)(value),(int)(value),1).getRGB();}
 		return Color.BLACK.getRGB();
 	}
 

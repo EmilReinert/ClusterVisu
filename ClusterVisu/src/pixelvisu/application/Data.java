@@ -78,8 +78,8 @@ public class Data implements Serializable{
 		sequences = new Group(group_count);
 
 		dataname = path.substring(path.lastIndexOf("/")+1);
-//		readData(path);
-		testCat();
+		readData(path);
+//		testCat();
 //		testDataLinear();
 //		testDataRandom();
 		
@@ -193,7 +193,7 @@ public class Data implements Serializable{
 
 		for (int i = 0; i<270;i++) {
 			node0 = nodes.getJSONObject(i);
-			se = new Sequence(node0.optJSONArray("values"),175,node0.optJSONObject("metric"));
+			se = new Sequence(node0.optJSONArray("values"),181,node0.optJSONObject("metric"));
 			sequences.add(se);
 		}
 		

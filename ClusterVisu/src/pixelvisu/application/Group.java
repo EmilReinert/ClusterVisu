@@ -47,6 +47,7 @@ public class Group implements Serializable{
 		densities = other.densities;
 		makeWeights();
 		sections = new ArrayList<Integer>();
+		this.mapping =other.mapping;
 	}
 	
 	public void makeDensities(ArrayList<Integer> halfden) {

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
 	String name ="";
+	int pos =0;
 
 	public Sequence(){
 		data = new ArrayList<>();
@@ -50,7 +51,6 @@ public class Sequence implements Serializable {
 		String n = nj.optString("instance");
 		this.name = n;
 		
-		
 		// a is multidimensional so we have to first take the array at the index and 
 				// then extract the wanted data ( at 0 or 1 )
 				ArrayList<Float> data_hold = new ArrayList<>();
@@ -58,9 +58,14 @@ public class Sequence implements Serializable {
 				// x>=0 to 255 spectrum for all data// that is int color spectrum
 				JSONArray hold ;
 				for(int i = 0; i<size;i++) {
-					hold = a.getJSONArray(i);
-					data_hold.add(hold.getFloat(1));
+					if(i<a.length()) { 
+						hold = a.getJSONArray(i);
+						data_hold.add(hold.getFloat(1));
+					}
+					else data_hold.add(0.0f);
 				}
+
+				data = new ArrayList<>();
 				
 				float scale =0;
 				// min and max value for scaling
@@ -71,12 +76,15 @@ public class Sequence implements Serializable {
 					scale = (255/(max-min));
 				
 				// adding scale data
-				data = new ArrayList<>();
 				for(int i = 0; i<size;i++) {
-					hold = a.getJSONArray(i);
 					data.add((double) ((data_hold.get(i)-min)*scale));
 					//System.out.println(((data_hold.get(i)-min)*scale));
 				}
+				//raw not scaled
+				
+//				for(float f: data_hold) {
+//					data.add((double)f);
+//				}
 	}
 	
 	
@@ -133,6 +141,7 @@ public class Sequence implements Serializable {
 	}
 	
 	public double get(int i) {
+		if(i>= getLength()||i<0)return -1;
 		return data.get(i);
 	}
 	

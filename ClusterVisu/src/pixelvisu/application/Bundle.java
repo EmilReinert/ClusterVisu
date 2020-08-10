@@ -51,9 +51,9 @@ public class Bundle extends Group{
 		}
 		sequences = sequences_hold;
 		
-		System.out.println("Densities:");
-		for(int i: densities)			System.out.print(i+" ");
-		System.out.println("\n");
+//		System.out.println("Densities:");
+//		for(int i: densities)			System.out.print(i+" ");
+//		System.out.println("\n");
 	}
 	
 	
