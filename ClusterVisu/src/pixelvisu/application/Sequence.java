@@ -33,21 +33,17 @@ public class Sequence implements Serializable {
 		for(int i = 0; i< size;i++)
 			data.add(Math.random()*100);
 	}
-	public Sequence(List<Double> l) {
-
-		data = new ArrayList<>();
-		data.addAll(l);
-		
-	}
 	
 	public Sequence(Sequence s){
+		pos = s.pos;
 		data = new ArrayList<>();
 		for (int i = 0; i< s.getLength();i++) {
 			add(s.get(i));
 		}
 	}
 	
-	public Sequence(JSONArray a, int size, JSONObject nj) {
+	public Sequence(JSONArray a, int size, JSONObject nj, int pos) {
+		this.pos = pos;
 		String n = nj.optString("instance");
 		this.name = n;
 		
@@ -239,30 +235,6 @@ public class Sequence implements Serializable {
 	
 	
 	
-	public double compareRecursive(Sequence a, Sequence b) {
-		// calculates difference pattern and returns total value for sectioning
-		if(a.getLength()==2) {
-			//System.out.println(a.measureUncertain(b).getWeight());
-			return a.measureUncertain(b).getWeight()/2;
-		}
-		if(a.getLength()==1) {
-			return a.measureUncertain(b).getWeight()/1;
-		}
-		//increasing rate =
-		double rate =(double)a.getLength()/(double)getLength();
-		rate = rate*rate*rate*rate;
-		
-		List<Double> la = new ArrayList<Double>( a.data); 
-		List<Double> lb = new ArrayList<Double>( b.data); 
-		Sequence a1 = new Sequence(la.subList(0,(la.size()/2)));
-		Sequence a2 = new Sequence(la.subList((la.size()/2),la.size()));
-
-		Sequence b1 = new Sequence(lb.subList(0,(lb.size()/2)));
-		Sequence b2 = new Sequence(lb.subList((lb.size()/2),lb.size()));
-		return rate*(compareRecursive(a1, b1)+ compareRecursive(a2, b2));
-		
-
-	}
 	
 	public Sequence measureUncertain( Sequence b) {
 		// measure Difference from Sequence a to b for visu

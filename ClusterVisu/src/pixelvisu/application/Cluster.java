@@ -13,12 +13,12 @@ import java.util.ArrayList;
 public class Cluster implements Serializable {
 
 	String name;
+	Group original; 
 	Node tree;
 	Node treeorder;
 	Group flat;
 	Bundle flat_c;
 
-	ArrayList<Group> sections;
 	int maxdepth;
 	int size;
 	int group_count = -10; // SIMILARITY CUT
@@ -26,7 +26,7 @@ public class Cluster implements Serializable {
 	public Cluster(Group sequences, String clustering, String link, String sim, String dataname, boolean save) throws IOException {
 		// Cluster creation (saving/loading) happens here
 		// Tree structure is defined as linked node instances
-		
+		original = sequences;
 		name = dataname + "/" + clustering + link + sim;
 
 		//  MAKING FILES
@@ -75,11 +75,12 @@ public class Cluster implements Serializable {
 
 	public Cluster(Group sequences,Cluster other) {
 		// projects internal cluster structure to this clusters sequences
-		
+		original = sequences;
 		flat = new Group(other.flat);
 		ArrayList<Sequence> seq = new ArrayList<Sequence>();
-		for(int i:other.flat.mapping) {
-			seq.add(sequences.get(i));
+		ArrayList<Integer> mapping = other.original.getMapping(other.flat);
+		for(Sequence s:other.flat.sequences) {
+			seq.add(sequences.get(s.pos));
 		}
 		flat.sequences=seq;
 		

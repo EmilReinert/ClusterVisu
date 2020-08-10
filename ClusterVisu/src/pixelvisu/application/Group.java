@@ -14,7 +14,6 @@ public class Group implements Serializable{
 	int group_count=0;
 	ArrayList<Sequence> sequences ; // already ordered list of sequences
 	ArrayList<Integer> weights;
-	ArrayList<Integer> mapping; // relevant for clusterized-> flattened representation	
 	
 	public Group(int group) {
 		group_count = group;
@@ -47,7 +46,7 @@ public class Group implements Serializable{
 		densities = other.densities;
 		makeWeights();
 		sections = new ArrayList<Integer>();
-		this.mapping =other.mapping;
+//		this.mapping =other.mapping;
 	}
 	
 	public void makeDensities(ArrayList<Integer> halfden) {
@@ -260,6 +259,13 @@ public class Group implements Serializable{
 	
 	public int getWeight(int i) {
 		return weights.get(i);
+	}
+	public ArrayList<Integer> getMapping(Group other) {
+		// mapping from this group to the other
+		ArrayList<Integer> map = new ArrayList<Integer>();
+		for(Sequence s:sequences) {
+		}
+		return null;
 	}
 
 	/*

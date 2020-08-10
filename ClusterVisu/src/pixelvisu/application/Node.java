@@ -330,7 +330,7 @@ public class Node implements Serializable{
 			cl.add(c.data);
 			mapping.add((int) c.x_pos);
 		}
-		cl.mapping=mapping;
+//		cl.mapping=mapping;
 		return cl;
 		
 	}	
