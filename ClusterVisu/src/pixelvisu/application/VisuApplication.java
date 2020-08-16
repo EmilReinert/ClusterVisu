@@ -43,7 +43,8 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	boolean dataswitch = true;
 	boolean unpack_all =false;
 	Circuit circuit = new Circuit();
-	
+
+	String compare_path = "Data/CPU usage.json";
 	
 	public VisuApplication(int w, int h, Color bg_c) throws IOException {
 		width = w;
@@ -52,11 +53,10 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 		p = new TreePanel();
 		circ = new Circuit();
-
 		
 		data = new SingleData("Data/Memory usage.json");
 		data.section(group_count);
-		data_compare = new SingleData("Data/CPU usage.json",data.c);
+		data_compare = new SingleData(compare_path,data.c);
 		
 		length = data.getLength();
 
@@ -444,7 +444,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	}
 	public void compareUpdate() {
 		dataUpdate();
-		try {data_compare = new SingleData("Data/CPU usage.json",data.c);
+		try {data_compare = new SingleData(compare_path,data.c);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

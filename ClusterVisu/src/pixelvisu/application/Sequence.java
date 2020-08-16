@@ -72,15 +72,15 @@ public class Sequence implements Serializable {
 					scale = (255/(max-min));
 				
 				// adding scale data
-				for(int i = 0; i<size;i++) {
-					data.add((double) ((data_hold.get(i)-min)*scale));
-					//System.out.println(((data_hold.get(i)-min)*scale));
-				}
+//				for(int i = 0; i<size;i++) {
+//					data.add((double) ((data_hold.get(i)-min)*scale));
+//					//System.out.println(((data_hold.get(i)-min)*scale));
+//				}
 				//raw not scaled
 				
-//				for(float f: data_hold) {
-//					data.add((double)f);
-//				}
+				for(float f: data_hold) {
+					data.add((double)f);
+				}
 	}
 	
 	

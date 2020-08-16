@@ -193,7 +193,7 @@ public class Data implements Serializable{
 
 		for (int i = 0; i<270;i++) {
 			node0 = nodes.getJSONObject(i);
-			se = new Sequence(node0.optJSONArray("values"),181,node0.optJSONObject("metric"));
+			se = new Sequence(node0.optJSONArray("values"),181,node0.optJSONObject("metric"),i);
 			sequences.add(se);
 		}
 		
