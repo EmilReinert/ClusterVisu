@@ -553,8 +553,8 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		compareUpdate();
 		
 		if(e.getKeyCode()==38) {
-			data.order("density");
-			data_compare.order("density");}
+			data.order("weight");
+			data_compare.order("weight");}
 	}
 
 

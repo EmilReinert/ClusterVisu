@@ -205,24 +205,6 @@ public class Group implements Serializable{
 		return combineSequences(s);
 	}
 	
-	public void weightOrder() {
-		// order Image Group weights to create ordered weights data
-		int max =500000; 
-		for(int i = 0; i< getDepth();i++) {
-			int max_pointer =i;
-			for(int j = i; j< getDepth();j++) {
-				if( max>get(j).getWeight()) {
-					max_pointer=j;
-					max = get(j).getWeight();
-					}
-			}
-			swap( i, max_pointer); 
-			max =500000;
-			//System.out.println("swap");
-		}
-		System.out.println("reordered weights");
-		//for(int i = 0; i<getDepth();i++) {System.out.println(sequences_o.get(i).getWeight());}
-	}	
 	
 	public void differOrder() {
 		// order Image Group similarities to reduce noise

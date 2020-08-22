@@ -88,6 +88,38 @@ public class Bundle extends Group{
 		System.out.println("\n");
 	}
 	
+	public void weightOrder() {
+		//order Data Bundle by average weight
+		mapping = new ArrayList<>();
+		ArrayList<Integer> map = new ArrayList<>();
+		float max =0; 
+		for(int i = 0; i<getDepth();i++) {
+			int max_pointer =i;
+			for(int j = i; j< getDepth();j++) {
+				if( max<getWeight(j)) {
+					max_pointer=j;
+					max = getWeight(j);
+					}
+			}
+			swap( i, max_pointer); 
+			Collections.swap(densities, i, max_pointer);
+			map.add(max_pointer);
+			max =0;
+		}
+		// creating mapping
+		for(int i=0;i<map.size();i++) mapping.add(i);
+		for(int i=0;i<map.size();i++)Collections.swap(mapping, i, map.get(i));
+
+		System.out.println("reordered compressed densities");
+		for(int d: densities)			System.out.print(d+" ");
+		System.out.println("\n");
+		
+		System.out.println("mapping");
+		for(int d:  mapping)			System.out.print(d+" ");
+		System.out.println("\n");
+	}	
+	
+	
 	
 	public int getSeqValue(int i) {
 		return getDensity(i);

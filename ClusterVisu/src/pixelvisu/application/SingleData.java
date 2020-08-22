@@ -143,6 +143,7 @@ public class SingleData {
 	
 	public void order(String mode) {
 		if(mode == "density")c.flat_c.densityOrder();
+		if(mode == "weight")c.flat_c.weightOrder();
 			
 		
 	}
