@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
+	ArrayList<Double> original;
+	int sect = 1; // for horizontal sectioning of size 'sect'
 	String name ="";
 	int pos =0;
 
@@ -36,10 +38,8 @@ public class Sequence implements Serializable {
 	
 	public Sequence(Sequence s){
 		pos = s.pos;
-		data = new ArrayList<>();
-		for (int i = 0; i< s.getLength();i++) {
-			add(s.get(i));
-		}
+		data = new ArrayList<>(s.data);
+		
 	}
 	
 	public Sequence(JSONArray a, int size, JSONObject nj, int pos) {
@@ -81,6 +81,20 @@ public class Sequence implements Serializable {
 //				for(float f: data_hold) {
 //					data.add((double)f);
 //				}
+				compress(10);
+	}
+	/// Compress
+	public void compress(int s) {
+		if(s == sect)return;
+		sect = s;
+		
+		for(int i =0; i<=data.size()-sect;i+=sect) {
+			double av = 0;
+			for(int j =0;j<sect;j++) av+=get(j+i)/sect;
+			for(int j =0;j<sect;j++) data.set(i+j, av);			
+		}
+		
+		
 	}
 	
 	
@@ -101,7 +115,7 @@ public class Sequence implements Serializable {
 	
 	public double compareEuclid(Sequence other) {
 		float diff =0;
-		for(int i = 0;i<getLength();i++) {
+		for(int i = 0;i<getLength();i+=sect) {
 			diff+= (get(i)-other.get(i))*(get(i)-other.get(i));
 		}
 		return Math.sqrt(diff);
@@ -109,7 +123,7 @@ public class Sequence implements Serializable {
 	}
 	public double compareManhattan(Sequence other) {
 		float diff =0;
-		for(int i = 0;i<getLength();i++) {
+		for(int i = 0;i<getLength();i+=sect) {
 			diff+= Math.abs(get(i)-other.get(i));
 		}
 		return diff;

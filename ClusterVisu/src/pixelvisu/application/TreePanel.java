@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 
 
 public class TreePanel extends JPanel{
-	boolean running;
 	Cluster c;
 	JFrame f;
 	int group_count =0; // for horizontal line

@@ -44,7 +44,6 @@ public class Circuit {
 		//plus one
 		if(s_idx==similarity.length-1)s_idx =0;
 		else s_idx ++;
-		System.out.println(s_idx);
 	}public void LUp() {
 		//plus one
 		if(l_idx==linkage.length-1)l_idx =0;

@@ -20,14 +20,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class ClusterMakerApplication extends JFrame implements Runnable {
-	public static int WIDTH = 270*4;//TODO make adjustable
+	public static int WIDTH = 400*4;//TODO make adjustable
 	public static int OFF = 40;
 	public static int HEIGHT = 300+OFF;	
+	public static int HEIGHT_controls = HEIGHT +200;	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;
 	public int[] pixels;
 	public byte[]pixels_b;
+	public Controls controls;
 	public VisuApplication visu; 
 //	public VisuSeriation visu;
 	public Color bg_color = Color.WHITE;
@@ -37,17 +39,18 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 //		String path ="Data/Memory usage.json";
 //		Data d = new Data(path);
 		
-		
+		controls = new Controls(WIDTH,HEIGHT_controls);
 		thread = new Thread(this);
 		image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		visu = new VisuApplication(WIDTH,HEIGHT, bg_color);
 //		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
+
+		addMouseListener(controls);
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
-		
 		addKeyListener(visu);
 		
-		setSize(WIDTH, HEIGHT);
+		setSize(WIDTH, HEIGHT_controls);
 		setTitle("Pixel Clustering");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.black);
@@ -83,8 +86,12 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 		//draws diagram image
-		g.drawImage(image, 0, 0,getWidth(), getHeight(), null);
+		g.drawImage(image, 0, 0,image.getWidth(), image.getHeight(), null);
 		bs.show();
+		
+
+		//draws info box
+		controls.paint(g);
 	}
 	
 	
@@ -98,8 +105,7 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 			lastTime = now;
 			while (delta >= 1)//Make sure update is only happening 60 times a second
 			{
-				image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-				pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+				
 				//handles all of the logic restricted time
 				visu.update(pixels, getWidth(),getHeight(),OFF);
 				delta--;

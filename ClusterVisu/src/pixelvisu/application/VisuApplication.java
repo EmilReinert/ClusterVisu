@@ -44,17 +44,20 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	boolean unpack_all =false;
 	Circuit circuit = new Circuit();
 
-	String compare_path = "Data/CPU usage.json";
+	String compare_path = "Data/cpu.json";
+	
+	
+	int posXY = 0;
 	
 	public VisuApplication(int w, int h, Color bg_c) throws IOException {
 		width = w;
 		height = h;
 		bg_color= bg_c;
 
-		p = new TreePanel();
+//		p = new TreePanel();
 		circ = new Circuit();
 		
-		data = new SingleData("Data/Memory usage.json");
+		data = new SingleData("Data/memory.json");
 		data.section(group_count);
 		data_compare = new SingleData(compare_path,data.c);
 		
@@ -82,14 +85,14 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 		// for single
 		drawData(pixels,data.sequences,off,pixels.length);
-		drawData(pixels,data.c.flat,off+width/5,pixels.length);
+		drawData(pixels,data.c.flat,off+width/4,pixels.length);
 		if(data.c.flat_c!=null) {
-			drawBarsDen(pixels, data.c, off+2*width/5, pixels.length);
+			drawBarsDen(pixels, data.c, off+width/2, pixels.length);
 		}
 		if(data_compare.c!=null) {
-			drawBarsDen(pixels, data_compare.c, off+3*width/5, pixels.length);
+			drawBarsDen(pixels, data_compare.c, off+3*width/4, pixels.length);
 		}
-		drawData(pixels,data_compare.sequences,off+4*width/5,pixels.length);
+//		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
 		return ;
 	}	
@@ -439,12 +442,12 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	
 	public void dataUpdate()  {
 		data.section(group_count);
-		p.update(data.c,group_count);
+//		p.update(data.c,group_count);
 		
 	}
 	public void compareUpdate() {
 		dataUpdate();
-		try {data_compare = new SingleData(compare_path,data.c);
+		try {data_compare = new SingleData(data_compare,compare_path,data.c);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -475,6 +478,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		compareUpdate();
+		posXY = vec2Int(new Vec2(e.getY(),e.getX()));
 	}
 
 	@Override

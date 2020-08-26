@@ -52,13 +52,17 @@ public class SingleData {
 	}
 	public SingleData(String path, Cluster other) throws IOException {
 		sequences = new Group(group_count);
-		
 		readData(path);
-//		testCat();
-//		testDataLinear();
-//		testDataRandom();
 
 		dataname = path.substring(path.lastIndexOf("/") + 1);
+
+		c = new Cluster(sequences, other);
+		c.makeSections(group_count,other);
+	}
+	
+	public SingleData(SingleData s, String path, Cluster other) throws IOException {
+		sequences = s.sequences;
+		dataname = s.dataname;
 
 		c = new Cluster(sequences, other);
 		c.makeSections(group_count,other);
@@ -77,9 +81,9 @@ public class SingleData {
 		JSONObject node0;
 		Sequence se;
 
-		for (int i = 0; i<270;i++) {
+		for (int i = 0; i<244;i++){
 			node0 = nodes.getJSONObject(i);
-			se = new Sequence(node0.optJSONArray("values"),181,node0.optJSONObject("metric"),i);
+			se = new Sequence(node0.optJSONArray("values"),240,node0.optJSONObject("metric"),i);
 			sequences.add(se);
 		}
 		
@@ -159,7 +163,7 @@ public class SingleData {
 			if(value<min)return 100000;
 			if(value>max) {//System.out.println(value+" "+max);
 			return 200000;}
-			value =((value-min)*scale);
+			value = ((value-min)*scale);
 			return new Color(0,(int)(value),(int)(value),1).getRGB();}
 		return Color.BLACK.getRGB();
 	}
