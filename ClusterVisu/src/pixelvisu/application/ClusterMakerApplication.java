@@ -23,7 +23,7 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 	public static int WIDTH = 400*4;//TODO make adjustable
 	public static int OFF = 40;
 	public static int HEIGHT = 300+OFF;	
-	public static int HEIGHT_controls = HEIGHT +200;	
+	public static int HEIGHT_controls = HEIGHT ;	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;
@@ -34,19 +34,23 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 //	public VisuSeriation visu;
 	public Color bg_color = Color.WHITE;
 	
-	public ClusterMakerApplication() throws IOException {
+	SingleData data;
+	SingleData data_compare;
+	
+	public ClusterMakerApplication(Controls c, Data data){
 
 //		String path ="Data/Memory usage.json";
 //		Data d = new Data(path);
 		
-		controls = new Controls(WIDTH,HEIGHT_controls);
+		controls = c;
 		thread = new Thread(this);
 		image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		visu = new VisuApplication(WIDTH,HEIGHT, bg_color);
+		
+		
+		visu = new VisuApplication(WIDTH,HEIGHT,data,bg_color);
 //		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
 
-		addMouseListener(controls);
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
 		addKeyListener(visu);
 		
@@ -85,14 +89,15 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
+		//draws info box
+//		controls.paint(g);
 		//draws diagram image
 		g.drawImage(image, 0, 0,image.getWidth(), image.getHeight(), null);
 		bs.show();
 		
 
-		//draws info box
-		controls.paint(g);
 	}
+	
 	
 	
 	public void run() {
@@ -111,10 +116,13 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 				delta--;
 			}
 			render();//displays to the screen unrestricted time
+//			controls.update();
 		}
 	}
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		ClusterMakerApplication clum = new ClusterMakerApplication();
+		Data data= new Data();
+		Controls con = new Controls(data);
+		ClusterMakerApplication clum = new ClusterMakerApplication(con,data);
 	}
 	
 	

@@ -15,22 +15,27 @@ public class Sequence implements Serializable {
 	int sect = 1; // for horizontal sectioning of size 'sect'
 	String name ="";
 	int pos =0;
+	double min=100;
+	double max=0;
 
 	public Sequence(){
 		data = new ArrayList<>();
 	}
 	public Sequence(int size) {
+		// zero value
 		data = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(0.0);
 	}
 	public Sequence(int size, double val) {
+		//one value
 		data = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(val);
 	}
 	
 	public Sequence(int size, double val, String random) {
+		//random
 		data = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(Math.random()*100);
@@ -39,6 +44,8 @@ public class Sequence implements Serializable {
 	public Sequence(Sequence s){
 		pos = s.pos;
 		data = new ArrayList<>(s.data);
+		min = s.min;
+		max = s.max;
 		
 	}
 	
@@ -65,22 +72,19 @@ public class Sequence implements Serializable {
 				
 				float scale =0;
 				// min and max value for scaling
-				float min = getMin(data_hold);
-				float max = getMax(data_hold);
-				if(min ==max)scale =0;
-				else
-					scale = (255/(max-min));
+				min = getMin(data_hold);
+				max = getMax(data_hold);
 				
 				// adding scale data
-				for(int i = 0; i<size;i++) {
-					data.add((double) ((data_hold.get(i)-min)*scale));
-					//System.out.println(((data_hold.get(i)-min)*scale));
-				}
+//				for(int i = 0; i<size;i++) {
+//					data.add((double) ((data_hold.get(i)-min)*scale));
+//					//System.out.println(((data_hold.get(i)-min)*scale));
+//				}
 				//raw not scaled
 				
-//				for(float f: data_hold) {
-//					data.add((double)f);
-//				}
+				for(float f: data_hold) {
+					data.add((double)f);
+				}
 				compress(10);
 	}
 	/// Compress
@@ -147,12 +151,21 @@ public class Sequence implements Serializable {
 	}
 	
 	public void add(double d) {
+		if(d>max)max = d;
+		if(d<min)min =d;
 		data.add(d);
 	}
 	
 	public double get(int i) {
 		if(i>= getLength()||i<0)return -1;
 		return data.get(i);
+	}
+	
+	public double getContrast(int i) {
+		if(i>= getLength()||i<0)return -1;
+		if(max<min)return -1;
+		if(max==min)return max;
+		return (data.get(i)-min)*(255/(max-min));
 	}
 	
 	public void multiplicate(int mul) {

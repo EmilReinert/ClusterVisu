@@ -1,6 +1,5 @@
 package pixelvisu.application;
 
-import pixelvisu.seriation.Cluster;
 
 public class Circuit {
 	String [] clustering;
@@ -35,7 +34,7 @@ public class Circuit {
 		SDown();
 	}
 	
-	public String[] getCurcuit() {
+	public String[] getCircuit() {
 		return new  String[] {clustering[c_idx],linkage[l_idx],similarity[s_idx]};
 	}
 	

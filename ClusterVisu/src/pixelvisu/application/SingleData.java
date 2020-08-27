@@ -15,20 +15,22 @@ import org.json.JSONObject;
 public class SingleData {
 	Group sequences;// unordered weights // image
 	
-	double min;
-	double max;
-	
+//	double min;
+//	double max;
+	boolean contrast = false;
 	Cluster c;
 	
+	String path = "";
 	String dataname="error";
-	int group_count = 44;
+	int group_count = 0;
 	
-	public SingleData(String path) throws IOException {
-		update(path,44);
-		
+	public SingleData(String path, int gc) throws IOException {
+		update(path,gc);
+		this.path = path;
 	}
 	
 	public void update(String path, int gc) throws IOException {
+
 		this.group_count = gc;
 		sequences = new Group(group_count);
 		
@@ -42,28 +44,34 @@ public class SingleData {
 		c = new Cluster(sequences, "agglomerative", "single", "euclidean", dataname, true);
 	}
 	
-	public void updateClustering( String []circ) throws IOException {
+	public void updateClustering( String []circ) {
 		
 		if(circ.length!=3)
 			System.err.println("wrong circuit");
-		c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);
+		try {
+		c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);}
+		catch(Exception e) {
+			System.err.println("circuit not found");
+		}
 		
 		
 	}
 	public SingleData(String path, Cluster other) throws IOException {
 		sequences = new Group(group_count);
-		readData(path);
 
+		this.path = path;
 		dataname = path.substring(path.lastIndexOf("/") + 1);
 
+		readData(path);
 		c = new Cluster(sequences, other);
 		c.makeSections(group_count,other);
 	}
 	
-	public SingleData(SingleData s, String path, Cluster other) throws IOException {
+	public SingleData(SingleData s, Cluster other) throws IOException {
 		sequences = s.sequences;
 		dataname = s.dataname;
 
+		this.path = s.path;
 		c = new Cluster(sequences, other);
 		c.makeSections(group_count,other);
 	}
@@ -88,13 +96,13 @@ public class SingleData {
 		}
 		
 		// getting global min+max
-		min = 10000000;
-		max = -10000000;
-		for(Sequence s:sequences.sequences) {
-			if(s.getMin()<min) min = s.getMin();
-			if(s.getMax()>max) max = s.getMax();
-		}
-		System.out.println(min+" "+max);
+//		min = 10000000;
+//		max = -10000000;
+//		for(Sequence s:sequences.sequences) {
+//			if(s.getMin()<min) min = s.getMin();
+//			if(s.getMax()>max) max = s.getMax();
+//		}
+//		System.out.println(min+" "+max);
 
 	}
 
@@ -139,10 +147,13 @@ public class SingleData {
 	}
 	
 	
-	public void section (int group_count) {
+	public void section (int group_count,String mode) {
 		this.group_count = group_count;
+		if(mode == "similarity")
+			c.makeSectionsSim(group_count);
+		if(mode =="size")
+			c.makeSectionsSize(group_count);
 		
-			c.makeSections(group_count);
 	}
 	
 	public void order(String mode) {
@@ -154,16 +165,14 @@ public class SingleData {
 	
 	
 	public int getColor(double value) {
-		double scale = (254/(max-min));
+		double scale = 1;
 //		
 //		value = ((value-min)*scale);
-		if(value>255)
+		if(value>=255)
 			value = 255;
 		if(value>=0) {
-			if(value<min)return 100000;
-			if(value>max) {//System.out.println(value+" "+max);
-			return 200000;}
-			value = ((value-min)*scale);
+//			if(value<min||value>max) {return Color.red.getRGB();} 
+			//value = ((value-min)*scale);
 			return new Color(0,(int)(value),(int)(value),1).getRGB();}
 		return Color.BLACK.getRGB();
 	}
@@ -175,7 +184,9 @@ public class SingleData {
 	}
 	public int getOrColor(Bundle seqs, int sec_idx, int row, int idx) {
 	
-	double value =  seqs.getOriginal(sec_idx, row, idx);
+	double value;
+	if(contrast)value= seqs.getOriginalContrast(sec_idx, row, idx);
+	else value = seqs.getOriginal(sec_idx, row, idx);
 	return getColor(value);
 }
 
@@ -188,9 +199,10 @@ public class SingleData {
 		}
 		if(row<0||idx<0)
 			return -1;
-		return seqs.get(row,idx);
+		if(!contrast)
+			return seqs.get(row,idx);
+		return seqs.getContrast(row,idx);
 	}
-	
 	
 	public int getLength() {
 		return sequences.get(0).getLength();

@@ -29,27 +29,22 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 	private int width, height; // width, height for diagram
 	
-	SingleData data;
-	SingleData data_compare; // secondary data to be compared structurally
-	TreePanel p;
+	Data data; // secondary data to be compared structurally
+//	TreePanel p;
 	Circuit circ;
 	
 	Color bg_color;
 	int length ;
-	int group_count =44 ; // percent of maximum similarity that is considered a group
-	int new_group_count=group_count;
+	
 	Vec2 mouse_click = new Vec2(0,0);
 	int click_cluster=0;
 	boolean dataswitch = true;
 	boolean unpack_all =false;
-	Circuit circuit = new Circuit();
 
-	String compare_path = "Data/cpu.json";
-	
 	
 	int posXY = 0;
 	
-	public VisuApplication(int w, int h, Color bg_c) throws IOException {
+	public VisuApplication(int w, int h,Data data, Color bg_c)  {
 		width = w;
 		height = h;
 		bg_color= bg_c;
@@ -57,13 +52,11 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 //		p = new TreePanel();
 		circ = new Circuit();
 		
-		data = new SingleData("Data/memory.json");
-		data.section(group_count);
-		data_compare = new SingleData(compare_path,data.c);
+		this.data = data;
 		
-		length = data.getLength();
+		length = data.data_main.getLength();
 
-		dataUpdate();
+		data.update();
 	}
 
 	
@@ -73,7 +66,6 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	public void update(int[] pixels, int w,int h,int off) {
 		if(w!=width) System.out.println(width);
 		width=w; height = h-off;
-		group_count=new_group_count;
 		off = w*off;
 		
 		
@@ -84,13 +76,13 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		// DATA
 
 		// for single
-		drawData(pixels,data.sequences,off,pixels.length);
-		drawData(pixels,data.c.flat,off+width/4,pixels.length);
-		if(data.c.flat_c!=null) {
-			drawBarsDen(pixels, data.c, off+width/2, pixels.length);
+		drawData(pixels,data.data_main.sequences,off,pixels.length);
+		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
+		if(data.data_main.c.flat_c!=null) {
+			drawBarsDen(pixels, data.data_main.c, off+width/2, pixels.length);
 		}
-		if(data_compare.c!=null) {
-			drawBarsDen(pixels, data_compare.c, off+3*width/4, pixels.length);
+		if(data.data_compare.c!=null) {
+			drawBarsDen(pixels, data.data_compare.c, off+3*width/4, pixels.length);
 		}
 //		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
@@ -104,18 +96,18 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		//drawing both cat images
 		int col_hold=0;
 		for(int n=start; n<end-2*width; n++) {
-			col_hold = data.getColor(c.flat,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
+			col_hold = data.data_main.getColor(c.flat,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
 			if(col_hold>=0)
 				pixels[n] =col_hold;
 		}
 	}
 	
-	public void drawData(int[] pixels, Group c, int start, int end){
+	public void drawData(int[] pixels, Group g, int start, int end){
 		//if(isInsideSquare(start, end+getLength())) click_cluster=c;
 		//drawing both cat images
 		int col_hold=0;
 		for(int n=start; n<end-2*width; n++) {
-			col_hold = data.getColor(c,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
+			col_hold = data.data_main.getColor(g,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
 			if(col_hold>=0)
 				pixels[n] =col_hold;
 		}
@@ -147,7 +139,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		int jumping =0;
 		int den = 0;
 		for(int i=0; i< cl.flat_c.getDepth();i++) {
-			den = 5;// (dens.get(i)+10)/3;// 10; //for static sizes
+			den =  (dens.get(i)+10)/3;// 5; //for static sizes
 			if (unpack_all) {
 				drawDataSec(pixels, cl.flat_c, start + jump * width, i, dens.get(i));
 				jumping = dens.get(i) + 2;
@@ -180,7 +172,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		int diff_fade =0;
 		for (int n = startpos; n<startpos+lenght*width&&n<pixels.length;n++) {
 			int pos = ((n%width)-startpos%width);
-			col_hold = data.getColor(seqs,dataRowIdx,pos);
+			col_hold = data.data_main.getColor(seqs,dataRowIdx,pos);
 			if(col_hold>=0) {
 				diff_color =6*seqs.getDiff(dataRowIdx,pos);
 				diff_fade =(int) Math.pow(diff_color*0.005,4);
@@ -199,7 +191,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		// and then over individual data values
 		for (int n =0; n<length;n++) {
 			for(int i =0;i<getLength();i++) {
-				col_hold = data.getOrColor(seqs,sec_idx,n,i);
+				col_hold = data.data_main.getOrColor(seqs,sec_idx,n,i);
 
 				//System.out.println(n+" "+i+" "+col_hold);
 				if(col_hold>=0) {
@@ -440,27 +432,11 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	}
 	
 	
-	public void dataUpdate()  {
-		data.section(group_count);
-//		p.update(data.c,group_count);
-		
-	}
-	public void compareUpdate() {
-		dataUpdate();
-		try {data_compare = new SingleData(data_compare,compare_path,data.c);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
+
 	//INTERACTIONS----------------------------------------------------------------------------
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// TODO Auto-generated method stub
-		if((new_group_count-e.getPreciseWheelRotation()>0))
-			new_group_count -=1*e.getPreciseWheelRotation();
-		System.out.println(new_group_count);
-		dataUpdate();
 	}
 
 	@Override
@@ -477,8 +453,6 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		compareUpdate();
-		posXY = vec2Int(new Vec2(e.getY(),e.getX()));
 	}
 
 	@Override
@@ -518,47 +492,12 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getKeyCode()==85) {
-			if(unpack_all)unpack_all=false;
-			else unpack_all=true;		
-			
-		}
-		
-		
 		if(e.getKeyCode()==39) circ.up();
-			
+		
 		if(e.getKeyCode()==37) circ.down();
 		
+		data.updateClustering(circ.getCircuit());
 		
-		if(e.getKeyCode()==88)
-			try {
-				data.update("Data/CPU usage.json", group_count);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		if(e.getKeyCode()==89)
-			try {
-				data.update("Data/Memory usage.json", group_count);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		try {
-			data.updateClustering(circ.getCurcuit());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-
-		compareUpdate();
-		
-		if(e.getKeyCode()==38) {
-			data.order("weight");
-			data_compare.order("weight");}
 	}
 
 

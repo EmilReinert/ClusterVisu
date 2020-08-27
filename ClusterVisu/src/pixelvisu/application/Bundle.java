@@ -90,13 +90,14 @@ public class Bundle extends Group{
 	
 	public void weightOrder() {
 		//order Data Bundle by average weight
+		densityOrder();
 		mapping = new ArrayList<>();
 		ArrayList<Integer> map = new ArrayList<>();
 		float max =0; 
 		for(int i = 0; i<getDepth();i++) {
 			int max_pointer =i;
 			for(int j = i; j< getDepth();j++) {
-				if( max<getWeight(j)) {
+				if( max<=getWeight(j)) {
 					max_pointer=j;
 					max = getWeight(j);
 					}
@@ -167,5 +168,29 @@ public class Bundle extends Group{
 		//System.out.println("Opening Original Section: "+sec_idx+" at Row Idx "+sec_sum+"; size = "+getDensity(mapping.indexOf(sec_idx)));
 		if((sec_sum+i)>=original.size())return -1;
 		return original.get(sec_sum+i).get(j);
+	}
+	public double getOriginalContrast(int sec_idx, int i,int j) {
+		//returns original value with index of compressed data
+		if(i<0||j>getLength())return -1;
+		int sec_sum = 0;
+		if(mapping!=null) {
+			sec_idx=mapping.get(sec_idx);
+			for(int s = 0;s<sec_idx;s++) {
+				sec_sum += getDensity(mapping.indexOf(s));
+				//System.out.println(getDensity(mapping.get(s)));
+			}
+		}
+		else {
+			for(int s = 0;s<sec_idx;s++) {
+		
+				sec_sum += getDensity(s);
+			//System.out.println(sec_sum);
+			}
+		}
+		
+		//System.out.println("sum = "+sec_sum+'\n');
+		//System.out.println("Opening Original Section: "+sec_idx+" at Row Idx "+sec_sum+"; size = "+getDensity(mapping.indexOf(sec_idx)));
+		if((sec_sum+i)>=original.size())return -1;
+		return original.get(sec_sum+i).getContrast(j);
 	}
 }

@@ -164,7 +164,7 @@ public class Cluster implements Serializable {
 
 	}
 	
-	public void makeSections(int maxsim) {
+	public void makeSectionsSize(int maxsim) {
 		// iterates over cluster tree and adds all groups with the min cluster length
 		group_count = maxsim;
 
@@ -224,19 +224,6 @@ public class Cluster implements Serializable {
 
 	}
 	
-	public float getData(int idx) {
-		// returns average data
-		float sum = 0;
-		for (Sequence branch : flat.sequences) {
-			sum += branch.get(idx);
-		}
-		return sum / flat.getDepth();
-	}
-
-	public int getData(int row, int idx) {
-		// returns average data
-		return (int) flat.get(row).get(idx);
-	}
 
 	public static void serializeDataOut(String savepath,String name, Node ish) throws IOException {
 		FileOutputStream fos = new FileOutputStream(savepath+"/"+name);

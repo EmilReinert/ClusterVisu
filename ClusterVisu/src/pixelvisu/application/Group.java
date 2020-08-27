@@ -89,7 +89,16 @@ public class Group implements Serializable{
 		if(idx>=getLength()) {
 			return Color.white.getRGB();
 		}
-		return sequences.get(row).get(idx);
+		return sequences.get(row).get(idx);//getContrast(idx); //////////
+	}
+	public double getContrast(int row, int idx) {
+		if(row>=getDepth()) {
+			return Color.white.getRGB();//white
+		}
+		if(idx>=getLength()) {
+			return Color.white.getRGB();
+		}
+		return sequences.get(row).getContrast(idx); //////////
 	}
 
 	public void add(Sequence d) {

@@ -29,7 +29,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 
 	private int width, height; // width, height for diagram
 	
-	Data data;
+	DataSeriation data;
 	TreePanel p;
 	
 	Color bg_color;
@@ -38,7 +38,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	Vec2 mouse_click = new Vec2(0,0);
 	int click_cluster=0;
 	
-	public VisuSeriation(int w, int h, Data d, Color bg_c) {
+	public VisuSeriation(int w, int h, DataSeriation d, Color bg_c) {
 		width = w;
 		height = h;
 		data = d;
