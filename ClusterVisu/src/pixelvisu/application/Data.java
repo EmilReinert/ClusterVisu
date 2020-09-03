@@ -25,6 +25,7 @@ public class Data {
 	}
 	
 	public void order(String mode) {
+		update();
 			data_main.order(mode);
 			data_compare.order(mode);
 		

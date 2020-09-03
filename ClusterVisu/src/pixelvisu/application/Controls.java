@@ -95,7 +95,8 @@ public class Controls extends JFrame implements MouseListener{
 	    
 	    
 	    //SLIDER
-	    JSlider s = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+	    JSlider s = new JSlider(JSlider.HORIZONTAL, 0, 50, 10);
+	    data.group_count=s.getValue();
 	    s.setBounds(50, 50, 100,20);
 	    s.addChangeListener(new ChangeListener() {
 			@Override

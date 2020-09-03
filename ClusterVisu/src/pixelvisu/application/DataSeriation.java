@@ -246,7 +246,7 @@ public class DataSeriation implements Serializable{
 		this.group_count = group_count;
 		
 		for(Cluster c:clusters)
-			c.makeSections(group_count);
+			c.makeSectionsSim(group_count);
 	}
 	
 	public void order(String mode) {

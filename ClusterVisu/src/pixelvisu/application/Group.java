@@ -61,6 +61,7 @@ public class Group implements Serializable{
 		weights = new ArrayList<>();
 		for(int i = 0; i<sequences.size();i++) {
 			weights.add(sequences.get(i).getWeight());
+//			System.out.println(sequences.get(i).getWeight());
 		}
 	}
 	

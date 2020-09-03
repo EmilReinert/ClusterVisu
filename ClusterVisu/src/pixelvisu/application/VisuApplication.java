@@ -35,11 +35,13 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	
 	Color bg_color;
 	int length ;
-	
+
 	Vec2 mouse_click = new Vec2(0,0);
+	Vec2 mouse_hover = new Vec2(0,0);
 	int click_cluster=0;
 	boolean dataswitch = true;
 	boolean unpack_all =false;
+	boolean denden =false;
 
 	
 	int posXY = 0;
@@ -138,8 +140,11 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		int jump =0;
 		int jumping =0;
 		int den = 0;
+		boolean clicked = false;
 		for(int i=0; i< cl.flat_c.getDepth();i++) {
-			den =  (dens.get(i)+10)/3;// 5; //for static sizes
+			if(denden)den =  (dens.get(i)+10)/3;// 5; //for static sizes
+			else den = 5;
+			
 			if (unpack_all) {
 				drawDataSec(pixels, cl.flat_c, start + jump * width, i, dens.get(i));
 				jumping = dens.get(i) + 2;
@@ -147,13 +152,16 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 				// hover bar
 				// if( int2Vec(start+jump*width).x <=mouse_y
 				// &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
-				if (isInsideSquare(start + jump * width, start + (jump + den) * width + getLength())) {
+				if (isInsideSquare(mouse_click,start + (jump) * width, start + (jump + den) * width + getLength())) {
 					drawDataSec(pixels, cl.flat_c, start + jump * width, i, dens.get(i));
 
 					jumping = dens.get(i) + 2;
 				}
 				// normal
 				else {
+					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) {
+						den*=3;
+					}
 					drawDataBar(pixels, cl.flat_c, start + jump * width, i, den);
 					jumping = den + 2;
 				}
@@ -266,19 +274,19 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 		return new Vec2(m, t);
 	}
 
-	public boolean isInsideSquare(int start, int end) {
+	public boolean isInsideSquare(Vec2 mouse_,int start, int end) {
 		// returns whether the mouse is inside a certain square
 		// note start and end are not an array but int pointers to panel
-		return isInsideSquare(int2Vec(start),int2Vec(end));
+		return isInsideSquare(mouse_, int2Vec(start),int2Vec(end));
 		
 	}
-	public boolean isInsideSquare(Vec2 start, Vec2 end) {
+	public boolean isInsideSquare(Vec2 mouse_, Vec2 start, Vec2 end) {
 		// returns whether the mouse is inside a certain square
 		// note start and end are not an array but int pointers to panel
-		if(mouse_click.y>start.y)
-			if(mouse_click.y<end.y)
-				if(mouse_click.x>start.x)
-					if(mouse_click.x<end.x)
+		if(mouse_.y>start.y)
+			if(mouse_.y<end.y)
+				if(mouse_.x>start.x)
+					if(mouse_.x<end.x)
 						{return true;}
 		return false;
 		
@@ -448,6 +456,7 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
+		mouse_hover = new Vec2(e.getY(), e.getX());
 	}
 
 	@Override
@@ -492,6 +501,17 @@ public class VisuApplication implements MouseListener,MouseMotionListener,MouseW
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		
+		if(e.getKeyCode()==85) {
+			if(unpack_all)unpack_all=false;
+			else unpack_all=true;		
+		}
+		
+		if(e.getKeyCode()==73) {
+			if(denden)denden=false;
+			else denden=true;		
+		}
+		
 		if(e.getKeyCode()==39) circ.up();
 		
 		if(e.getKeyCode()==37) circ.down();

@@ -106,7 +106,7 @@ public class ClusterMakerApplication extends JFrame implements Runnable {
 		requestFocus();
 		while(running) {
 			long now = System.nanoTime();
-			delta = delta + ((now-lastTime) / (1000000000.0/1));//60 = FPS
+			delta = delta + ((now-lastTime) / (1000000000.0/60));//60 = FPS
 			lastTime = now;
 			while (delta >= 1)//Make sure update is only happening 60 times a second
 			{

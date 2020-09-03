@@ -8,7 +8,7 @@ public class Bundle extends Group{
 	
 	ArrayList<Integer> densities; // 
 	ArrayList<Sequence> original; // original sequence
-	ArrayList<Integer> mapping; // mapping from original compressed to desity ordered compressed
+	ArrayList<Integer> mapping; // mapping from original compressed to ordered compressed
 	ArrayList<Sequence> differentials; // difference measure for compressed data bundles
 	ArrayList<Integer> sections;
 	
@@ -26,13 +26,12 @@ public class Bundle extends Group{
 		sections = g.sections;
 		original = copySeqs(g.sequences);
 		sequences =copySeqs(g.sequences);
-		weights = new ArrayList<>(g.weights);
-		compress(sequences,sections );
+		compress();
 //		densityOrder();
 		
 	}
 	
-	public void compress(ArrayList<Sequence> seqs, ArrayList<Integer> secs) {
+	public void compress() {
 		// compresses sequences data by section 
 		// and stores results in compressed data and densities
 		ArrayList<Sequence> sequences_hold = new ArrayList<>();
@@ -41,13 +40,13 @@ public class Bundle extends Group{
 		int prev = 0;
 		int delta = 0;
 		//iterates over sec data and takes that index to accessd data
-		for(int i=0; i<secs.size();i++) {
-			delta = secs.get(i)-prev;
+		for(int i=0; i<sections.size();i++) {
+			delta = sections.get(i)-prev;
 			densities.add(delta);
 			
-			sequences_hold.add(combineSequences(prev, secs.get(i)-1));
-			differentials.add(measureDiff(prev,secs.get(i)-1));
-			prev = secs.get(i);
+			sequences_hold.add(combineSequences(prev, sections.get(i)-1));
+			differentials.add(measureDiff(prev,sections.get(i)-1));
+			prev = sections.get(i);
 		}
 		sequences = sequences_hold;
 		
@@ -58,7 +57,7 @@ public class Bundle extends Group{
 	
 	
 	public void densityOrder() {
-		//order Data Bundle by densities
+		//order Data Bundle by densities+
 		mapping = new ArrayList<>();
 		ArrayList<Integer> map = new ArrayList<>();
 		float max =0; 
@@ -72,6 +71,7 @@ public class Bundle extends Group{
 			}
 			swap( i, max_pointer); 
 			Collections.swap(densities, i, max_pointer);
+			Collections.swap(differentials, i, max_pointer);
 			map.add(max_pointer);
 			max =0;
 		}
@@ -79,31 +79,24 @@ public class Bundle extends Group{
 		for(int i=0;i<map.size();i++) mapping.add(i);
 		for(int i=0;i<map.size();i++)Collections.swap(mapping, i, map.get(i));
 
-		System.out.println("reordered compressed densities");
-		for(int d: densities)			System.out.print(d+" ");
-		System.out.println("\n");
-		
-		System.out.println("mapping");
-		for(int d:  mapping)			System.out.print(d+" ");
-		System.out.println("\n");
 	}
 	
 	public void weightOrder() {
 		//order Data Bundle by average weight
-		densityOrder();
 		mapping = new ArrayList<>();
 		ArrayList<Integer> map = new ArrayList<>();
 		float max =0; 
 		for(int i = 0; i<getDepth();i++) {
 			int max_pointer =i;
 			for(int j = i; j< getDepth();j++) {
-				if( max<=getWeight(j)) {
+				if( max<getWeight(j)) {
 					max_pointer=j;
 					max = getWeight(j);
 					}
 			}
 			swap( i, max_pointer); 
 			Collections.swap(densities, i, max_pointer);
+			Collections.swap(differentials, i, max_pointer);
 			map.add(max_pointer);
 			max =0;
 		}
@@ -111,17 +104,12 @@ public class Bundle extends Group{
 		for(int i=0;i<map.size();i++) mapping.add(i);
 		for(int i=0;i<map.size();i++)Collections.swap(mapping, i, map.get(i));
 
-		System.out.println("reordered compressed densities");
-		for(int d: densities)			System.out.print(d+" ");
-		System.out.println("\n");
-		
-		System.out.println("mapping");
-		for(int d:  mapping)			System.out.print(d+" ");
-		System.out.println("\n");
 	}	
 	
 	
 	
+
+
 	public int getSeqValue(int i) {
 		return getDensity(i);
 	}
@@ -138,6 +126,9 @@ public class Bundle extends Group{
 			return (int) (densities.get(i));
 		System.out.println("density out of range");
 		return 0;
+	}
+	public int getWeight(int i) {
+		return sequences.get(i).getWeight();
 	}
 	
 	public int getDiff(int row, int idx) {
