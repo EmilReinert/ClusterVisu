@@ -78,7 +78,7 @@ public class Node implements Serializable{
 
 	public void clusterize(String clustering, String link, String similarity) {
 		// cluster whole child nodes into tree by given parameters
-		
+		long last_time = System.nanoTime();
 		if(clustering == "agglomerative")
 		{
 			int a =0; int b =0; // indices to most similar clusters
@@ -90,11 +90,12 @@ public class Node implements Serializable{
 					for(int j = i+1; j<branches.size();j++) {
 						hold = getBranch(i).compare(getBranch(j),link, similarity);
 						if(hold<min_diff) {min_diff= hold; a=i;b=j;}
+//						long time = System.nanoTime();System.out.println(((time - last_time) / 1000));last_time = time;
 					}
 				}
 				// -> debug
 //				System.out.println(o+" "+branches.size()+" "+min_diff);	System.out.println(a+" "+b);if(branches.size()==200) return;
-				if(o%(int)(length/10)==0)System.out.print(",");
+				if(o%(int)(length/(10*60))==0)System.out.print(",");
 				merge(a,b,min_diff);a=0;b =0; min_diff = 1000000;
 			}
 			System.out.println("\n");//br

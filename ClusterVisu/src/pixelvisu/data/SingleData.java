@@ -180,30 +180,42 @@ public class SingleData {
 	
 	
 	public int getColor(double value) {
-		double scale = 1;
+		// MAIN COLOR source
+		double scale =255;
 //		
-//		value = ((value-min)*scale);
+		value = ((value-min)/(max-min))*scale;
 		if(value>=255)
 			value = 255;
 		if(value>=0) {
-//			if(value<min||value>max) {return Color.red.getRGB();} 
-			//value = ((value-min)*scale);
+//			if(value<min||value>max) {return Color.red.getRGB();} ;
 			return new Color(0,(int)(value),(int)(value),1).getRGB();}
 		return Color.BLACK.getRGB();
 	}
-
-	public int getColor(Group seqs, int row, int idx) {
-		double value =  getData(seqs, row, idx);
+	public double getValue( int row, int idx) {
+		double value =getData(sequences, row, idx);
+		return value;
+	}
+	
+	
+	public int getColor( int row, int idx) {
+		double value = getValue( row, idx); 
 //		System.out.println(value);
 		return getColor(value);
 	}
-	public int getOrColor(Bundle seqs, int sec_idx, int row, int idx) {
 	
-	double value;
-	if(contrast)value= seqs.getOriginalContrast(sec_idx, row, idx);
-	else value = seqs.getOriginal(sec_idx, row, idx);
-	return getColor(value);
-}
+	public int getOrColor(int sec_idx, int row, int idx) {
+	
+		double value;
+		if(contrast) {
+			value= c.flat_c.getOriginalContrast(sec_idx, row, idx);//System.out.println(value);
+		}
+		else value = c.flat_c.getOriginal(sec_idx, row, idx);
+		return getColor(value);/////
+	}
+	
+	public double getOrValue(int sec_idx, int row, int idx) {
+		return c.flat_c.getOriginal(sec_idx, row, idx);
+	}
 
 	
 	

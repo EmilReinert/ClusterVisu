@@ -21,9 +21,9 @@ import javax.swing.JFrame;
 
 public class ClusterMakerData extends JFrame implements Runnable {
 	public static int WIDTH = 400*4;//TODO make adjustable
-	public static int OFF = 40;
+	public static int OFF = 50;
 	public static int HEIGHT = 300+OFF;	
-	public static int HEIGHT_controls = HEIGHT ;	
+	public static int HEIGHT_controls = HEIGHT +30;	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;
@@ -31,14 +31,19 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	public byte[]pixels_b;
 	public Controls controls;
 	public VisuData visu; 
+	public Scale sc;
 //	public VisuSeriation visu;
 	public Color bg_color = Color.WHITE;
 	
 	SingleData data;
 	SingleData data_compare;
 	
-	public ClusterMakerData(Controls c, Data data){
+	public ClusterMakerData(){
 
+		sc = new Scale(WIDTH, HEIGHT);
+		Data data= new Data(WIDTH, HEIGHT,sc);
+		sc.setMax(data.getLength());
+		Controls c = new Controls(data);
 //		String path ="Data/Memory usage.json";
 //		Data d = new Data(path);
 		
@@ -48,7 +53,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		
 		
-		visu = new VisuData(WIDTH,HEIGHT,data,bg_color);
+		visu = new VisuData(WIDTH,HEIGHT,data,bg_color,sc);
 //		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
 
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
@@ -92,7 +97,8 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		//draws info box
 //		controls.paint(g);
 		//draws diagram image
-		g.drawImage(image, 0, 0,image.getWidth(), image.getHeight(), null);
+		g.drawImage(image, 3, 0,image.getWidth(), image.getHeight(), null);
+		sc.paint(g);
 		bs.show();
 		
 
@@ -106,7 +112,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		requestFocus();
 		while(running) {
 			long now = System.nanoTime();
-			delta = delta + ((now-lastTime) / (1000000000.0/60));//60 = FPS
+			delta = delta + ((now-lastTime) / (1000000000.0/30));//60 = FPS
 			lastTime = now;
 			while (delta >= 1)//Make sure update is only happening 60 times a second
 			{
@@ -119,10 +125,8 @@ public class ClusterMakerData extends JFrame implements Runnable {
 //			controls.update();
 		}
 	}
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		Data data= new Data();
-		Controls con = new Controls(data);
-		ClusterMakerData clum = new ClusterMakerData(con,data);
+	public static void main(String[] args)  {
+		ClusterMakerData clum = new ClusterMakerData();
 	}
 	
 	

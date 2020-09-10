@@ -12,11 +12,12 @@ import org.json.JSONObject;
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
 	ArrayList<Double> original;
-	int sect = 1; // for horizontal sectioning of size 'sect'
+	int sect =60; // for horizontal clustering of size 'sect'
+	int sect_vis; // sections for 
 	String name ="";
 	int pos =0;
-	double min=100;
-	double max=0;
+	double min=10000;
+	double max=-10000;
 
 	public Sequence(){
 		data = new ArrayList<>();
@@ -87,9 +88,11 @@ public class Sequence implements Serializable {
 		this.pos = pos;
 		String [] cuts = group.split(",");
 		System.out.println(cuts.length);
-		for(int i=1;i<cuts.length;i+=60 ) {
+		for(int i=1;i<cuts.length;i++ ) {
 			data.add(Double.parseDouble(cuts[i].substring(0, 10)));
 		}
+		min = getMin();
+		max = getMax();
 	}
 	/// Compress
 	public void compress(int s) {
@@ -98,7 +101,7 @@ public class Sequence implements Serializable {
 		
 		for(int i =0; i<=data.size()-sect;i+=sect) {
 			double av = 0;
-			for(int j =0;j<sect;j++) av+=get(j+i)/sect;
+			for(int j =0;j<sect;j++) av+=data.get(j+i)/sect;
 			for(int j =0;j<sect;j++) data.set(i+j, av);			
 		}
 		
@@ -112,7 +115,6 @@ public class Sequence implements Serializable {
 		if(measure =="euclidean") return compareEuclid(other);
 		if(measure =="maximum") return compareMaximum(other);
 		if(measure =="weight") return compareWeight(other);
-		if(measure =="trivial") return compare(this, other);
 		if(measure =="manhattan") return compareManhattan(other);
 		else
 			System.err.println("Similarity Measure Does not exist");
@@ -123,7 +125,7 @@ public class Sequence implements Serializable {
 	
 	public double compareEuclid(Sequence other) {
 		float diff =0;
-		for(int i = 0;i<getLength();i+=sect) {
+		for(int i = 0;i<data.size();i+=sect) {
 			diff+= (get(i)-other.get(i))*(get(i)-other.get(i));
 		}
 		return Math.sqrt(diff);
@@ -161,13 +163,15 @@ public class Sequence implements Serializable {
 	}
 	
 	public double get(int i) {
-		if(i>= getLength()||i<0)return -1;
+		if(i>=data.size()||i<0)return -1;
+		
 		return data.get(i);
 	}
 	
+	
 	public double getContrast(int i) {
-		if(i>= getLength()||i<0)return -1;
-		if(max<min)return -1;
+		if(i>= getLength()||i<0)return -3;
+		if(max<min) {return -4;}
 		if(max==min)return max;
 		return (data.get(i)-min)*(255/(max-min));
 	}
@@ -188,11 +192,14 @@ public class Sequence implements Serializable {
 		return data.size();
 	}
 	
+	
+	
+	
 	public double getMin() {
 		double min = 100000;
-		for(int i = 0; i<getLength();i++) {
-			if(get(i)<min) {
-				min = get(i);
+		for(int i = 0; i<data.size();i++) {
+			if(data.get(i)<min) {
+				min = data.get(i);
 			}
 		}
 		if(min ==100000)
@@ -204,9 +211,9 @@ public class Sequence implements Serializable {
 	
 	public double getMax() {
 		double max = -100000;
-		for(int i = 0; i<getLength();i++) {
-			if(get(i)>max) {
-				max = get(i);
+		for(int i = 0; i<data.size();i++) {
+			if(data.get(i)>max) {
+				max = data.get(i);
 			}
 		}
 		if(max ==-100000)
@@ -248,11 +255,12 @@ public class Sequence implements Serializable {
 	}
 
 	public int getWeight() {
-		double weight = 0;
-		for(int i = 0; i<getLength();i++) {
-			weight+= get(i);
-		}
-		return (int) Math.abs(weight);
+		return 0;
+//		double weight = 0;
+//		for(int i = 0; i<data.size();i++) {
+//			weight+=data.get(i);
+//		}
+//		return (int) Math.abs(weight);
 	}
 	
 

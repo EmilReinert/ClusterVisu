@@ -32,6 +32,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	Data data; // secondary data to be compared structurally
 //	TreePanel p;
 	Circuit circ;
+	Scale sc;
 	
 	Color bg_color;
 	int length ;
@@ -41,12 +42,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	int click_cluster=0;
 	boolean dataswitch = true;
 	boolean unpack_all =false;
-	boolean denden =false;
-
+	boolean denden =true;
 	
+
+	String dataText = "none";
 	int posXY = 0;
 	
-	public VisuData(int w, int h,Data data, Color bg_c)  {
+	public VisuData(int w, int h,Data data, Color bg_c, Scale s)  {
 		width = w;
 		height = h;
 		bg_color= bg_c;
@@ -57,7 +59,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		this.data = data;
 		
 		length = data.data_main.getLength();
-
+		sc =s;
 		data.update();
 	}
 
@@ -70,7 +72,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		width=w; height = h-off;
 		off = w*off;
 		
-		
 		drawBackground(pixels);
 		
 //		drawData(pixels, data.sequences, off, width*height/3+off);
@@ -78,13 +79,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// DATA
 
 		// for single
-		drawData(pixels,data.data_main.sequences,off,pixels.length);
-		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
+//		drawData(pixels,data.data_main.sequences,off,pixels.length);
+//		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
 		if(data.data_main.c.flat_c!=null) {
-			drawBarsDen(pixels, data.data_main.c, off+width/2, pixels.length);
+			drawBarsDen(pixels, data.data_main.c, off, pixels.length);
 		}
 		if(data.data_compare.c!=null) {
-			drawBarsDen(pixels, data.data_compare.c, off+3*width/4, pixels.length);
+//			drawBarsDen(pixels, data.data_compare.c, off+3*width/4, pixels.length);
 		}
 //		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
@@ -93,28 +94,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 
 	// ----------------------------------------------------
 	
-	public void drawData(int[] pixels, Cluster c, int start, int end){
-		//if(isInsideSquare(start, end+getLength())) click_cluster=c;
-		//drawing both cat images
-		int col_hold=0;
-		for(int n=start; n<end-2*width; n++) {
-			col_hold = data.data_main.getColor(c.flat,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
-			if(col_hold>=0)
-				pixels[n] =col_hold;
-		}
-	}
-	
-	public void drawData(int[] pixels, Group g, int start, int end){
-		//if(isInsideSquare(start, end+getLength())) click_cluster=c;
-		//drawing both cat images
-		int col_hold=0;
-		for(int n=start; n<end-2*width; n++) {
-			col_hold = data.data_main.getColor(g,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
-			if(col_hold>=0)
-				pixels[n] =col_hold;
-		}
-	}
-
 	public void drawSections(int[] pixels,Group seqs, int start, int end) {
 		int top_off =start ;
 		int graph_color = Color.red.getRGB();
@@ -142,7 +121,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		int den = 0;
 		boolean clicked = false;
 		for(int i=0; i< cl.flat_c.getDepth();i++) {
-			if(denden)den =  (dens.get(i)+10)/3;// 5; //for static sizes
+			if(denden)den =  (dens.get(i)+30)/5;// 5; //for static sizes
 			else den = 5;
 			
 			if (unpack_all) {
@@ -152,16 +131,14 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				// hover bar
 				// if( int2Vec(start+jump*width).x <=mouse_y
 				// &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
-				if (isInsideSquare(mouse_click,start + (jump) * width, start + (jump + den) * width + getLength())) {
+				if (isInsideSquare(mouse_click,start + (jump) * width, start + (jump + den) * width + 19*width/20)) {
 					drawDataSec(pixels, cl.flat_c, start + jump * width, i, dens.get(i));
 
 					jumping = dens.get(i) + 2;
 				}
 				// normal
 				else {
-					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) {
-						den*=3;
-					}
+//					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) 	den*=3;
 					drawDataBar(pixels, cl.flat_c, start + jump * width, i, den);
 					jumping = den + 2;
 				}
@@ -179,15 +156,18 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		int diff_color = 0;
 		int diff_fade =0;
 		for (int n = startpos; n<startpos+lenght*width&&n<pixels.length;n++) {
-			int pos = ((n%width)-startpos%width);
-			col_hold = data.data_main.getColor(seqs,dataRowIdx,pos);
+
+			int pos = ((n%(width))-startpos%width);
+			col_hold = data.getColor(dataRowIdx,pos);
 			if(col_hold>=0) {
-				diff_color =6*seqs.getDiff(dataRowIdx,pos);
+				diff_color =6*data.getDiff(dataRowIdx,pos);
 				diff_fade =(int) Math.pow(diff_color*0.005,4);
 				if(diff_color>255)diff_color =255;
 				if(diff_fade>255)diff_fade =255;
 				diff_color = new Color(diff_fade,0, diff_color).getRGB();
 				pixels[n] =mixColors(col_hold,diff_color,0.8f);
+				
+				if(vec2Int(mouse_hover)==n)dataText=""+data.getValue(dataRowIdx,pos);
 				}
 		}
 	}
@@ -198,20 +178,24 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// iterate over rows : start and end _idx
 		// and then over individual data values
 		for (int n =0; n<length;n++) {
-			for(int i =0;i<getLength();i++) {
-				col_hold = data.data_main.getOrColor(seqs,sec_idx,n,i);
-
+			for(int i =0;i<getLength()&&i<width;i++) {
+//				if datatext!
+				col_hold = data.getOrColor(sec_idx,n,i);
+				
 				//System.out.println(n+" "+i+" "+col_hold);
 				if(col_hold>=0) {
 					if(startpos+n*width+i<pixels.length)pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
+
+					if(vec2Int(mouse_hover)==startpos+n*width+i)dataText=""+data.getOrValue(sec_idx,n,i);
 					}
-				else if(startpos+n*width+i<pixels.length)pixels[startpos+n*width+i] = 0;
 			}
 		}
 	}
 	
 	
 
+	
+	
 	public void drawDots2(int[] pixels, int start, int den ) {
 		int step = 3;
 		int jump =0;
@@ -445,6 +429,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// TODO Auto-generated method stub
+		sc.zoom(e.getPreciseWheelRotation(),mouse_hover);
 	}
 
 	@Override
@@ -457,18 +442,19 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		mouse_hover = new Vec2(e.getY(), e.getX());
+		sc.dataClick(mouse_hover, dataText);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
+		mouse_click = new Vec2(e.getY(), e.getX());
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		mouse_click = new Vec2(e.getY(), e.getX());
 	}
 
 	@Override

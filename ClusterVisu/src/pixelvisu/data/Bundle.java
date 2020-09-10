@@ -162,7 +162,7 @@ public class Bundle extends Group{
 	}
 	public double getOriginalContrast(int sec_idx, int i,int j) {
 		//returns original value with index of compressed data
-		if(i<0||j>getLength())return -1;
+		if(i<0||j>getLength())return -2;
 		int sec_sum = 0;
 		if(mapping!=null) {
 			sec_idx=mapping.get(sec_idx);
@@ -181,7 +181,7 @@ public class Bundle extends Group{
 		
 		//System.out.println("sum = "+sec_sum+'\n');
 		//System.out.println("Opening Original Section: "+sec_idx+" at Row Idx "+sec_sum+"; size = "+getDensity(mapping.indexOf(sec_idx)));
-		if((sec_sum+i)>=original.size())return -1;
+		if((sec_sum+i)>=original.size())return -2;
 		return original.get(sec_sum+i).getContrast(j);
 	}
 }
