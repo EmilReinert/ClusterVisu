@@ -1,5 +1,6 @@
 package pixelvisu.data;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,32 +13,32 @@ public class Scale  {
 	String hover_data = " ";
 	
 	int width, height;
+	float s, e; // origninal start and end
 	float start_idx, end_idx;
-	float max_len;
 	int cuts=200; //seconds // vertical time cut intervals after specific instances
 	
 	public Scale(int with, int heit) {
 		width = with; height = heit;
-		start_idx=0;
-		end_idx = 12000;
+		start_idx=s=0;
+		end_idx = e=12000;
 	}
 	public void setMax(float max) {
-		max_len=end_idx=max;
+		e=end_idx=max;
 	}
 	
-	public void dataClick( Vec2 mouse, String data) {
+	public void dataClick( Vec2 mouse, double data) {
 		this.mouse = mouse;
-		hover_data = data;
+		hover_data = ((float)Math.round(data*100))/100+"";
 	}
 	
 	public void zoom(double d, Vec2 mouse) {
 		float scale = end_idx-start_idx;
 //		System.out.println(scale);
 		double zoom_strength=0;
-		if(scale>2500)zoom_strength = d*600;
-		else zoom_strength = d*60;
-		if(scale<300)zoom_strength = d*60;
-		if(scale<100)zoom_strength = d*10;
+		if(scale>=2500) {zoom_strength = d*60;}
+		if(scale<2500) {zoom_strength = d*30;}
+		if(scale<300) {zoom_strength = d*6;}
+		if(scale<100) {zoom_strength = d*1;}
 		
 		float end_hold = end_idx;
 		float start_hold = start_idx;
@@ -49,11 +50,42 @@ public class Scale  {
         
         if(end_hold<start_hold)return;
         
-        if(end_hold<max_len) end_idx=end_hold;
-        else end_idx=max_len;
+        if(end_hold<e) end_idx=end_hold;
+        else end_idx=e;
         
         if(start_hold>0) start_idx=start_hold;
         else start_idx=0;
+        
+        
+        scale = end_idx-start_idx;
+		if(scale>=1000) {cuts =200;}
+		if(scale<1000) {cuts =50;}
+		if(scale<200) {cuts =10;}
+		if(scale<100) {cuts =5;}
+		if(scale<20) {cuts =1;}
+	}
+	
+	public void drag(Vec2 start,Vec2 end) {
+		//drag left, right
+
+		float span = end_idx-start_idx;
+	        var relativeXA =start.y/width;// (a.x - offset) / (w - 2 * offset); //relative mouse value on timeline
+	        if (relativeXA < 0) relativeXA = 0;
+	        if (relativeXA > 1) relativeXA = 1;
+
+	        var relativeXB = end.y/width;//(b.x - offset) / (w - 2 * offset); //relative mouse value on timeline
+	        if (relativeXB < 0) relativeXB = 0;
+	        if (relativeXB > 1) relativeXB = 1;
+
+	        double deltaRel = (relativeXB - relativeXA) * span;
+
+
+	        if (start_idx - deltaRel <= s|| end_idx - deltaRel >= e) {
+	            return;
+	        }
+	        start_idx -= deltaRel;
+	        end_idx -= deltaRel;
+	    
 	}
 	
 	public int getScaleIdx(int idx) {
@@ -75,15 +107,20 @@ public class Scale  {
 		Graphics2D g2d = (Graphics2D)g;
 		// paints scale over data
 //		g.drawLine(0, 0, width, height);
-		g2d.setColor(new Color(1, 0, 0, 0.4f));
+		g2d.setColor(new Color(0, 0, 0, 0.4f));
 		// drawing cuts
 		for(int i=(int) start_idx;i<end_idx;i++)
 			if(i%cuts==0) {
+               if(i%10==0) g2d.setStroke(new BasicStroke(2));
+               else g2d.setStroke(new BasicStroke(1));
 				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), height);//System.out.println(i);
 				g2d.drawString(i+" ", getUnscaledIdx(i)+2, 40);
 				}
 
-		g2d.setColor(new Color(1, 0, 0, 1.0f));
+            else g2d.setStroke(new BasicStroke(3));
+		g2d.setColor(new Color(1, 1, 1,0.4f));
+		g2d.fillRect((int)mouse.y-2, (int)mouse.x-22, hover_data.length()*7, 16);
+		g2d.setColor(new Color(0, 0, 0, 1.0f));
 		g2d.drawRect((int)mouse.y-1, (int)mouse.x-1,1,1);
 		g2d.drawString(hover_data, (int)mouse.y, (int)mouse.x-10);
 		

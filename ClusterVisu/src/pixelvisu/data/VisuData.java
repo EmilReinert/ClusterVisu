@@ -39,13 +39,14 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 
 	Vec2 mouse_click = new Vec2(0,0);
 	Vec2 mouse_hover = new Vec2(0,0);
+	Vec2 mouse_pressed =new Vec2(0,0);
 	int click_cluster=0;
 	boolean dataswitch = true;
 	boolean unpack_all =false;
 	boolean denden =true;
 	
 
-	String dataText = "none";
+	double dataText = 0;
 	int posXY = 0;
 	
 	public VisuData(int w, int h,Data data, Color bg_c, Scale s)  {
@@ -167,7 +168,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				diff_color = new Color(diff_fade,0, diff_color).getRGB();
 				pixels[n] =mixColors(col_hold,diff_color,0.8f);
 				
-				if(vec2Int(mouse_hover)==n)dataText=""+data.getValue(dataRowIdx,pos);
+				if(vec2Int(mouse_hover)==n)dataText=data.getValue(dataRowIdx,pos);
 				}
 		}
 	}
@@ -186,7 +187,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				if(col_hold>=0) {
 					if(startpos+n*width+i<pixels.length)pixels[startpos+n*width+i] =col_hold; //System.out.println("hi");
 
-					if(vec2Int(mouse_hover)==startpos+n*width+i)dataText=""+data.getOrValue(sec_idx,n,i);
+					if(vec2Int(mouse_hover)==startpos+n*width+i)dataText=data.getOrValue(sec_idx,n,i);
 					}
 			}
 		}
@@ -435,7 +436,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		sc.drag(mouse_pressed,new Vec2(e.getY(), e.getX()));
+		mouse_pressed = new Vec2(e.getY(), e.getX());
+		mouseMoved(e);
 	}
 
 	@Override
@@ -454,6 +457,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
+		mouse_pressed =   new Vec2(e.getY(), e.getX());
 		
 	}
 

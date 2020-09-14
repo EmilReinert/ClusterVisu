@@ -183,7 +183,7 @@ public class SingleData {
 		// MAIN COLOR source
 		double scale =255;
 //		
-		value = ((value-min)/(max-min))*scale;
+		if(!contrast)value = ((value-min)/(max-min))*scale;
 		if(value>=255)
 			value = 255;
 		if(value>=0) {
