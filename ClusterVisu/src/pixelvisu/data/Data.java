@@ -39,8 +39,8 @@ public class Data {
 		return data_main.getOrValue(sec_idx, row, idx);
 	}
 	
-	public int getColor( int row, int idx) {
-		return data_main.getColor(row, sc.getScaleIdx(idx));
+	public int getColor(int dataRowIdx, int pos) {
+		return data_main.getColor(data_main.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
 	}
 
 	public int getOrColor( int sec_idx, int row, int idx) {

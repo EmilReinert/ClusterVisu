@@ -197,11 +197,6 @@ public class SingleData {
 	}
 	
 	
-	public int getColor( int row, int idx) {
-		double value = getValue( row, idx); 
-//		System.out.println(value);
-		return getColor(value);
-	}
 	
 	public int getOrColor(int sec_idx, int row, int idx) {
 	
