@@ -23,7 +23,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	public static int WIDTH = 400*4;//TODO make adjustable
 	public static int OFF = 50;
 	public static int HEIGHT = 300+OFF;	
-	public static int HEIGHT_controls = HEIGHT +30;	
+	public static int HEIGHT_controls = HEIGHT ;//+30;	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;

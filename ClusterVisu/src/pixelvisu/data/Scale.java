@@ -35,10 +35,11 @@ public class Scale  {
 		float scale = end_idx-start_idx;
 //		System.out.println(scale);
 		double zoom_strength=0;
-		if(scale>=2500) {zoom_strength = d*60;}
-		if(scale<2500) {zoom_strength = d*30;}
-		if(scale<300) {zoom_strength = d*6;}
-		if(scale<100) {zoom_strength = d*1;}
+		if(scale>=2500) {zoom_strength = d*80;}
+		if(scale<2500) {zoom_strength = d*40;}
+		if(scale<300) {zoom_strength = d*10;}
+		if(scale<100) {zoom_strength = d*5;}
+
 		
 		float end_hold = end_idx;
 		float start_hold = start_idx;
@@ -47,8 +48,7 @@ public class Scale  {
 		end_hold += (1 - relativeX) * zoom_strength;
         start_hold -= relativeX * zoom_strength;
         
-        
-        if(end_hold<start_hold)return;
+        if(end_hold-start_hold<10)return;
         
         if(end_hold<e) end_idx=end_hold;
         else end_idx=e;
@@ -62,7 +62,7 @@ public class Scale  {
 		if(scale<1000) {cuts =50;}
 		if(scale<200) {cuts =10;}
 		if(scale<100) {cuts =5;}
-		if(scale<20) {cuts =1;}
+		if(scale<50) {cuts =1;}
 	}
 	
 	public void drag(Vec2 start,Vec2 end) {
@@ -114,7 +114,7 @@ public class Scale  {
                if(i%10==0) g2d.setStroke(new BasicStroke(2));
                else g2d.setStroke(new BasicStroke(1));
 				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), height);//System.out.println(i);
-				g2d.drawString(i+" ", getUnscaledIdx(i)+2, 40);
+				if(i%5==0||end_idx-start_idx<15)g2d.drawString(i+" ", getUnscaledIdx(i)+2, 40);
 				}
 
             else g2d.setStroke(new BasicStroke(3));
