@@ -9,10 +9,16 @@ public class Data {
 	String section = "similarity";
 	boolean contrast;
 	Scale sc;
+	Circuit circ;
+	
+
+	String maindata_path = "Data/memory_2.txt";
 	
 	public Data(int width, int height, Scale s)  {
+		circ = new Circuit();
+		
 		try {
-			data_main = new SingleData("Data/memory_2.txt", group_count);
+			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -21,8 +27,19 @@ public class Data {
 //		data_compare = new SingleData("Data/cpu.json",data_main.c);
 		sc =s;
 	}
+
+	public void updateClustering() {
+		try {
+			data_main.update(maindata_path, circ.getCircuit(), group_count);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		updateSection();
+		
+	}
 	
-	public void update() {
+	public void updateSection() {
 		data_main.section(group_count,section);
 		try {data_compare = new SingleData(data_compare,data_main.c);
 		} catch (IOException e1) {
@@ -30,6 +47,12 @@ public class Data {
 			e1.printStackTrace();
 		}
 		
+	}
+	public void up() {
+		circ.up();
+	}
+	public void down() {
+		circ.down();
 	}
 	
 	public double getValue(int row, int idx) {
@@ -40,6 +63,7 @@ public class Data {
 	}
 	
 	public int getColor(int dataRowIdx, int pos) {
+		if(data_main==null)return 0;
 		return data_main.getColor(data_main.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
 	}
 
@@ -48,9 +72,9 @@ public class Data {
 	}
 	
 	public void order(String mode) {
-		update();
-			data_main.order(mode);
-			data_compare.order(mode);
+		updateSection();
+		data_main.order(mode);
+		data_compare.order(mode);
 		
 	}
 	
@@ -71,13 +95,9 @@ public class Data {
 		}
 	}
 
-	public void updateClustering(String[] circuit) {
-		data_main.updateClustering(circuit);
-		update();
-		
-	}
 
 	public int getDiff(int dataRowIdx, int pos) {
 		return data_main.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
 	}
+
 }

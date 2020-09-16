@@ -31,7 +31,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	
 	Data data; // secondary data to be compared structurally
 //	TreePanel p;
-	Circuit circ;
 	Scale sc;
 	
 	Color bg_color;
@@ -55,13 +54,12 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		bg_color= bg_c;
 
 //		p = new TreePanel();
-		circ = new Circuit();
 		
 		this.data = data;
 		
 		length = data.data_main.getLength();
 		sc =s;
-		data.update();
+		data.updateSection();
 	}
 
 	
@@ -69,7 +67,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	// UPDATE ----------------------------------------------------
 	
 	public void update(int[] pixels, int w,int h,int off) {
-		if(w!=width) System.out.println(width);
 		width=w; height = h-off;
 		off = w*off;
 		
@@ -429,12 +426,12 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	
 	
 
-	public void drawTopLine(Graphics g2) {
-		g2.setColor(Color.green);
-	    g2.fillRect(0, 0,width, height);
-		
-		g2.setColor(Color.BLACK);
-	}
+//	public void drawTopLine(Graphics g2) {
+//		g2.setColor(Color.green);
+//	    g2.fillRect(0, 0,width, height);
+//		
+//		g2.setColor(Color.BLACK);
+//	}
 	
 	
 
@@ -514,11 +511,10 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			else denden=true;		
 		}
 		
-		if(e.getKeyCode()==39) circ.up();
+		if(e.getKeyCode()==39) {data.up();System.out.println("up");}
 		
-		if(e.getKeyCode()==37) circ.down();
+		if(e.getKeyCode()==37) {data.down();System.out.println("down");}
 		
-		data.updateClustering(circ.getCircuit());
 		
 	}
 

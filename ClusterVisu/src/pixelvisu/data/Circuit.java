@@ -34,6 +34,14 @@ public class Circuit {
 		SDown();
 	}
 	
+	public int getIndexOf(String s) {
+		int match = -1;
+		for (int i = 0;i<clustering.length;i++) if(clustering[i]==s) match=i; 
+		for (int i = 0;i<linkage.length;i++) if(linkage[i]==s) match=i; 
+		for (int i = 0;i<similarity.length;i++) if(similarity[i]==s) match=i; 
+		if(match>-1) return match;
+		else {System.err.println("There is no match for the given Input");return 0;}
+	}
 	public String[] getCircuit() {
 		return new  String[] {clustering[c_idx],linkage[l_idx],similarity[s_idx]};
 	}

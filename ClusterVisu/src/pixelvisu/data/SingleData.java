@@ -32,12 +32,12 @@ public class SingleData {
 	String dataname="error";
 	int group_count = 0;
 	
-	public SingleData(String path, int gc) throws IOException {
-		update(path,gc);
+	public SingleData(String path,String []circ, int gc) throws IOException {
+		update(path,circ,gc);
 		this.path = path;
 	}
 	
-	public void update(String path, int gc) throws IOException {
+	public void update(String path,String []circ, int gc) throws IOException {
 
 		this.group_count = gc;
 		sequences = new Group(group_count);
@@ -49,7 +49,7 @@ public class SingleData {
 
 		dataname = path.substring(path.lastIndexOf("/") + 1);
 
-		c = new Cluster(sequences, "agglomerative", "single", "euclidean", dataname, true);
+		updateClustering(circ);
 	}
 	
 	public void updateClustering( String []circ) {
@@ -57,6 +57,7 @@ public class SingleData {
 		if(circ.length!=3)
 			System.err.println("wrong circuit");
 		try {
+			System.out.println("clusering new circuit");
 		c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);}
 		catch(Exception e) {
 			System.err.println("circuit not found");
@@ -184,6 +185,7 @@ public class SingleData {
 		double scale =255;
 //		
 		if(!contrast)value = ((value-min)/(max-min))*scale;
+		
 		if(value>=255)
 			value = 255;
 		if(value>=0) {

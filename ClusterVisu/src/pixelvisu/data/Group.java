@@ -117,7 +117,9 @@ public class Group implements Serializable{
 		return sequences.size();
 	}
 	public int getLength() {
-		return sequences.get(0).getLength();
+		if(sequences!=null&&sequences.size()>0)
+			return sequences.get(0).getLength();
+		else return 0;
 	}
 	public double getMaxDiff() {
 		// 

@@ -9,8 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -21,6 +23,7 @@ public class Controls extends JFrame implements MouseListener{
 	JFrame f;
 	int w,h;
 	Data data;
+	Circuit circ;
 	
 	
 	public Controls(Data d) {
@@ -48,7 +51,7 @@ public class Controls extends JFrame implements MouseListener{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	           data.section ="similarity";
-	           data.update();
+	           data.updateSection();
 	        }
 	    });
 	    add(bs); 
@@ -58,7 +61,7 @@ public class Controls extends JFrame implements MouseListener{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	           	data.section ="size";
-	           	data.update();
+	           	data.updateSection();
 	        }
 	    });
 	    add(bs2); 
@@ -107,7 +110,37 @@ public class Controls extends JFrame implements MouseListener{
 	    });
 	    add(s);
 	    
-	    
+	    //Circuit List
+	    JComboBox jsc = new JComboBox<String>(data.circ.clustering);
+	    jsc.setBounds(0,10,50,20);  
+	    jsc.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	        	data.circ.c_idx=data.circ.getIndexOf((String)jsc.getSelectedItem());
+	        	data.updateClustering();
+	        }
+	    });
+	    add(jsc);
+	    JComboBox jsl = new JComboBox<String>(data.circ.linkage);
+	    jsl.setBounds(50,10,50,20);  
+	    jsl.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	        	data.circ.l_idx=data.circ.getIndexOf((String)jsl.getSelectedItem());
+	        	data.updateClustering();
+	        }
+	    });
+	    add(jsl);
+	    JComboBox jss = new JComboBox<String>(data.circ.similarity);
+	    jss.setBounds(100,10,50,20);  
+	    jss.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	        	data.circ.s_idx=data.circ.getIndexOf((String)jss.getSelectedItem());
+	        	data.updateClustering();
+	        }
+	    });
+	    add(jss);
 	    
 	    setVisible(true);   
 	}

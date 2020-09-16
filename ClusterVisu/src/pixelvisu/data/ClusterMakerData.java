@@ -20,20 +20,22 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class ClusterMakerData extends JFrame implements Runnable {
-	public static int WIDTH = 400*4;//TODO make adjustable
+	public static int WIDTH = 400*3;//TODO make adjustable
 	public static int OFF = 50;
 	public static int HEIGHT = 300+OFF;	
-	public static int HEIGHT_controls = HEIGHT ;//+30;	
+//	public static int HEIGHT_controls = HEIGHT ;//+30;	
+	public Color bg_color = Color.WHITE;
+	
 	private Thread thread;
 	private boolean running;
 	private BufferedImage image;
 	public int[] pixels;
 	public byte[]pixels_b;
+	
 	public Controls controls;
 	public VisuData visu; 
 	public Scale sc;
 //	public VisuSeriation visu;
-	public Color bg_color = Color.WHITE;
 	
 	SingleData data;
 	SingleData data_compare;
@@ -59,7 +61,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
 		addKeyListener(visu);
 		
-		setSize(WIDTH, HEIGHT_controls);
+		setSize(WIDTH, HEIGHT);
 		setTitle("Pixel Clustering");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.black);
@@ -88,6 +90,8 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	
 	
 	public void render() {
+
+		
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null) {
 			createBufferStrategy(3);
@@ -118,7 +122,9 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			{
 				
 				//handles all of the logic restricted time
-				visu.update(pixels, getWidth(),getHeight(),OFF);
+				image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
+				pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+				visu.update(pixels, image.getWidth(),image.getHeight(),OFF);
 				delta--;
 			}
 			render();//displays to the screen unrestricted time
