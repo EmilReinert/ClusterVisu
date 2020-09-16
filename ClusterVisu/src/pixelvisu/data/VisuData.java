@@ -37,6 +37,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	int length ;
 
 	Vec2 mouse_click = new Vec2(0,0);
+	Vec2 mouse_click_top = new Vec2(0,0);
+	Vec2 mouse_click_bottom = new Vec2(0,0);
+	
 	Vec2 mouse_hover = new Vec2(0,0);
 	Vec2 mouse_pressed =new Vec2(0,0);
 	int click_cluster=0;
@@ -80,10 +83,10 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 //		drawData(pixels,data.data_main.sequences,off,pixels.length);
 //		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
 		if(data.data_main.c.flat_c!=null) {
-			drawBarsDen(pixels, data.data_main.c, off, pixels.length);
+			drawBarsDen(pixels, data.data_main, off, off+height/2*width);
 		}
 		if(data.data_compare.c!=null) {
-//			drawBarsDen(pixels, data.data_compare.c, off+3*width/4, pixels.length);
+			drawBarsDen(pixels, data.data_compare, off+height/2*width, pixels.length);
 		}
 //		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
@@ -111,33 +114,34 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		
 	}
 
-	public void drawBarsDen(int[] pixels, Cluster cl, int start, int end) {
+	public void drawBarsDen(int[] pixels,SingleData cl, int start, int end) {
 
-		ArrayList<Integer> dens = cl.flat_c.densities;
+		ArrayList<Integer> dens = cl.c.flat_c.densities;
 		int jump =0;
 		int jumping =0;
 		int den = 0;
 		boolean clicked = false;
 		int pixelheight = 1; // height of a singular pixel
-		for(int i=0; i< cl.flat_c.getDepth();i++) {
+		for(int i=0; i< cl.c.flat_c.getDepth();i++) {
 			if(denden)den =  (dens.get(i)+30)/5;// 5; //for static sizes
 			else den = 5;
 			if (unpack_all) {
-				drawDataSec(pixels, cl.flat_c, start + jump * width, i, pixelheight, dens.get(i));
+				drawDataSec(pixels, cl, start + jump * width, i, pixelheight, dens.get(i));
 				jumping = dens.get(i) + 2;
 			} else {
 				// hover bar
 				// if( int2Vec(start+jump*width).x <=mouse_y
 				// &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
-				if (isInsideSquare(mouse_click,start + (jump) * width, start + (jump + den) * width + 19*width/20)) {
-					jumping = drawDataSec(pixels, cl.flat_c, start + jump * width, i, pixelheight, dens.get(i));
+				if (isInsideSquare(mouse_click_top,start + (jump) * width, start + (jump + den) * width + 19*width/20)
+						||isInsideSquare(mouse_click_bottom,start + (jump) * width, start + (jump + den) * width + 19*width/20)) {
+					jumping = drawDataSec(pixels, cl, start + jump * width, i, pixelheight, dens.get(i));
 
 					jumping += 2;
 				}
 				// normal
 				else {
 //					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) 	den*=3;
-					drawDataBar(pixels, cl.flat_c, start + jump * width, i, den);
+					drawDataBar(pixels,cl,  start + jump * width, i, den);
 					jumping = den + 2;
 				}
 				// drawing density dots
@@ -148,16 +152,16 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		}
 	}
 	
-	public void drawDataBar(int[] pixels, Bundle seqs, int startpos,int dataRowIdx, int lenght) {
+	public void drawDataBar(int[] pixels, SingleData d, int startpos,int dataRowIdx, int lenght) {
 		// draw a bar with SAME data
-		int col_hold =0;
+		Color col_hold;
 		int diff_color = 0;
 		int diff_fade =0;
 		for (int n = startpos; n<startpos+lenght*width&&n<pixels.length;n++) {
 
 			int pos = ((n%(width))-startpos%width);
-			col_hold = data.getColor(dataRowIdx,pos);
-			if(col_hold>=0) {
+			col_hold = data.getColor(d,dataRowIdx,pos);
+			if(col_hold!=null) {
 				diff_color =6*data.getDiff(dataRowIdx,pos);
 				diff_fade =(int) Math.pow(diff_color*0.005,4);
 				if(diff_color>255)diff_color =255;
@@ -165,14 +169,14 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				diff_color = new Color(diff_fade,0, diff_color).getRGB();
 				pixels[n] =mixColors(col_hold,diff_color,0.8f);
 				
-				if(vec2Int(mouse_hover)==n)dataText=data.getValue(dataRowIdx,pos);
+				if(vec2Int(mouse_hover)==n)dataText=data.getValue(d,dataRowIdx,pos);
 				}
 		}
 	}
 	
-	public int drawDataSec(int[] pixels, Bundle seqs, int startpos,int sec_idx, int pixelheight, int length) {
+	public int drawDataSec(int[] pixels, SingleData d, int startpos,int sec_idx, int pixelheight, int length) {
 		// draw an ORIGINAL section of data
-		int col_hold =0;
+		Color col_hold;
 		// iterate over rows : start and end _idx
 		// and then over individual data values
 		int step =0;
@@ -181,13 +185,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			for(int hei=0;hei<pix;hei++) {
 				
 				for(int i =0;i<getLength()&&i<width;i++) {
-					col_hold = data.getOrColor(sec_idx,n,i);
+					col_hold = data.getOrColor(d,sec_idx,n,i);
 					
 					//System.out.println(n+" "+i+" "+col_hold);
-					if(col_hold>=0) {
-						if(startpos+(n+step)*width+i<pixels.length)pixels[startpos+(n+step)*width+i] =col_hold; //System.out.println("hi");
+					if(col_hold!=null) {
+						if(startpos+(n+step)*width+i<pixels.length)pixels[startpos+(n+step)*width+i] =col_hold.getRGB(); //System.out.println("hi");
 	
-						if(vec2Int(mouse_hover)==startpos+n*width+i)dataText=data.getOrValue(sec_idx,n,i);
+						if(vec2Int(mouse_hover)==startpos+n*width+i)dataText=data.getOrValue(d,sec_idx,n,i);
 						}
 				}
 				step++;
@@ -293,6 +297,24 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
     	double weight1 = iRatio;
 
 	    Color c0 = new Color(ca);
+	    Color c1 = new Color(cb);
+
+	    double r = weight0 * c0.getRed() + weight1 * c1.getRed();
+	    double g = weight0 * c0.getGreen() + weight1 * c1.getGreen();
+	    double b = weight0 * c0.getBlue() + weight1 * c1.getBlue();
+
+	    if(r>255) r=255;
+	    if(g>255) g=255;
+	    if(b>255) b=255;
+	    
+	    return new Color((int) r, (int) g, (int) b,1).getRGB();
+	}
+	public int mixColors(Color c0, int cb, float ratio) {
+	    float iRatio = 1.0f - ratio;
+
+	    double weight0 = ratio;
+    	double weight1 = iRatio;
+
 	    Color c1 = new Color(cb);
 
 	    double r = weight0 * c0.getRed() + weight1 * c1.getRed();
@@ -461,6 +483,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		mouse_click = new Vec2(e.getY(), e.getX());
+		if(mouse_click.x<height/2) mouse_click_top= new Vec2(mouse_click);
+		else mouse_click_bottom= new Vec2(mouse_click);
 	}
 
 	@Override

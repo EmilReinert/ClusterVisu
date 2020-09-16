@@ -85,16 +85,18 @@ public class Group implements Serializable{
 
 	public Sequence get(int i) {
 		if(sequences.size()>0)
+			if(sequences.size()>i)
 			return sequences.get(i);
-		return null;
+//		System.err.println("Sequence not found! Pos: "+i+", Sequence Length: "+sequences.size());
+		return new Sequence(getLength(),-1);
 	}
 	
 	public double get(int row, int idx) {
 		if(row>=getDepth()) {
-			return Color.white.getRGB();//white
+			return -1;
 		}
 		if(idx>=getLength()) {
-			return Color.white.getRGB();
+			return -1;
 		}
 		return sequences.get(row).get(idx);//getContrast(idx); //////////
 	}

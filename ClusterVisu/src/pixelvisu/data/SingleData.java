@@ -22,15 +22,15 @@ import org.json.JSONObject;
 
 public class SingleData {
 	Group sequences;// unordered weights // image
+	Cluster c;
 	
 	double min;
 	double max;
 	boolean contrast = false;
-	Cluster c;
-	
 	String path = "";
 	String dataname="error";
 	int group_count = 0;
+	Color mc= Color.green;
 	
 	public SingleData(String path,String []circ, int gc) throws IOException {
 		update(path,circ,gc);
@@ -65,25 +65,18 @@ public class SingleData {
 		
 		
 	}
-	public SingleData(String path, Cluster other) throws IOException {
+	public SingleData(String path, Cluster other, Color col) throws IOException {
+		// Compare Data
+		mc = col;
 		sequences = new Group(group_count);
-
+		readData(path);
 		this.path = path;
 		dataname = path.substring(path.lastIndexOf("/") + 1);
-
-		readData(path);
+		
 		c = new Cluster(sequences, other);
 		c.makeSections(group_count,other);
 	}
-	
-	public SingleData(SingleData s, Cluster other) throws IOException {
-		sequences = s.sequences;
-		dataname = s.dataname;
 
-		this.path = s.path;
-		c = new Cluster(sequences, other);
-		c.makeSections(group_count,other);
-	}
 	
 
 	protected void readData(String path) throws IOException {
@@ -180,7 +173,7 @@ public class SingleData {
 	}
 	
 	
-	public int getColor(double value) {
+	public Color getColor(double value) {
 		// MAIN COLOR source
 		double scale =255;
 //		
@@ -190,8 +183,8 @@ public class SingleData {
 			value = 255;
 		if(value>=0) {
 //			if(value<min||value>max) {return Color.red.getRGB();} ;
-			return new Color(0,(int)(value),(int)(value),1).getRGB();}
-		return Color.BLACK.getRGB();
+			return multiplyColors(mc, new Color((int)value,(int)value,(int)value));}
+		return null;
 	}
 	public double getValue( int row, int idx) {
 		double value =getData(sequences, row, idx);
@@ -200,7 +193,7 @@ public class SingleData {
 	
 	
 	
-	public int getOrColor(int sec_idx, int row, int idx) {
+	public Color getOrColor(int sec_idx, int row, int idx) {
 	
 		double value;
 		if(contrast) {
@@ -228,6 +221,44 @@ public class SingleData {
 		return seqs.getContrast(row,idx);
 	}
 	
+	
+	
+	public void setColor(Color c) {
+		mc=c;
+	}
+	public static Color multiplyColors(Color color1, Color color2) {
+		float r1 = color1.getRed() / 255.0f;
+		float g1 = color1.getGreen() / 255.0f;
+		float b1 = color1.getBlue() / 255.0f;
+		float a1 = color1.getAlpha() / 255.0f;
+
+		float r2 = color2.getRed() / 255.0f;
+		float g2 = color2.getGreen() / 255.0f;
+		float b2 = color2.getBlue() / 255.0f;
+		float a2 = color2.getAlpha() / 255.0f;
+		float r3 = r1 * r2;if(r3>255)r3=255;
+		float g3 = g1 * g2;if(g3>255)g3=255;
+		float b3 = b1 * b2;if(b3>255)b3=255;
+		float a3 = a1 * a2;if(b3>255)b3=255;
+		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3 );
+		return color3;
+	}public static Color combineColors(Color color1, Color color2) {
+		float r1 = color1.getRed() / 255.0f;
+		float g1 = color1.getGreen() / 255.0f;
+		float b1 = color1.getBlue() / 255.0f;
+		float a1 = color1.getAlpha() / 255.0f;
+
+		float r2 = color2.getRed() / 255.0f;
+		float g2 = color2.getGreen() / 255.0f;
+		float b2 = color2.getBlue() / 255.0f;
+		float a2 = color2.getAlpha() / 255.0f;
+		float r3 = 0.5f*r1 +0.5f* r2;if(r3>255)r3=255;
+		float g3 = 0.5f*g1 +0.5f* g2;if(g3>255)g3=255;
+		float b3 = 0.5f*b1 +0.5f* b2;if(b3>255)b3=255;
+		float a3 = 0.5f*a1 +0.5f* a2;if(b3>255)b3=255;
+		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3  );
+		return color3;
+	}
 	public int getLength() {
 		return sequences.get(0).getLength();
 	}

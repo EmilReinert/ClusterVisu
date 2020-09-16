@@ -1,5 +1,6 @@
 package pixelvisu.data;
 
+import java.awt.Color;
 import java.io.IOException;
 
 public class Data {
@@ -13,6 +14,7 @@ public class Data {
 	
 
 	String maindata_path = "Data/memory_2.txt";
+	String comparedata_path = "Data/memory_prom.txt";
 	
 	public Data(int width, int height, Scale s)  {
 		circ = new Circuit();
@@ -23,8 +25,7 @@ public class Data {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		data_compare = data_main;
-//		data_compare = new SingleData("Data/cpu.json",data_main.c);
+		updateSection();
 		sc =s;
 	}
 
@@ -41,7 +42,8 @@ public class Data {
 	
 	public void updateSection() {
 		data_main.section(group_count,section);
-		try {data_compare = new SingleData(data_compare,data_main.c);
+		try {
+			data_compare = new SingleData(comparedata_path,data_main.c, Color.orange);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -55,24 +57,30 @@ public class Data {
 		circ.down();
 	}
 	
-	public double getValue(int row, int idx) {
+	public double getValue(SingleData d, int row, int idx) {
 		//for string
 		return data_main.getValue(row, idx);
 	}
-	public double getOrValue(int sec_idx, int row, int idx) {
+	public double getOrValue(SingleData d,int sec_idx, int row, int idx) {
 		return data_main.getOrValue(sec_idx, row, idx);
 	}
 	
-	public int getColor(int dataRowIdx, int pos) {
-		if(data_main==null)return -1;
-		if(data_main.c.flat_c==null)return -1;
-		if(!contrast)return data_main.getColor(data_main.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
-		else return data_main.getColor(data_main.c.flat_c.getContrast(dataRowIdx,sc.getScaleIdx(pos) ));
+	public Color getColor(SingleData d,int dataRowIdx, int pos) {
+		if(d==null)return null;
+		if(d.c.flat_c==null)return null;
+		if(!contrast)return d.getColor(d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
+		else return d.getColor(d.c.flat_c.getContrast(dataRowIdx,sc.getScaleIdx(pos) ));
 	}
 
-	public int getOrColor( int sec_idx, int row, int idx) {
-		return data_main.getOrColor(sec_idx, row, sc.getScaleIdx(idx));
+	public Color getOrColor(SingleData d,int sec_idx, int row, int idx) {
+		return d.getOrColor(sec_idx, row, sc.getScaleIdx(idx));
 	}
+	
+	
+	
+	
+	
+	
 	
 	public void order(String mode) {
 		updateSection();
@@ -101,6 +109,11 @@ public class Data {
 
 	public int getDiff(int dataRowIdx, int pos) {
 		return data_main.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
+	}
+
+	public boolean isSelected(int i) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

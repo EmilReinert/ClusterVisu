@@ -9,6 +9,11 @@ public class Vec2 {
 		this.y = y;
 	}
 	
+	public Vec2(Vec2 other) {
+		this.x = other.x;
+		this.y = other.y;
+	}
+
 	public Vec2 lineVec(Vec2 end) {
 		return new Vec2(end.x-x,end.y-y);
 	}

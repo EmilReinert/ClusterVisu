@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Cluster implements Serializable {
 
-	String name;
+	String name="none";
 	Group original; 
 	Node tree;
 	Node treeorder;
@@ -87,7 +87,6 @@ public class Cluster implements Serializable {
 			seq.add(sequences.get(s.pos));
 		}
 		flat.sequences=seq;
-		
 		flat_c = new Bundle(flat);
 		
 		// TODO copy depth and not just flat
