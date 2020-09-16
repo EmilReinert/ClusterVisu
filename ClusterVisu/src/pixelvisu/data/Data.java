@@ -56,6 +56,7 @@ public class Data {
 	}
 	
 	public double getValue(int row, int idx) {
+		//for string
 		return data_main.getValue(row, idx);
 	}
 	public double getOrValue(int sec_idx, int row, int idx) {
@@ -63,8 +64,10 @@ public class Data {
 	}
 	
 	public int getColor(int dataRowIdx, int pos) {
-		if(data_main==null)return 0;
-		return data_main.getColor(data_main.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
+		if(data_main==null)return -1;
+		if(data_main.c.flat_c==null)return -1;
+		if(!contrast)return data_main.getColor(data_main.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
+		else return data_main.getColor(data_main.c.flat_c.getContrast(dataRowIdx,sc.getScaleIdx(pos) ));
 	}
 
 	public int getOrColor( int sec_idx, int row, int idx) {
