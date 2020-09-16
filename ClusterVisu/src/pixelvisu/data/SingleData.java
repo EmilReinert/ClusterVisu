@@ -31,6 +31,7 @@ public class SingleData {
 	String dataname="error";
 	int group_count = 0;
 	Color mc= Color.green;
+	Color hold;
 	
 	public SingleData(String path,String []circ, int gc) throws IOException {
 		update(path,circ,gc);
@@ -43,9 +44,6 @@ public class SingleData {
 		sequences = new Group(group_count);
 		
 		readData(path);
-//		testCat();
-//		testDataLinear();
-//		testDataRandom();
 
 		dataname = path.substring(path.lastIndexOf("/") + 1);
 
@@ -115,49 +113,11 @@ public class SingleData {
 		}
 	}
 	
-	protected void testDataLinear() {
-		dataname = "Linear";
-		for (int i = 0; i<270;i++) {
-			sequences.add(new Sequence(181,i));
-		}
-	}
-	protected void testDataRandom() {
-		dataname = "Random";
-		for (int i = 0; i<270;i++) {
-			sequences.add(new Sequence(181,i,"random"));
-		}
-	}
-	
-	protected void testCat() throws IOException {
-		dataname = "Cat";
-		// creating test data based on input cat image
-		BufferedImage image = ImageIO.read(new File("cat.jpg"));
-		byte [] cat_bytes =((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-		
-		System.out.println(cat_bytes.length);
-		//making sequences
-		float value =0;int size =256; // 3 because byte is weird
-		for(int i =0; i< size*size*3;i+=size*3) {
-			Sequence se = new Sequence();
-			for(int j = i;j<i+size*3;j+=3){
-				//value = (cat_bytes[3 + offset] & 0xFF) | ((cat_bytes[2 + offset] & 0xFF) << 8) |((cat_bytes[1 + offset] & 0xFF) << 16) | ((cat_bytes[0 + offset] & 0xFF) << 24); 
-				value =((float)Math.abs(cat_bytes[j])+size/4)/(256*1);
-				//System.out.println(value);
-				Color c = new Color(1-value,1-value,1-value);
-				
-				//adding the color value of image as data value
-				se.add(-c.getRGB()/100000);
-				//System.out.println(c.getRGB()+10000*Color.white.getRGB());
-			}
-			sequences.add(se);
-			//System.out.println(se.toString());
-		}
-		System.out.println("Image dimensions: "+image.getHeight()+" "+image.getWidth());
-	}
-	
 	
 	public void section (int group_count,String mode) {
 		this.group_count = group_count;
+		System.out.println("Sectioning by "+mode+" Group Count = "+group_count+";");
+		System.out.println(c.name);
 		if(mode == "similarity")
 			c.makeSectionsSim(group_count);
 		if(mode =="size")
@@ -183,7 +143,8 @@ public class SingleData {
 			value = 255;
 		if(value>=0) {
 //			if(value<min||value>max) {return Color.red.getRGB();} ;
-			return multiplyColors(mc, new Color((int)value,(int)value,(int)value));}
+			hold = new Color((int)value,(int)value,(int)value);
+			return combineColors(mc,hold,0.6f,0.4f);}
 		return null;
 	}
 	public double getValue( int row, int idx) {
@@ -226,7 +187,25 @@ public class SingleData {
 	public void setColor(Color c) {
 		mc=c;
 	}
-	public static Color multiplyColors(Color color1, Color color2) {
+//	public static Color multiplyColors(Color color1, Color color2) {
+//		float r1 = color1.getRed() / 255.0f;
+//		float g1 = color1.getGreen() / 255.0f;
+//		float b1 = color1.getBlue() / 255.0f;
+//		float a1 = color1.getAlpha() / 255.0f;
+//
+//		float r2 = color2.getRed() / 255.0f;
+//		float g2 = color2.getGreen() / 255.0f;
+//		float b2 = color2.getBlue() / 255.0f;
+//		float a2 = color2.getAlpha() / 255.0f;
+//		float r3 = r1 * r2;if(r3>255)r3=255;
+//		float g3 = g1 * g2;if(g3>255)g3=255;
+//		float b3 = b1 * b2;if(b3>255)b3=255;
+//		float a3 = a1 * a2;if(b3>255)b3=255;
+//		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3 );
+//		return color3;
+//	}
+	
+	public static Color combineColors(Color color1, Color color2, float ra, float rb) {
 		float r1 = color1.getRed() / 255.0f;
 		float g1 = color1.getGreen() / 255.0f;
 		float b1 = color1.getBlue() / 255.0f;
@@ -236,28 +215,18 @@ public class SingleData {
 		float g2 = color2.getGreen() / 255.0f;
 		float b2 = color2.getBlue() / 255.0f;
 		float a2 = color2.getAlpha() / 255.0f;
-		float r3 = r1 * r2;if(r3>255)r3=255;
-		float g3 = g1 * g2;if(g3>255)g3=255;
-		float b3 = b1 * b2;if(b3>255)b3=255;
-		float a3 = a1 * a2;if(b3>255)b3=255;
-		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3 );
-		return color3;
-	}public static Color combineColors(Color color1, Color color2) {
-		float r1 = color1.getRed() / 255.0f;
-		float g1 = color1.getGreen() / 255.0f;
-		float b1 = color1.getBlue() / 255.0f;
-		float a1 = color1.getAlpha() / 255.0f;
-
-		float r2 = color2.getRed() / 255.0f;
-		float g2 = color2.getGreen() / 255.0f;
-		float b2 = color2.getBlue() / 255.0f;
-		float a2 = color2.getAlpha() / 255.0f;
-		float r3 = 0.5f*r1 +0.5f* r2;if(r3>255)r3=255;
-		float g3 = 0.5f*g1 +0.5f* g2;if(g3>255)g3=255;
-		float b3 = 0.5f*b1 +0.5f* b2;if(b3>255)b3=255;
-		float a3 = 0.5f*a1 +0.5f* a2;if(b3>255)b3=255;
-		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3  );
-		return color3;
+		
+		float r3 = r1 * r2;//if(r3>255)r3=255;
+		float g3 = g1 * g2;//if(g3>255)g3=255;
+		float b3 = b1 * b2;//if(b3>255)b3=255;
+		float a3 = a1 * a2;//if(a3>255)a3=255;
+		
+		float r4 = ra*r3 +rb* r2;//if(r4>255)r3=255;
+		float g4 = ra*g3 +rb* g2;//if(g4>255)g3=255;
+		float b4 = ra*b3 +rb* b2;//if(b4>255)b3=255;
+		float a4 = ra*a3 +rb* a2;//if(a4>255)a3=255;
+		Color color4 = new Color((float) r4 ,(float) g4 ,(float) b4 ,(float) a4  );
+		return color4;
 	}
 	public int getLength() {
 		return sequences.get(0).getLength();

@@ -18,10 +18,15 @@ public class Scale  {
 	int cuts=200; //seconds // vertical time cut intervals after specific instances
 	
 	public Scale(int with, int heit) {
-		width = with; height = 5*heit;
+		resize(with, heit);
 		start_idx=s=0;
 		end_idx = e=12000;
 	}
+	
+	public void resize(int with, int heit) {
+		width = with; height = 5*heit;
+	}
+	
 	public void setMax(float max) {
 		e=end_idx=max;
 	}

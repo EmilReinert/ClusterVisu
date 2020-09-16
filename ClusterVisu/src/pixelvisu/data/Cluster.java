@@ -28,7 +28,8 @@ public class Cluster implements Serializable {
 		// Tree structure is defined as linked node instances
 		original = sequences;
 		name = dataname + "/" + clustering + link + sim;
-
+		System.out.println(
+				"Clustering: " + name );
 		//  MAKING FILES
 		if (save) {
 			try {
@@ -40,7 +41,7 @@ public class Cluster implements Serializable {
 			}
 			flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
 			System.out.println(
-					"Clusterized: " + name + " : size:" + tree.branches.size() + " and Size" + flat.getDepth());
+					"----Clusterized----");
 			
 			
 			/*

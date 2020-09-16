@@ -2,6 +2,8 @@ package pixelvisu.data;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -22,7 +24,7 @@ import javax.swing.JFrame;
 public class ClusterMakerData extends JFrame implements Runnable {
 	public static int WIDTH = 400*3;//TODO make adjustable
 	public static int OFF = 50;
-	public static int HEIGHT = 300+OFF;	
+	public static int HEIGHT = 600+OFF;	
 //	public static int HEIGHT_controls = HEIGHT ;//+30;	
 	public Color bg_color = Color.WHITE;
 	
@@ -66,6 +68,18 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.black);
 		setLocationRelativeTo(null);		
+		
+		addComponentListener(new ComponentAdapter() 
+		{  
+		        public void componentResized(ComponentEvent evt) {
+		        	HEIGHT = getHeight();
+		        	WIDTH = getWidth();
+		        	sc.resize(WIDTH, HEIGHT);
+					image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
+					pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		        }
+		});
+		
 		
 		setVisible(true);
 		start();
@@ -116,15 +130,13 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		requestFocus();
 		while(running) {
 			long now = System.nanoTime();
-			delta = delta + ((now-lastTime) / (1000000000.0/30));//60 = FPS
+			delta = delta + ((now-lastTime) / (1000000000.0/10));//60 = FPS
 			lastTime = now;
 			while (delta >= 1)//Make sure update is only happening 60 times a second
 			{
 				
 				//handles all of the logic restricted time
-				image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-				pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-				visu.update(pixels, image.getWidth(),image.getHeight(),OFF);
+				visu.update(pixels, WIDTH,HEIGHT,OFF);
 				delta--;
 			}
 			render();//displays to the screen unrestricted time

@@ -13,8 +13,8 @@ public class Data {
 	Circuit circ;
 	
 
-	String maindata_path = "Data/memory_2.txt";
-	String comparedata_path = "Data/memory_prom.txt";
+	String maindata_path = "Data/4w_14_9_0.5h/node_memory_Active_bytes.txt";
+	String comparedata_path = "Data/4w_14_9_0.5h/node_disk_read_bytes_total.txt";
 	
 	public Data(int width, int height, Scale s)  {
 		circ = new Circuit();
@@ -77,7 +77,10 @@ public class Data {
 	}
 	
 	
-	
+
+	public int getDiff(SingleData d,int dataRowIdx, int pos) {
+		return d.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
+	}
 	
 	
 	
@@ -107,9 +110,6 @@ public class Data {
 	}
 
 
-	public int getDiff(int dataRowIdx, int pos) {
-		return data_main.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
-	}
 
 	public boolean isSelected(int i) {
 		// TODO Auto-generated method stub

@@ -162,7 +162,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			int pos = ((n%(width))-startpos%width);
 			col_hold = data.getColor(d,dataRowIdx,pos);
 			if(col_hold!=null) {
-				diff_color =6*data.getDiff(dataRowIdx,pos);
+				diff_color =6*data.getDiff(d,dataRowIdx,pos);
 				diff_fade =(int) Math.pow(diff_color*0.005,4);
 				if(diff_color>255)diff_color =255;
 				if(diff_fade>255)diff_fade =255;
