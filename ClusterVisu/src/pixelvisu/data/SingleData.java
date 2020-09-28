@@ -32,8 +32,11 @@ public class SingleData {
 	int group_count = 0;
 	Color mc= Color.green;
 	Color hold;
+	ColorMapping cm;
 	
-	public SingleData(String path,String []circ, int gc) throws IOException {
+	public SingleData(String path,String []circ, int gc, ColorMapping cm) throws IOException {
+
+		this.cm = cm;
 		update(path,circ,gc);
 		this.path = path;
 	}
@@ -56,15 +59,18 @@ public class SingleData {
 			System.err.println("wrong circuit");
 		try {
 			System.out.println("clusering new circuit");
-		c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);}
+			c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);}
 		catch(Exception e) {
+
+			e.printStackTrace();
 			System.err.println("circuit not found");
 		}
 		
 		
 	}
-	public SingleData(String path, Cluster other, Color col) throws IOException {
+	public SingleData(String path, Cluster other, Color col, ColorMapping cm) throws IOException {
 		// Compare Data
+		this.cm = cm;
 		mc = col;
 		sequences = new Group(group_count);
 		readData(path);
@@ -117,7 +123,7 @@ public class SingleData {
 	public void section (int group_count,String mode) {
 		this.group_count = group_count;
 		System.out.println("Sectioning by "+mode+" Group Count = "+group_count+";");
-		System.out.println(c.name);
+//		System.out.println(c.name);
 		if(mode == "similarity")
 			c.makeSectionsSim(group_count);
 		if(mode =="size")
@@ -137,20 +143,21 @@ public class SingleData {
 		// MAIN COLOR source
 		double scale =255;
 //		
-		if(!contrast)value = ((value-min)/(max-min))*scale;
+		if(!contrast) {
+			value = (value/max)*scale;
+			value = cm.color((int) value);
+		}
 		
 		if(value>=255)
 			value = 255;
 		if(value>=0) {
 //			if(value<min||value>max) {return Color.red.getRGB();} ;
-			hold = new Color((int)value,(int)value,(int)value);
-			return combineColors(mc,hold,0.6f,0.4f);}
-		return null;
+			hold = new Color((int)value,(int)value,(int)value,255);
+			return multiplyColors(hold, mc);
+			}
+		return Color.black;
 	}
-	public double getValue( int row, int idx) {
-		double value =getData(sequences, row, idx);
-		return value;
-	}
+	
 	
 	
 	
@@ -171,39 +178,28 @@ public class SingleData {
 	
 	
 	
-	public double getData(Group seqs, int row, int idx) {
-		if(row>= seqs.getDepth()||idx>= seqs.getLength()) {
-			return -1;
-		}
-		if(row<0||idx<0)
-			return -1;
-		if(!contrast)
-			return seqs.get(row,idx);
-		return seqs.getContrast(row,idx);
-	}
-	
 	
 	
 	public void setColor(Color c) {
 		mc=c;
 	}
-//	public static Color multiplyColors(Color color1, Color color2) {
-//		float r1 = color1.getRed() / 255.0f;
-//		float g1 = color1.getGreen() / 255.0f;
-//		float b1 = color1.getBlue() / 255.0f;
-//		float a1 = color1.getAlpha() / 255.0f;
-//
-//		float r2 = color2.getRed() / 255.0f;
-//		float g2 = color2.getGreen() / 255.0f;
-//		float b2 = color2.getBlue() / 255.0f;
-//		float a2 = color2.getAlpha() / 255.0f;
-//		float r3 = r1 * r2;if(r3>255)r3=255;
-//		float g3 = g1 * g2;if(g3>255)g3=255;
-//		float b3 = b1 * b2;if(b3>255)b3=255;
-//		float a3 = a1 * a2;if(b3>255)b3=255;
-//		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3 );
-//		return color3;
-//	}
+	public static Color multiplyColors(Color color1, Color color2) {
+		float r1 = color1.getRed() / 255.0f;
+		float g1 = color1.getGreen() / 255.0f;
+		float b1 = color1.getBlue() / 255.0f;
+		float a1 = color1.getAlpha() / 255.0f;
+
+		float r2 = color2.getRed() / 255.0f;
+		float g2 = color2.getGreen() / 255.0f;
+		float b2 = color2.getBlue() / 255.0f;
+		float a2 = color2.getAlpha() / 255.0f;
+		float r3 = r1 * r2;if(r3>255)r3=255;
+		float g3 = g1 * g2;if(g3>255)g3=255;
+		float b3 = b1 * b2;if(b3>255)b3=255;
+		float a3 = a1 * a2;if(b3>255)b3=255;
+		Color color3 = new Color((float) r3 ,(float) g3 ,(float) b3 ,(float) a3 );
+		return color3;
+	}
 	
 	public static Color combineColors(Color color1, Color color2, float ra, float rb) {
 		float r1 = color1.getRed() / 255.0f;

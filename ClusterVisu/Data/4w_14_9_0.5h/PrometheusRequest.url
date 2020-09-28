@@ -1,5 +1,0 @@
-[{000214A0-0000-0000-C000-000000000046}]
-Prop3=19,11
-[InternetShortcut]
-IDList=
-URL=https://prometheus.webis.de/graph?g0.range_input=4w&g0.end_input=2020-09-14%2000%3A00&g0.step_input=1800&g0.expr=node_disk_read_bytes_total&g0.tab=0

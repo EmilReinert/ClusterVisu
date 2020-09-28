@@ -188,4 +188,6 @@ public class Bundle extends Group{
 		if((sec_sum+i)>=original.size())return -2;
 		return original.get(sec_sum+i).getContrast(j);
 	}
+
+
 }

@@ -21,7 +21,7 @@ public class TreePanel extends JPanel{
 	
 	public TreePanel() {
 		w =1200; h = 600;
-//		f = new JFrame("Tree");
+		f = new JFrame("Tree");
 		f.setSize(w	,h);
 		f.setResizable(true);
 		f.add(this);

@@ -37,6 +37,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	public Controls controls;
 	public VisuData visu; 
 	public Scale sc;
+	public ColorMapping cm;
 //	public VisuSeriation visu;
 	
 	SingleData data;
@@ -45,7 +46,8 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	public ClusterMakerData(){
 
 		sc = new Scale(WIDTH, HEIGHT);
-		Data data= new Data(WIDTH, HEIGHT,sc);
+		ColorMapping cm = new ColorMapping();
+		Data data= new Data(WIDTH, HEIGHT,sc,cm);
 		sc.setMax(data.getLength());
 		Controls c = new Controls(data);
 //		String path ="Data/Memory usage.json";

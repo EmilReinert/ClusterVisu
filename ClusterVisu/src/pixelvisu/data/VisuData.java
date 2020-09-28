@@ -167,7 +167,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				if(diff_color>255)diff_color =255;
 				if(diff_fade>255)diff_fade =255;
 				diff_color = new Color(diff_fade,0, diff_color).getRGB();
-				pixels[n] =mixColors(col_hold,diff_color,0.8f);
+				pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
 				
 				if(vec2Int(mouse_hover)==n)dataText=data.getValue(d,dataRowIdx,pos);
 				}
@@ -184,7 +184,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			double pix = getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
 			for(int hei=0;hei<pix;hei++) {
 				
-				for(int i =0;i<getLength()&&i<width;i++) {
+				for(int i =0;i<width;i++) {
 					col_hold = data.getOrColor(d,sec_idx,n,i);
 					
 					//System.out.println(n+" "+i+" "+col_hold);

@@ -95,7 +95,8 @@ public class Node implements Serializable{
 				}
 				// -> debug
 //				System.out.println(o+" "+branches.size()+" "+min_diff);	System.out.println(a+" "+b);if(branches.size()==200) return;
-				if(o%(int)(length/(10*60))==0)System.out.print(",");
+
+//				if(o%(int)(length/(10*60))==0)System.out.print(",");
 				merge(a,b,min_diff);a=0;b =0; min_diff = 1000000;
 			}
 			System.out.println("\n");//br

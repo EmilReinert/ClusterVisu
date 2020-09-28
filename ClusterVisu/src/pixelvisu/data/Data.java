@@ -10,17 +10,19 @@ public class Data {
 	String section = "similarity";
 	boolean contrast;
 	Scale sc;
+	ColorMapping cm;
 	Circuit circ;
 	
 
 	String maindata_path = "Data/4w_14_9_0.5h/node_memory_Active_bytes.txt";
-	String comparedata_path = "Data/4w_14_9_0.5h/node_disk_read_bytes_total.txt";
+	String comparedata_path = "Data/4w_14_9_0.5h/node_disk_io_now.txt";
 	
-	public Data(int width, int height, Scale s)  {
+	public Data(int width, int height, Scale s, ColorMapping m)  {
 		circ = new Circuit();
-		
+
+		cm = m;
 		try {
-			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count);
+			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,cm);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,7 +45,7 @@ public class Data {
 	public void updateSection() {
 		data_main.section(group_count,section);
 		try {
-			data_compare = new SingleData(comparedata_path,data_main.c, Color.orange);
+			data_compare = new SingleData(comparedata_path,data_main.c, Color.blue, cm);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -57,12 +59,12 @@ public class Data {
 		circ.down();
 	}
 	
-	public double getValue(SingleData d, int row, int idx) {
+	public double getValue(SingleData d,int dataRowIdx, int pos) {
 		//for string
-		return data_main.getValue(row, idx);
+		return d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) );
 	}
 	public double getOrValue(SingleData d,int sec_idx, int row, int idx) {
-		return data_main.getOrValue(sec_idx, row, idx);
+		return data_main.getOrValue(sec_idx, row, sc.getScaleIdx(idx));
 	}
 	
 	public Color getColor(SingleData d,int dataRowIdx, int pos) {

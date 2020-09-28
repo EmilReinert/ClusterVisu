@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
-	ArrayList<Double> original;
+	ArrayList<Double> timestamps;
 	int sect =60; // for horizontal clustering of size 'sect'
 	int sect_vis; // sections for 
 	String name ="";
@@ -21,23 +21,24 @@ public class Sequence implements Serializable {
 
 	public Sequence(){
 		data = new ArrayList<>();
+		timestamps = new ArrayList<>();
 	}
 	public Sequence(int size) {
 		// zero value
-		data = new ArrayList<>();
+		data = new ArrayList<>();timestamps = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(0.0);
 	}
 	public Sequence(int size, double val) {
 		//one value
-		data = new ArrayList<>();
+		data = new ArrayList<>();timestamps = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(val);
 	}
 	
 	public Sequence(int size, double val, String random) {
 		//random
-		data = new ArrayList<>();
+		data = new ArrayList<>();timestamps = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(Math.random()*100);
 	}
@@ -45,55 +46,76 @@ public class Sequence implements Serializable {
 	public Sequence(Sequence s){
 		pos = s.pos;
 		data = new ArrayList<>(s.data);
+		timestamps = new ArrayList<>(s.timestamps);
 		min = s.min;
 		max = s.max;
 		
 	}
 	
-	public Sequence(JSONArray a, int size, JSONObject nj, int pos) {
-		this.pos = pos;
-		String n = nj.optString("instance");
-		this.name = n;
-		
-		// a is multidimensional so we have to first take the array at the index and 
-		// then extract the wanted data ( at 0 or 1 )
-		ArrayList<Float> data_hold = new ArrayList<>();
-		
-		// Storing data in holder float arraylist so we can adjust them to
-		// x>=0 to 255 spectrum for all data// that is int color spectrum
-		JSONArray hold ;
-		for(int i = 0; i<size;i++) {
-			if(i<a.length()) { 
-				hold = a.getJSONArray(i);
-				data_hold.add(hold.getFloat(1));
-			}
-			else data_hold.add(0.0f);
-		}
-
-		data = new ArrayList<>();
-		
-		float scale =0;
-		// min and max value for scaling
-		min = getMin(data_hold);
-		max = getMax(data_hold);
-		
-		for(float f: data_hold) {
-			data.add((double)f);
-		}
-		compress(10);
-	}
+//	public Sequence(JSONArray a, int size, JSONObject nj, int pos) {
+//		this.pos = pos;
+//		String n = nj.optString("instance");
+//		this.name = n;
+//		
+//		// a is multidimensional so we have to first take the array at the index and 
+//		// then extract the wanted data ( at 0 or 1 )
+//		ArrayList<Float> data_hold = new ArrayList<>();
+//		
+//		// Storing data in holder float arraylist so we can adjust them to
+//		// x>=0 to 255 spectrum for all data// that is int color spectrum
+//		JSONArray hold ;
+//		for(int i = 0; i<size;i++) {
+//			if(i<a.length()) { 
+//				hold = a.getJSONArray(i);
+//				data_hold.add(hold.getFloat(1));
+//			}
+//			else data_hold.add(0.0f);
+//		}
+//
+//		data = new ArrayList<>();
+//		
+//		float scale =0;
+//		// min and max value for scaling
+//		min = getMin(data_hold);
+//		max = getMax(data_hold);
+//		
+//		for(float f: data_hold) {
+//			data.add((double)f);
+//		}
+//		compress(10);
+//	}
+	
+	
 	public Sequence(String group, int pos) {
 		// Takes full string arraylist and splits it into sequence data
 		this();
 		this.pos = pos;
 		String [] cuts = group.split(",");
-		System.out.println(cuts.length);
 		for(int i=1;i<cuts.length;i++ ) {
-			data.add(Double.parseDouble(cuts[i].substring(0, 10)));
+//			System.out.println(cuts[i]);
+			String first ="", second="";
+			boolean next = false;
+			for (int j = 0; j < cuts[i].length(); j++){
+			    char ch = cuts[i].charAt(j);
+			    if(ch=='K'||ch=='L')next = true;
+			    else 
+			    	if(!next)first+=ch;
+			    	else second +=ch;
+			}
+//			System.out.println(cuts[i]);
+//			System.out.println(first+ " "+second);
+			if(next) {
+				data.add(Double.parseDouble(first));
+				timestamps.add(Double.parseDouble(second));
+			}
 		}
 		min = getMin();
 		max = getMax();
+		
+		//compress(10);
 	}
+	
+	
 	/// Compress
 	public void compress(int s) {
 		if(s == sect)return;
@@ -101,8 +123,8 @@ public class Sequence implements Serializable {
 		
 		for(int i =0; i<=data.size()-sect;i+=sect) {
 			double av = 0;
-			for(int j =0;j<sect;j++) av+=data.get(j+i)/sect;
-			for(int j =0;j<sect;j++) data.set(i+j, av);			
+			for(int j =0;j<sect;j++) av+=get(j+i)/sect;
+			for(int j =0;j<sect;j++) set(i+j, av);			
 		}
 		
 		
@@ -164,8 +186,15 @@ public class Sequence implements Serializable {
 	
 	public double get(int i) {
 		if(i>=data.size()||i<0)return -1;
-		
 		return data.get(i);
+	}
+	public double getTime(int i) {
+		if(i>=timestamps.size()||i<0)return -1;
+		return timestamps.get(i);
+	}
+	public void set(int i, double num) {
+		if(i>=data.size()||i<0)return;
+		data.set(i, num);
 	}
 	
 	
