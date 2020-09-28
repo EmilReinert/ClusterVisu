@@ -12,19 +12,22 @@ public class Scale  {
 	Vec2 mouse = new Vec2(0,0);
 	String hover_data = " ";
 	
+	Color bg = Color.white;
 	int width, height;
 	float s, e; // origninal start and end
 	float start_idx, end_idx;
-	int cuts=200; //seconds // vertical time cut intervals after specific instances
+	int cuts=24; //seconds // vertical time cut intervals after specific instances
 	
-	public Scale(int with, int heit) {
+	public Scale(int with, int heit, Color bg) {
 		resize(with, heit);
 		start_idx=s=0;
 		end_idx = e=12000;
+		this.bg = bg;
+//		zoom(1,new Vec2(0,0));
 	}
 	
 	public void resize(int with, int heit) {
-		width = with; height = 5*heit;
+		width = with; height = 50;
 	}
 	
 	public void setMax(float max) {
@@ -63,11 +66,9 @@ public class Scale  {
         
         
         scale = end_idx-start_idx;
-		if(scale>=1000) {cuts =200;}
-		if(scale<1000) {cuts =50;}
-		if(scale<200) {cuts =10;}
-		if(scale<100) {cuts =5;}
-		if(scale<50) {cuts =1;}
+		cuts =24;
+		if(scale<100) {cuts =1;}
+//		if(scale<50) {cuts =1;}
 	}
 	
 	public void drag(Vec2 start,Vec2 end) {
@@ -112,14 +113,15 @@ public class Scale  {
 		Graphics2D g2d = (Graphics2D)g;
 		// paints scale over data
 //		g.drawLine(0, 0, width, height);
-		g2d.setColor(new Color(0, 0, 0, 0.4f));
+		if(bg==Color.black)g2d.setColor(new Color(1,1,1, 0.4f));
+		else g2d.setColor(new Color(0,0,0, 0.4f));
 		// drawing cuts
 		for(int i=(int) start_idx;i<end_idx;i++)
 			if(i%cuts==0) {
-               if(i%10==0) g2d.setStroke(new BasicStroke(2));
+               if(i%24==0) g2d.setStroke(new BasicStroke(2));
                else g2d.setStroke(new BasicStroke(1));
 				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), height);//System.out.println(i);
-				if(i%5==0||end_idx-start_idx<15)g2d.drawString(i+" ", getUnscaledIdx(i)+2, 40);
+				if(i%24==0||end_idx-start_idx<15)g2d.drawString(i+"h", getUnscaledIdx(i)+3, 42);
 				}
 
             else g2d.setStroke(new BasicStroke(3));

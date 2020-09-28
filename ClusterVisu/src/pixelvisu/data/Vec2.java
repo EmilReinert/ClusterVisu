@@ -32,7 +32,11 @@ public class Vec2 {
 		return "( "+x+" / "+y+" )";
 	}
 	
-
+	public boolean equals(Object o) {
+		Vec2 other =(Vec2)o;
+		if(x==other.x&&y==other.y)return true;
+		else return false;
+	}
 	
 	public void make(Vec2 other) {
 		x = other.x;

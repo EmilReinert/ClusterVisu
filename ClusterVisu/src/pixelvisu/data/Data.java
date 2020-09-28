@@ -6,6 +6,7 @@ import java.io.IOException;
 public class Data {
 	SingleData data_main;
 	SingleData data_compare; // secondary data to be compared structurally
+	SingleData data_compare_two;
 	int group_count = 44;
 	String section = "similarity";
 	boolean contrast;
@@ -14,8 +15,9 @@ public class Data {
 	Circuit circ;
 	
 
-	String maindata_path = "Data/4w_14_9_0.5h/node_memory_Active_bytes.txt";
-	String comparedata_path = "Data/4w_14_9_0.5h/node_disk_io_now.txt";
+	String maindata_path = "Data/4w_14_9_1h/node_memory_Active_bytes.txt";
+	String comparedata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
+	String comparedata_two = "Data/4w_14_9_1h/node_memory_Cached_bytes.txt";
 	
 	public Data(int width, int height, Scale s, ColorMapping m)  {
 		circ = new Circuit();
@@ -46,6 +48,7 @@ public class Data {
 		data_main.section(group_count,section);
 		try {
 			data_compare = new SingleData(comparedata_path,data_main.c, Color.blue, cm);
+			data_compare_two = new SingleData(comparedata_two,data_main.c, Color.orange, cm);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -64,7 +67,7 @@ public class Data {
 		return d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) );
 	}
 	public double getOrValue(SingleData d,int sec_idx, int row, int idx) {
-		return data_main.getOrValue(sec_idx, row, sc.getScaleIdx(idx));
+		return d.getOrValue(sec_idx, row, sc.getScaleIdx(idx));
 	}
 	
 	public Color getColor(SingleData d,int dataRowIdx, int pos) {
@@ -91,7 +94,7 @@ public class Data {
 		updateSection();
 		data_main.order(mode);
 		data_compare.order(mode);
-		
+		data_compare_two.order(mode);
 	}
 	
 	public int getLength() {
@@ -103,11 +106,13 @@ public class Data {
 			contrast = false;
 			data_main.contrast = false;
 			data_compare.contrast = false;
+			data_compare_two.contrast = false;
 		}
 		else {
 			contrast = true;
 			data_main.contrast = true;
 			data_compare.contrast = true;
+			data_compare_two.contrast = true;
 		}
 	}
 

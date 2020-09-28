@@ -23,7 +23,7 @@ import javax.swing.JFrame;
 
 public class ClusterMakerData extends JFrame implements Runnable {
 	public static int WIDTH = 400*3;//TODO make adjustable
-	public static int OFF = 50;
+	public static int OFF = 80;
 	public static int HEIGHT = 600+OFF;	
 //	public static int HEIGHT_controls = HEIGHT ;//+30;	
 	public Color bg_color = Color.WHITE;
@@ -45,7 +45,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	
 	public ClusterMakerData(){
 
-		sc = new Scale(WIDTH, HEIGHT);
+		sc = new Scale(WIDTH, HEIGHT,bg_color);
 		ColorMapping cm = new ColorMapping();
 		Data data= new Data(WIDTH, HEIGHT,sc,cm);
 		sc.setMax(data.getLength());

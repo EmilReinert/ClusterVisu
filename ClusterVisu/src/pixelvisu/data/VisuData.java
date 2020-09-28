@@ -37,8 +37,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	int length ;
 
 	Vec2 mouse_click = new Vec2(0,0);
-	Vec2 mouse_click_top = new Vec2(0,0);
-	Vec2 mouse_click_bottom = new Vec2(0,0);
+	Vec2 mouse_click_prev = new Vec2(0,0);
+	ArrayList<Vec2> clicksquares = new ArrayList<>();
 	
 	Vec2 mouse_hover = new Vec2(0,0);
 	Vec2 mouse_pressed =new Vec2(0,0);
@@ -83,10 +83,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 //		drawData(pixels,data.data_main.sequences,off,pixels.length);
 //		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
 		if(data.data_main.c.flat_c!=null) {
-			drawBarsDen(pixels, data.data_main, off, off+height/2*width);
+			drawBarsDen(pixels, data.data_main, off, off+height/3*width);
 		}
 		if(data.data_compare.c!=null) {
-			drawBarsDen(pixels, data.data_compare, off+height/2*width, pixels.length);
+			drawBarsDen(pixels, data.data_compare, off+height/3*width, off+2*height/3*width);
+		}
+		if(data.data_compare_two.c!=null) {
+			drawBarsDen(pixels, data.data_compare_two, off+2*height/3*width, pixels.length);
 		}
 //		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
@@ -132,8 +135,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				// hover bar
 				// if( int2Vec(start+jump*width).x <=mouse_y
 				// &&int2Vec(start+(jump+den)*width).x>=mouse_y) {
-				if (isInsideSquare(mouse_click_top,start + (jump) * width, start + (jump + den) * width + 19*width/20)
-						||isInsideSquare(mouse_click_bottom,start + (jump) * width, start + (jump + den) * width + 19*width/20)) {
+				
+				Vec2 square = new Vec2(start + (jump) * width, start + (jump + den) * width + 19*width/20);
+				if (clickSquare(mouse_click,square)){
 					jumping = drawDataSec(pixels, cl, start + jump * width, i, pixelheight, dens.get(i));
 
 					jumping += 2;
@@ -181,7 +185,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// and then over individual data values
 		int step =0;
 		for (int n =0; n<length;n++) {
-			double pix = getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
+			double pix = 1;//getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
 			for(int hei=0;hei<pix;hei++) {
 				
 				for(int i =0;i<width;i++) {
@@ -276,6 +280,25 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// returns whether the mouse is inside a certain square
 		// note start and end are not an array but int pointers to panel
 		return isInsideSquare(mouse_, int2Vec(start),int2Vec(end));
+		
+	}
+	public boolean clickSquare(Vec2 mouse_, Vec2 square) {
+
+		if(clicksquares.contains(square)&&!isInsideSquare(mouse_, (int)square.x,(int)square.y))
+			return true;
+		
+		if(isInsideSquare(mouse_, (int)square.x,(int)square.y)) {
+			if(!clicksquares.contains(square)) {
+				clicksquares.add(square);
+				mouse_click = new Vec2(0,0);
+				return true;
+			}
+			else {
+				clicksquares.remove(square);
+				mouse_click = new Vec2(0,0);
+				return false;}
+		}
+		return false;
 		
 	}
 	public boolean isInsideSquare(Vec2 mouse_, Vec2 start, Vec2 end) {
@@ -483,8 +506,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		mouse_click = new Vec2(e.getY(), e.getX());
-		if(mouse_click.x<height/2) mouse_click_top= new Vec2(mouse_click);
-		else mouse_click_bottom= new Vec2(mouse_click);
+//		if(mouse_click.x<height/2) mouse_click_top= new Vec2(mouse_click);
+//		else mouse_click_bottom= new Vec2(mouse_click);
 	}
 
 	@Override
