@@ -13,7 +13,7 @@ public class Data {
 	Scale sc;
 	ColorMapping cm;
 	Circuit circ;
-
+	int start, end; 
 //	TreePanel p;
 
 	String maindata_path = "Data/4w_14_9_1h/node_memory_Active_bytes.txt";
@@ -24,9 +24,12 @@ public class Data {
 		circ = new Circuit();
 //		p = new TreePanel();
 		cm = m;
-		
+		start = 0; end = 100000000;
 		try {
-			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,cm);
+			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,Color.green,cm,  start, end);
+
+			data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
+			data_compare_two = new SingleData(comparedata_two, group_count, Color.orange, cm);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,26 +39,19 @@ public class Data {
 	}
 
 	public void updateClustering() {
-		try {
-			data_main.update(maindata_path, circ.getCircuit(), group_count);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		data_main.updateClustering(circ.getCircuit(), group_count,start,end);
 		updateSection();
 		
 	}
 	
 	public void updateSection() {
 		data_main.section(group_count,section);
-		try {
-			data_compare = new SingleData(comparedata_path,data_main.c, Color.blue, cm);
-			data_compare_two = new SingleData(comparedata_two,data_main.c, Color.orange, cm);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		data_compare.update(data_main.c);
+		data_compare_two.update(data_main.c);
+		
 //		p.update(data_main.c, group_count);
+		contrast=!contrast;
+		contrast();
 		
 	}
 	public void up() {
@@ -76,8 +72,7 @@ public class Data {
 	public Color getColor(SingleData d,int dataRowIdx, int pos) {
 		if(d==null)return null;
 		if(d.c.flat_c==null)return null;
-		if(!contrast)return d.getColor(d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
-		else return d.getColor(d.c.flat_c.getContrast(dataRowIdx,sc.getScaleIdx(pos) ));
+		return d.getColor(d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
 	}
 
 	public Color getOrColor(SingleData d,int sec_idx, int row, int idx) {
@@ -124,6 +119,12 @@ public class Data {
 	public boolean isSelected(int i) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public void setBounds(int x, int y) {
+		// TODO Auto-generated method stub
+		start = x; end = y;
+		sc.setBounds(x,y);
 	}
 
 }

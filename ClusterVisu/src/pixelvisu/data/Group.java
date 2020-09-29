@@ -101,15 +101,15 @@ public class Group implements Serializable{
 		return sequences.get(row).get(idx);//getContrast(idx); //////////
 	}
 
-	public double getTime(int row, int idx) {
-		if(row>=getDepth()) {
-			return -1;
-		}
-		if(idx>=getLength()) {
-			return -1;
-		}
-		return sequences.get(row).getTime(idx);
-	}
+//	public double getTime(int row, int idx) {
+//		if(row>=getDepth()) {
+//			return -1;
+//		}
+//		if(idx>=getLength()) {
+//			return -1;
+//		}
+//		return sequences.get(row).getTime(idx);
+//	}
 	
 	public double getContrast(int row, int idx) {
 		if(row>=getDepth()) {

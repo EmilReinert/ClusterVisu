@@ -22,7 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class ClusterMakerData extends JFrame implements Runnable {
-	public static int WIDTH = 400*3;//TODO make adjustable
+	public static int WIDTH = 300*3;//TODO make adjustable
 	public static int OFF = 80;
 	public static int HEIGHT = 600+OFF;	
 //	public static int HEIGHT_controls = HEIGHT ;//+30;	

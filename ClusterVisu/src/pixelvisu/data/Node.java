@@ -76,149 +76,59 @@ public class Node implements Serializable{
 
 	
 
-	public void clusterize(String clustering, String link, String similarity) {
-		// cluster whole child nodes into tree by given parameters
-		long last_time = System.nanoTime();
-		if(clustering == "agglomerative")
-		{
-			int a =0; int b =0; // indices to most similar clusters
-			double min_diff = 100000000;
-			double hold = min_diff;
-			for (int o = 0; o<=100000000;o++) {
-				if(branches.size()<2)return;
-				for (int i = 0; i<branches.size();i++) {
-					for(int j = i+1; j<branches.size();j++) {
-						hold = getBranch(i).compare(getBranch(j),link, similarity);
-						if(hold<min_diff) {min_diff= hold; a=i;b=j;}
-//						long time = System.nanoTime();System.out.println(((time - last_time) / 1000));last_time = time;
-					}
-				}
-				// -> debug
-//				System.out.println(o+" "+branches.size()+" "+min_diff);	System.out.println(a+" "+b);if(branches.size()==200) return;
-
-//				if(o%(int)(length/(10*60))==0)System.out.print(",");
-				merge(a,b,min_diff);a=0;b =0; min_diff = 1000000;
-			}
-			System.out.println("\n");//br
-		
-		}
-	}
+	
 	
 //	public void clusterize(Node other) {
 //		// cluster current children by already clustered other root-node structure
 //		
 //	}	
 	
-	public double compare(Node other,String link, String sim) {
-		if(link =="complete") {
-			Group a =getFlatBranchesDepth();
-			Group b = other.getFlatBranchesDepth();
-			
-			double maximum = -10;
-			double hold =maximum;
-			for (Sequence sa:a.sequences) {
-				for(Sequence sb:b.sequences) {
-					hold =sa.compare(sb, sim);
-					if(hold>maximum){
-						maximum=hold;
-					}
-				}
-			}
-			return maximum;
-		}
-		if(link =="single") {
-			Group a =getFlatBranchesDepth();
-			Group b = other.getFlatBranchesDepth();
-			
-			double minimum = 10000000;
-			double hold =minimum;
-			for (Sequence sa:a.sequences) {
-				for(Sequence sb:b.sequences) {
-					hold =sa.compare(sb, sim);
-					if(hold<minimum){
-						minimum=hold;
-					}
-				}
-			}
-			return minimum;
-		}
-		if(link =="average") {
-			Group a =getFlatBranchesDepth();
-			Group b = other.getFlatBranchesDepth();
-			
-			double hold =0;
-			
-			for (Sequence sa:a.sequences) {
-				for(Sequence sb:b.sequences) {
-					hold +=(sa.compare(sb, sim)/(length*length));
-				}
-			}
-			return hold;
-		}
-		return -1;
-		
-	}
-		
-
-	public void merge(int a, int b, double sim) {
-		// merging two clusters together by creating a new one and removing the previous branches
-		if(a==b)return;
-		ArrayList<Node> bs = new ArrayList<Node>();
-		bs.add(new Node(getBranch(a)));
-		bs.add(new Node(getBranch(b)));
-//		System.out.println(sim);
-		Node merged = new Node(bs,sim);
-		branches.remove(getBranch(b));
-		branches.remove(getBranch(a));
-		branches.add(merged);
-	}
-
-	
-	public void printCluster() {
-		String s ="";
-		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
-		for(int i = 0; i<100000;i++) {
-			ArrayList<Node> hold = new ArrayList<Node>();
-			boolean lastleaf =true;
-			for(Node cc: plane) {for(Node c:cc.branches) {
-				if(!c.isLeaf)lastleaf=false;
-			}}
-			
-			for(Node cc: plane) {for(Node c:cc.branches) {
-				
-				if(c.isLeaf)s+="o";
-				else {s+="x";hold.add(c);}
-				s+=",";
-			}
-			}
-			System.out.println(s);s="";
-			plane =hold;
-			if(lastleaf)return ;
-		}
-	}
-	
-	public void printClusterSim() {
-		String s ="";
-		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
-		for(int i = 0; i<100000;i++) {
-			ArrayList<Node> hold = new ArrayList<Node>();
-			boolean lastleaf =true;
-			for(Node cc: plane) {for(Node c:cc.branches) {
-				if(!c.isLeaf)lastleaf=false;
-			}}
-			
-			for(Node cc: plane) {for(Node c:cc.branches) {
-				
-				if(c.isLeaf)s+="o";
-				else {s+="x";s+=c.similarity;hold.add(c);}
-				s+=",";
-			}
-			}
-			System.out.println(s);s="";
-			plane =hold;
-			if(lastleaf)return ;
-		}
-	}
+//	
+//	public void printCluster() {
+//		String s ="";
+//		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
+//		for(int i = 0; i<100000;i++) {
+//			ArrayList<Node> hold = new ArrayList<Node>();
+//			boolean lastleaf =true;
+//			for(Node cc: plane) {for(Node c:cc.branches) {
+//				if(!c.isLeaf)lastleaf=false;
+//			}}
+//			
+//			for(Node cc: plane) {for(Node c:cc.branches) {
+//				
+//				if(c.isLeaf)s+="o";
+//				else {s+="x";hold.add(c);}
+//				s+=",";
+//			}
+//			}
+//			System.out.println(s);s="";
+//			plane =hold;
+//			if(lastleaf)return ;
+//		}
+//	}
+//	
+//	public void printClusterSim() {
+//		String s ="";
+//		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
+//		for(int i = 0; i<100000;i++) {
+//			ArrayList<Node> hold = new ArrayList<Node>();
+//			boolean lastleaf =true;
+//			for(Node cc: plane) {for(Node c:cc.branches) {
+//				if(!c.isLeaf)lastleaf=false;
+//			}}
+//			
+//			for(Node cc: plane) {for(Node c:cc.branches) {
+//				
+//				if(c.isLeaf)s+="o";
+//				else {s+="x";s+=c.similarity;hold.add(c);}
+//				s+=",";
+//			}
+//			}
+//			System.out.println(s);s="";
+//			plane =hold;
+//			if(lastleaf)return ;
+//		}
+//	}
 	public double getMaxSim() {
 		double max = -1;
 		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);

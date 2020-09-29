@@ -66,7 +66,7 @@ public class Controls extends JFrame implements MouseListener{
 	    });
 	    add(bs2); 
   
-	    JButton b2=new JButton("Contrast");  
+	    JButton b2=new JButton("Color");  
 	    b2.setBounds(50,130,100,20);  
 	    b2.addActionListener(new ActionListener() {
 	        @Override

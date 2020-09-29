@@ -139,7 +139,9 @@ public class Bundle extends Group{
 	}
 	public double get(int row, int idx) {
 		// returns average differential value of specific compressed bundle element
-		return (sequences.get(row).get(idx));
+		if(row<sequences.size()&&idx<getLength())
+			return (sequences.get(row).get(idx));
+		return 0;
 	}
 	
 	public double getOriginal(int sec_idx, int i,int j) {

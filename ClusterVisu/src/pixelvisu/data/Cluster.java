@@ -19,63 +19,28 @@ public class Cluster implements Serializable {
 	Group flat;
 	Bundle flat_c;
 
+	int start,end;
 	int maxdepth;
 	int size;
 	int group_count = -10; // SIMILARITY CUT
 
-	public Cluster(Group sequences, String clustering, String link, String sim, String dataname, boolean save) throws IOException {
+	public Cluster(Group sequences, String clustering, String link, String sim, String dataname, int start, int end, boolean save) throws IOException {
 		// Cluster creation (saving/loading) happens here
 		// Tree structure is defined as linked node instances
+		this.start = start; this.end = end;
 		original = sequences;
 		name = dataname + "/" + clustering + link + sim;
 		System.out.println(
 				"Clustering: " + name );
 		//  MAKING FILES
-		if (save) {
-			try {
-				tree = serializeDataIn("save/trees", name);
-			} catch (Exception e) {
 				tree = new Node(sequences);
-				tree.clusterize(clustering, link, sim);
-				serializeDataOut("save/trees" , name, tree);
-			}
+				clusterize(tree,clustering, link, sim);
+			
 			flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
 			System.out.println(
 					"----Clusterized----");
 			
 			
-			
-			// FOR TREE DRAWING
-//			try {
-//				treeorder = serializeDataIn("save/trees", name + "_o");
-//			} catch (Exception e) {
-//				treeorder = new Node(flat);
-//				treeorder.clusterize(clustering, link, sim);
-//				serializeDataOut("save/trees" , name  + "_o", treeorder);
-//			}
-//			System.out.println("Tree Linked\n");
-//			
-		} 
-		
-		// READING EXISTING FILES
-		else {
-			try {
-				tree = serializeDataIn("save/trees", name);
-			} catch (Exception e) {
-				System.err.println("Error reading node file: "+name);
-			}
-			flat = tree.getFlatBranchesDepth();
-			System.out.println(
-					"Clusterized: " + name + " : size:" + tree.branches.size() + " and Size" + flat.getDepth());
-			
-			try {
-				treeorder = serializeDataIn("save/trees", name + "_o");
-			} catch (Exception e) {
-				System.err.println("Error reading tree file: "+name);
-			}
-			System.out.println("Tree Linked\n");
-
-		}
 	}
 
 	public Cluster(Group sequences,Cluster other) {
@@ -93,6 +58,115 @@ public class Cluster implements Serializable {
 		// TODO copy depth and not just flat
 		
 	}
+	
+	
+	
+	public void clusterize(Node tree, String clustering, String link, String similarity) {
+		// cluster whole child nodes into tree by given parameters
+		long last_time = System.nanoTime();
+		if(clustering == "agglomerative")
+		{
+			int a =0; int b =0; // indices to most similar clusters
+			double min_diff = 100000000;
+			double hold = min_diff;
+			for (int o = 0; o<=100000000;o++) {
+				if(tree.branches.size()<2)return;
+				for (int i = 0; i<tree.branches.size();i++) {
+					for(int j = i+1; j<tree.branches.size();j++) {
+						hold = compare(tree.getBranch(i),tree.getBranch(j),link, similarity);
+						if(hold<min_diff) {min_diff= hold; a=i;b=j;}
+//						long time = System.nanoTime();System.out.println(((time - last_time) / 1000));last_time = time;
+					}
+				}
+				// -> debug
+//				System.out.println(o+" "+branches.size()+" "+min_diff);	System.out.println(a+" "+b);if(branches.size()==200) return;
+
+//				if(o%(int)(length/(10*60))==0)System.out.print(",");
+				merge(tree,a,b,min_diff);a=0;b =0; min_diff = 1000000;
+			}
+			System.out.println("\n");//br
+		
+		}
+	}
+	
+	
+	
+
+	public double compare(Node one, Node other,String link, String sim) {
+		if(link =="complete") {
+			Group a =one.getFlatBranchesDepth();
+			Group b = other.getFlatBranchesDepth();
+			
+			double maximum = -10;
+			double hold =maximum;
+			for (Sequence sa:a.sequences) {
+				for(Sequence sb:b.sequences) {
+					hold =compare(sa,sb, sim);
+					if(hold>maximum){
+						maximum=hold;
+					}
+				}
+			}
+			return maximum;
+		}
+		if(link =="single") {
+			Group a =one.getFlatBranchesDepth();
+			Group b = other.getFlatBranchesDepth();
+			
+			double minimum = 10000000;
+			double hold =minimum;
+			for (Sequence sa:a.sequences) {
+				for(Sequence sb:b.sequences) {
+					hold =compare(sa,sb, sim);
+					if(hold<minimum){
+						minimum=hold;
+					}
+				}
+			}
+			return minimum;
+		}
+		if(link =="average") {
+			Group a =one.getFlatBranchesDepth();
+			Group b = other.getFlatBranchesDepth();
+			
+			double hold =0;
+			
+			for (Sequence sa:a.sequences) {
+				for(Sequence sb:b.sequences) {
+					hold +=(compare(sa,sb, sim)/(one.length*one.length));
+				}
+			}
+			return hold;
+		}
+		return -1;
+		
+	}
+	
+	public double compare(Sequence one,Sequence other, String measure) {
+		if(measure =="euclidean") return one.compareEuclid(other,start,end);
+		if(measure =="maximum") return one.compareMaximum(other,start,end);
+		if(measure =="weight") return one.compareWeight(other,start,end);
+		if(measure =="manhattan") return one.compareManhattan(other,start,end);
+		else
+			System.err.println("Similarity Measure Does not exist");
+			return -10;
+	}
+
+	public void merge(Node tree, int a, int b, double sim) {
+		// merging two clusters together by creating a new one and removing the previous branches
+		if(a==b)return;
+		ArrayList<Node> bs = new ArrayList<Node>();
+		bs.add(new Node(tree.getBranch(a)));
+		bs.add(new Node(tree.getBranch(b)));
+//		System.out.println(sim);
+		Node merged = new Node(bs,sim);
+		tree.branches.remove(tree.getBranch(b));
+		tree.branches.remove(tree.getBranch(a));
+		tree.branches.add(merged);
+	}
+
+	
+	
 	
 
 	public void makeSections(int maxsim,Cluster other) {

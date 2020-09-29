@@ -11,6 +11,8 @@ public class Scale  {
 	// Horizontal Scale for data visu
 	Vec2 mouse = new Vec2(0,0);
 	String hover_data = " ";
+	int start=0, end=0;
+	int hover = 0;
 	
 	Color bg = Color.white;
 	int width, height;
@@ -113,9 +115,19 @@ public class Scale  {
 		Graphics2D g2d = (Graphics2D)g;
 		// paints scale over data
 //		g.drawLine(0, 0, width, height);
+		
+		
+		// top select 
+		g2d.setColor(new Color(1,0,0, 0.4f));
+		g2d.fillRect(getUnscaledIdx(start), 0,getUnscaledIdx(end)-getUnscaledIdx(start), 50);
+				
+		g2d.drawLine(hover, 0, hover, 10000);
+				
+
+		// drawing cuts
 		if(bg==Color.black)g2d.setColor(new Color(1,1,1, 0.4f));
 		else g2d.setColor(new Color(0,0,0, 0.4f));
-		// drawing cuts
+		
 		for(int i=(int) start_idx;i<end_idx;i++)
 			if(i%cuts==0) {
                if(i%24==0) g2d.setStroke(new BasicStroke(2));
@@ -125,6 +137,8 @@ public class Scale  {
 				}
 
             else g2d.setStroke(new BasicStroke(3));
+		
+		// hover data
 		g2d.setColor(new Color(1, 1, 1,0.4f));
 		g2d.fillRect((int)mouse.y-2, (int)mouse.x-22, hover_data.length()*7, 16);
 		g2d.setColor(new Color(0, 0, 0, 1.0f));
@@ -132,5 +146,15 @@ public class Scale  {
 		g2d.drawString(hover_data, (int)mouse.y, (int)mouse.x-10);
 		
 		
+	}
+
+	public void setBounds(int x, int y) {
+		// TODO Auto-generated method stub
+		start = getScaleIdx(x); end = getScaleIdx(y);
+	}
+
+	public void setSelect(int y) {
+		// TODO Auto-generated method stub
+		hover = y;
 	}
 }

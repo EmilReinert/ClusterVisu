@@ -41,7 +41,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	
 	Vec2 mouse_hover = new Vec2(0,0);
 	Vec2 mouse_pressed =new Vec2(0,0);
+	Vec2 mouse_dragged =new Vec2(0,0);
 	int click_cluster=0;
+	boolean select = false;
 	boolean dataswitch = true;
 	boolean unpack_all =false;
 	boolean denden =true;
@@ -488,9 +490,15 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		sc.drag(mouse_pressed,new Vec2(e.getY(), e.getX()));
-		mouse_pressed = new Vec2(e.getY(), e.getX());
-		mouseMoved(e);
+
+		System.out.println(sc.start+" "+sc.end);
+		if(select)
+			sc.setBounds((int)mouse_pressed.y, e.getX());
+		else {
+			sc.drag(mouse_dragged,new Vec2(e.getY(), e.getX()));
+			mouse_dragged = new Vec2(e.getY(), e.getX());
+			mouseMoved(e);
+		}
 	}
 
 	@Override
@@ -498,6 +506,12 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// TODO Auto-generated method stub
 		mouse_hover = new Vec2(e.getY(), e.getX());
 		sc.dataClick(mouse_hover, dataText);
+
+		if(mouse_hover.x<60)
+			sc.setSelect((int)mouse_hover.y);
+		else
+			sc.setSelect(0);
+			
 	}
 
 	@Override
@@ -509,8 +523,12 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		mouse_pressed =   new Vec2(e.getY(), e.getX());
+		mouse_pressed =  new Vec2(e.getY(), e.getX());
+		mouse_dragged=  new Vec2(e.getY(), e.getX());
 		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquares = new ArrayList<Vec2>();
+		
+		if(mouse_pressed.x<60)
+			select = true;
 		
 	}
 
@@ -518,6 +536,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		//p.update(click_cluster);
+		if(select)data.updateClustering();
+		select = false;
 	}
 
 	@Override

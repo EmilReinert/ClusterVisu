@@ -34,15 +34,9 @@ public class SingleData {
 	Color hold;
 	ColorMapping cm;
 	
-	public SingleData(String path,String []circ, int gc, ColorMapping cm) throws IOException {
-
+	public SingleData(String path,String []circ, int gc,Color mc, ColorMapping cm, int start, int end) throws IOException {
+		this.mc = mc;
 		this.cm = cm;
-		update(path,circ,gc);
-		this.path = path;
-	}
-	
-	public void update(String path,String []circ, int gc) throws IOException {
-
 		this.group_count = gc;
 		sequences = new Group(group_count);
 		
@@ -50,16 +44,44 @@ public class SingleData {
 
 		dataname = path.substring(path.lastIndexOf("/") + 1);
 
-		updateClustering(circ);
+		updateClustering(circ,gc,start,end);
+		this.path = path;
 	}
 	
-	public void updateClustering( String []circ) {
+	public SingleData(String path, int gc,Color mc, ColorMapping cm) throws IOException {
+		// EMPTY CLUSTER for compare data
+		this.mc = mc;
+		this.cm = cm;
+		this.group_count = gc;
+		sequences = new Group(group_count);
 		
+		readData(path);
+
+		dataname = path.substring(path.lastIndexOf("/") + 1);
+
+		this.path = path;
+	}
+	
+	
+	public void update(String path,String []circ, int gc, int start, int end) throws IOException {
+		// Update Circ and given Data
+		this.group_count = gc;
+		sequences = new Group(group_count);
+		
+		readData(path);
+
+		dataname = path.substring(path.lastIndexOf("/") + 1);
+
+		updateClustering(circ,gc,start,end);
+	}
+	
+	public void updateClustering( String []circ, int gc,int start, int end) {
+		group_count = gc;
 		if(circ.length!=3)
 			System.err.println("wrong circuit");
 		try {
 			System.out.println("clusering new circuit");
-			c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname,true);}
+			c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname, start, end,true);}
 		catch(Exception e) {
 
 			e.printStackTrace();
@@ -68,15 +90,8 @@ public class SingleData {
 		
 		
 	}
-	public SingleData(String path, Cluster other, Color col, ColorMapping cm) throws IOException {
-		// Compare Data
-		this.cm = cm;
-		mc = col;
-		sequences = new Group(group_count);
-		readData(path);
-		this.path = path;
-		dataname = path.substring(path.lastIndexOf("/") + 1);
-		
+	public void update(Cluster other) {
+		// UPDATE COMPARE
 		c = new Cluster(sequences, other);
 		c.makeSections(group_count,other);
 	}
@@ -144,17 +159,15 @@ public class SingleData {
 		// MAIN COLOR source
 		double scale =255;
 //		
-		if(!contrast) {
-			value = (value/max)*scale;
-			value = cm.color((int) value);
-		}
-		
+		value = (value/max)*scale;
+		value = cm.color((int) value);
 		if(value>=255)
 			value = 255;
 		if(value>=0) {
 //			if(value<min||value>max) {return Color.red.getRGB();} ;
 			hold = new Color((int)value,(int)value,(int)value,255);
-			return hold;//multiplyColors(hold, mc);
+			if(contrast) return combineColors(hold, mc,0.9f);
+			else return hold;//
 			}
 		return Color.black;
 	}
@@ -164,16 +177,12 @@ public class SingleData {
 	
 	public Color getOrColor(int sec_idx, int row, int idx) {
 	
-		double value;
-		if(contrast) {
-			value= c.flat_c.getOriginalContrast(sec_idx, row, idx);//System.out.println(value);
-		}
-		else value = c.flat_c.getOriginal(sec_idx, row, idx);
-		return getColor(idx);/////
+		double value = c.flat_c.getOriginal(sec_idx, row, idx);
+		return getColor(value);/////
 	}
 	
 	public double getOrValue(int sec_idx, int row, int idx) {
-		return getColor(idx).getBlue();
+		return c.flat_c.getOriginal(sec_idx, row, idx);
 	}
 
 	
@@ -203,7 +212,8 @@ public class SingleData {
 		return color3;
 	}
 	
-	public static Color combineColors(Color color1, Color color2, float ra, float rb) {
+	public static Color combineColors(Color color1, Color color2, float ra) {
+		float rb = 1-ra;
 		float r1 = color1.getRed() / 255.0f;
 		float g1 = color1.getGreen() / 255.0f;
 		float b1 = color1.getBlue() / 255.0f;
