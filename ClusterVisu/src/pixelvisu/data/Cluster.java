@@ -44,17 +44,17 @@ public class Cluster implements Serializable {
 					"----Clusterized----");
 			
 			
-			/*
-			 * FOR TREE DRAWING
-			try {
-				treeorder = serializeDataIn("save/trees", name + "_o");
-			} catch (Exception e) {
-				treeorder = new Node(flat);
-				treeorder.clusterize(clustering, link, sim);
-				serializeDataOut("save/trees" , name  + "_o", treeorder);
-			}
-			System.out.println("Tree Linked\n");
-			*/
+			
+			// FOR TREE DRAWING
+//			try {
+//				treeorder = serializeDataIn("save/trees", name + "_o");
+//			} catch (Exception e) {
+//				treeorder = new Node(flat);
+//				treeorder.clusterize(clustering, link, sim);
+//				serializeDataOut("save/trees" , name  + "_o", treeorder);
+//			}
+//			System.out.println("Tree Linked\n");
+//			
 		} 
 		
 		// READING EXISTING FILES

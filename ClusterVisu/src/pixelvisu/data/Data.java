@@ -13,7 +13,8 @@ public class Data {
 	Scale sc;
 	ColorMapping cm;
 	Circuit circ;
-	
+
+//	TreePanel p;
 
 	String maindata_path = "Data/4w_14_9_1h/node_memory_Active_bytes.txt";
 	String comparedata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
@@ -21,8 +22,9 @@ public class Data {
 	
 	public Data(int width, int height, Scale s, ColorMapping m)  {
 		circ = new Circuit();
-
+//		p = new TreePanel();
 		cm = m;
+		
 		try {
 			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,cm);
 		} catch (IOException e) {
@@ -53,6 +55,7 @@ public class Data {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+//		p.update(data_main.c, group_count);
 		
 	}
 	public void up() {

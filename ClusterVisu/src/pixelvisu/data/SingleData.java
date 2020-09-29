@@ -139,6 +139,7 @@ public class SingleData {
 	}
 	
 	
+	
 	public Color getColor(double value) {
 		// MAIN COLOR source
 		double scale =255;
@@ -153,7 +154,7 @@ public class SingleData {
 		if(value>=0) {
 //			if(value<min||value>max) {return Color.red.getRGB();} ;
 			hold = new Color((int)value,(int)value,(int)value,255);
-			return multiplyColors(hold, mc);
+			return hold;//multiplyColors(hold, mc);
 			}
 		return Color.black;
 	}
@@ -168,13 +169,14 @@ public class SingleData {
 			value= c.flat_c.getOriginalContrast(sec_idx, row, idx);//System.out.println(value);
 		}
 		else value = c.flat_c.getOriginal(sec_idx, row, idx);
-		return getColor(value);/////
+		return getColor(idx);/////
 	}
 	
 	public double getOrValue(int sec_idx, int row, int idx) {
-		return c.flat_c.getOriginal(sec_idx, row, idx);
+		return getColor(idx).getBlue();
 	}
 
+	
 	
 	
 	

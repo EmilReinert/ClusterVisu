@@ -36,6 +36,7 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		points = new ArrayList<Vec2>();
+		points.add(new Vec2(94,36));
 		makeMap();
 		
 		repaint();
@@ -78,29 +79,32 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		map = new double[255];
 		for (int i = 0; i<size;i++) 
 			map[i] = i;
-		if(points.size()<1) {System.err.println("no points in color map"); return;}
+		if(points.size()<1) { return;}
 
 		Vec2 prev = new Vec2(0,0);
 		Vec2 current = new Vec2(0,0);
 		int pointer =0;
-		for(double i =0; i<size; i++) {
+		for(int i =0; i<size; i++) {
 			if(pointer>=points.size()) {
-				map[(int) i] = getColor(current, new Vec2(size,size),i);
-				
+				map[ i] = getColor(current, new Vec2(size,size),i);
+
 			}
 			else {
-			current = points.get(pointer);
-			
-			if((int)current.x ==i) {
-				prev = current;
-				pointer++;}
-			
+				current = points.get(pointer);
+				
+				if((int)current.x ==i) {
+					prev = new Vec2(current);
+					pointer++;
+					i--;
+				}
+				else {
+					map[i] = getColor(prev,current,i);
+				}
 
-			
-			else
-				map[(int) i] = getColor(prev,current,i);
-		}
 			}
+
+		}
+		System.out.println("");
 	}
 	
 	public int color(int idx) {
@@ -140,7 +144,6 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		// TODO Auto-generated method stub
 
 		points.add(new Vec2(e.getX(),e.getY()));
-		
 		repaint();
 	}
 
@@ -148,6 +151,7 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+		System.out.println(points.get(points.size()-1).toString());
 		points.sort(new Comparator<Vec2>() {
 			
 			@Override
@@ -176,7 +180,7 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		// TODO Auto-generated method stub
 
 		points.set(points.size()-1,new Vec2(e.getX(),e.getY()));
-		
+
 		repaint();
 	}
 

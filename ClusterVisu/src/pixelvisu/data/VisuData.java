@@ -30,7 +30,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	private int width, height; // width, height for diagram
 	
 	Data data; // secondary data to be compared structurally
-//	TreePanel p;
 	Scale sc;
 	
 	Color bg_color;
@@ -56,7 +55,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		height = h;
 		bg_color= bg_c;
 
-//		p = new TreePanel();
+
 		
 		this.data = data;
 		
@@ -72,7 +71,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void update(int[] pixels, int w,int h,int off) {
 		width=w; height = h-off;
 		off = w*off;
-		
 		drawBackground(pixels);
 		
 //		drawData(pixels, data.sequences, off, width*height/3+off);
@@ -166,11 +164,11 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			int pos = ((n%(width))-startpos%width);
 			col_hold = data.getColor(d,dataRowIdx,pos);
 			if(col_hold!=null) {
-				diff_color =6*data.getDiff(d,dataRowIdx,pos);
+				diff_color =data.getDiff(d,dataRowIdx,pos);
 				diff_fade =(int) Math.pow(diff_color*0.005,4);
 				if(diff_color>255)diff_color =255;
 				if(diff_fade>255)diff_fade =255;
-				diff_color = new Color(diff_fade,0, diff_color).getRGB();
+				diff_color = new Color(diff_fade,0,0 ).getRGB();
 				pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
 				
 				if(vec2Int(mouse_hover)==n)dataText=data.getValue(d,dataRowIdx,pos);
@@ -506,14 +504,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		mouse_click = new Vec2(e.getY(), e.getX());
-//		if(mouse_click.x<height/2) mouse_click_top= new Vec2(mouse_click);
-//		else mouse_click_bottom= new Vec2(mouse_click);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		mouse_pressed =   new Vec2(e.getY(), e.getX());
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquares = new ArrayList<Vec2>();
 		
 	}
 
