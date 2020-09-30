@@ -139,10 +139,10 @@ public class Scale  {
             else g2d.setStroke(new BasicStroke(3));
 		
 		// hover data
-		g2d.setColor(new Color(1, 1, 1,0.4f));
+		g2d.setColor(new Color(1, 0, 0,0.4f));
 		g2d.fillRect((int)mouse.y-2, (int)mouse.x-22, hover_data.length()*7, 16);
 		g2d.setColor(new Color(0, 0, 0, 1.0f));
-		g2d.drawRect((int)mouse.y-1, (int)mouse.x-1,1,1);
+//		g2d.drawRect((int)mouse.y-1, (int)mouse.x-1,1,1);
 		g2d.drawString(hover_data, (int)mouse.y, (int)mouse.x-10);
 		
 		

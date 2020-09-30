@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import javax.swing.JFrame;
@@ -36,7 +37,10 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		points = new ArrayList<Vec2>();
-		points.add(new Vec2( 186.0 ,26.0 ));
+		points.add(new Vec2(0,0));
+		points.add(new Vec2( 61.0 , 12.0 ));
+		points.add(new Vec2 ( 119.0 , 35.0 ) );
+		points.add(new Vec2(size, size));
 		makeMap();
 		
 		repaint();
@@ -54,24 +58,24 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 
 		g.setColor(Color.red);
 		double count =0;
-//		for(double val: map) {
-//			Vec2 iside =null;
-//			for(Vec2 p:points)
-//				if(p.x ==count)
-//					iside=p;
-//			if(iside!=null) {
-//				g.drawRect((int)iside.x,(int)iside.y, 3,3);
-//				
-//			}
-//			else g.drawRect((int)count,(int)val, 1,1);
-//			count++;
-//		}
-		Vec2 prev = new Vec2(0,0);
-		for(Vec2 p : points) {
-			g.drawLine((int)prev.x,(int) prev.y, (int)p.x,(int) p.y);
-			prev = p;
+		for(double val: map) {
+			Vec2 iside =null;
+			for(Vec2 p:points)
+				if(p.x ==count)
+					iside=p;
+			if(iside!=null) {
+				g.drawRect((int)iside.x,(int)iside.y, 3,3);
+				
+			}
+			else g.drawRect((int)count,(int)val, 1,1);
+			count++;
 		}
-		g.drawLine((int)prev.x,(int) prev.y, size,size);
+//		Vec2 prev = new Vec2(0,0);
+//		for(Vec2 p : points) {
+//			g.drawLine((int)prev.x,(int) prev.y, (int)p.x,(int) p.y);
+//			prev = p;
+//		}
+//		g.drawLine((int)prev.x,(int) prev.y, size,size);
 			
 	}
 	
@@ -85,24 +89,24 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		Vec2 current = new Vec2(0,0);
 		int pointer =0;
 		for(int i =0; i<size; i++) {
-			if(pointer>=points.size()) {
-				map[ i] = getColor(current, new Vec2(size,size),i);
-
-			}
-			else {
-				current = points.get(pointer);
-				
-				if((int)current.x ==i) {
-					prev = new Vec2(current);
-					pointer++;
-					i--;
-				}
-				else {
-					map[i] = getColor(prev,current,i);
-				}
-
-			}
-
+//			if(pointer>=points.size()) {
+//				map[ i] = getColor(current, new Vec2(size,size),i);
+//
+//			}
+//			else {
+//				current = points.get(pointer);
+//				
+//				if((int)current.x ==i) {
+//					prev = new Vec2(current);
+//					pointer++;
+//					i--;
+//				}
+//				else {
+//					map[i] = getColor(prev,current,i);
+//				}
+//
+//			}
+			map[i] = getLagrange(i);
 		}
 	}
 	
@@ -132,10 +136,37 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		double t= first.y-first.x*m; //x verschiebung		
 		return new Vec2(m, t);
 	}
+	
+	public double getLagrange(int xPoint) {
+	    double sum = 0;
+	    // Peforming Arithmatic Operation
+	    for (int i = 0; i < points.size(); i++) {
+		    double productU = 1;
+		    double productL = 1;
+	        for (int j = 0; j < points.size(); j++) {
+	            if (j != i) {
+	                productU *= (xPoint - points.get(j).x);
+	                productL *= (points.get(i).x- points.get(j).x);
+	            }
+	        }
+	        sum +=productU/productL * points.get(i).y;
+	    }
+
+	    return sum;
+
+	    // End of the Program
+	}
+	
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)points = new ArrayList<Vec2>();
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)
+			{points = new ArrayList<Vec2>();
+
+			points.add(new Vec2(0,0));
+			points.add(new Vec2(size, size));
+			}
 	}
 
 	@Override

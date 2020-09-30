@@ -82,7 +82,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// for single
 //		drawData(pixels,data.data_main.sequences,off,pixels.length);
 //		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
-		if(data.data_main.c.flat_c!=null) {
+		if(data.data_main.c!=null&&data.data_main.c.flat_c!=null) {
 			drawBarsDen(pixels, data.data_main, off, off+height/3*width);
 		}
 		if(data.data_compare.c!=null) {
@@ -491,7 +491,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
 
-		System.out.println(sc.start+" "+sc.end);
+//		System.out.println(sc.start+" "+sc.end);
 		if(select)
 			sc.setBounds((int)mouse_pressed.y, e.getX());
 		else {
