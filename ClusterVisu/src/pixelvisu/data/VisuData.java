@@ -125,6 +125,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		int den = 0;
 		boolean clicked = false;
 		int pixelheight = 1; // height of a singular pixel
+		if(cl.c.flat_c==null)return;
 		for(int i=0; i< cl.c.flat_c.getDepth();i++) {
 			if(denden)den =  (dens.get(i)+30)/5;// 5; //for static sizes
 			else den = 5;
@@ -517,26 +518,33 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		mouse_click = new Vec2(e.getY(), e.getX());
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {}
+		else
+			mouse_click = new Vec2(e.getY(), e.getX());
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		mouse_pressed =  new Vec2(e.getY(), e.getX());
-		mouse_dragged=  new Vec2(e.getY(), e.getX());
 		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquares = new ArrayList<Vec2>();
-		
+		else {
+			mouse_pressed =  new Vec2(e.getY(), e.getX());
+			mouse_dragged=  new Vec2(e.getY(), e.getX());
 		if(mouse_pressed.x<60)
-			select = true;
+			select = true;}
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		//p.update(click_cluster);
-		if(select)data.updateClustering();
+		//p.update{(click_cluster);
+		if(select) {
+			sc.setBounds((int)mouse_pressed.y, e.getX());
+			data.setBounds((int)mouse_pressed.y, e.getX());
+			data.updateClustering();
+		
+		}
 		select = false;
 	}
 

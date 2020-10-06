@@ -127,7 +127,9 @@ public class Group implements Serializable{
 	}
 	
 	public int getDepth() {
+		if(sequences!=null&&sequences.size()>0)
 		return sequences.size();
+		return -1;
 	}
 	public int getLength() {
 		if(sequences!=null&&sequences.size()>0)

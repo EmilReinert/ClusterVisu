@@ -31,7 +31,8 @@ public class Cluster implements Serializable {
 		original = sequences;
 		name = dataname + "/" + clustering + link + sim;
 		System.out.println(
-				"Clustering: " + name );
+				"Clustering from " + start+" to " +end);
+		System.out.println(name);
 		//  MAKING FILES
 				tree = new Node(sequences);
 				clusterize(tree,clustering, link, sim);

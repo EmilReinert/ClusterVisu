@@ -36,6 +36,7 @@ public class Data {
 		}
 		updateSection();
 		sc =s;
+		
 	}
 
 	public void updateClustering() {
@@ -72,11 +73,12 @@ public class Data {
 	public Color getColor(SingleData d,int dataRowIdx, int pos) {
 		if(d==null)return null;
 		if(d.c.flat_c==null)return null;
-		return d.getColor(d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
+		return getColor(d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) ));
 	}
 
 	public Color getOrColor(SingleData d,int sec_idx, int row, int idx) {
-		return d.getOrColor(sec_idx, row, sc.getScaleIdx(idx));
+		double value = d.c.flat_c.getOriginal(sec_idx, row,sc.getScaleIdx(idx));
+		return getColor(value);/////
 	}
 	
 	
@@ -84,6 +86,40 @@ public class Data {
 	public int getDiff(SingleData d,int dataRowIdx, int pos) {
 		return d.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
 	}
+
+	public Color getColor(double value) {
+		// MAIN COLOR source
+		double scale =255;
+//		
+		value = (value/data_main.max)*scale;
+		value = cm.color((int) value);
+//			if(value<min||value>max) {return Color.red.getRGB();} ;
+		int r,g,b;
+		if(value<127.5) {
+			r = 255;
+			g = (int)(2*value);
+			b = (int)(2*value);
+		}
+		else {
+			r =(int)(-2*value)+255*2;
+			g =(int)(-2*value)+255*2;
+			b = 255;
+		}
+		if(r>255) r = 255;
+		if(g>255) g = 255;
+		if(b>255) b = 255;
+		if(r<0)r=0;
+		if(g<0)g=0;
+		if(b<0)b=0;
+//			Color hold = new Color(255-(int)value,(int)(-(1/184)*(value-125)*(value-125)+125),(int)value,255);
+		Color hold = new Color(r,g,b,255);	
+		if(contrast) return combineColors(hold, Color.red,0.9f);
+		else return hold;//
+			
+	}
+	
+	
+	
 	
 	
 	
@@ -115,6 +151,30 @@ public class Data {
 	}
 
 
+	public static Color combineColors(Color color1, Color color2, float ra) {
+		float rb = 1-ra;
+		float r1 = color1.getRed() / 255.0f;
+		float g1 = color1.getGreen() / 255.0f;
+		float b1 = color1.getBlue() / 255.0f;
+		float a1 = color1.getAlpha() / 255.0f;
+
+		float r2 = color2.getRed() / 255.0f;
+		float g2 = color2.getGreen() / 255.0f;
+		float b2 = color2.getBlue() / 255.0f;
+		float a2 = color2.getAlpha() / 255.0f;
+		
+		float r3 = r1 * r2;//if(r3>255)r3=255;
+		float g3 = g1 * g2;//if(g3>255)g3=255;
+		float b3 = b1 * b2;//if(b3>255)b3=255;
+		float a3 = a1 * a2;//if(a3>255)a3=255;
+		
+		float r4 = ra*r3 +rb* r2;//if(r4>255)r3=255;
+		float g4 = ra*g3 +rb* g2;//if(g4>255)g3=255;
+		float b4 = ra*b3 +rb* b2;//if(b4>255)b3=255;
+		float a4 = ra*a3 +rb* a2;//if(a4>255)a3=255;
+		Color color4 = new Color((float) r4 ,(float) g4 ,(float) b4 ,(float) a4  );
+		return color4;
+	}
 
 	public boolean isSelected(int i) {
 		// TODO Auto-generated method stub
@@ -125,6 +185,7 @@ public class Data {
 		// TODO Auto-generated method stub
 		start = x; end = y;
 		sc.setBounds(x,y);
+		System.out.println("new bounds "+start+" "+end);
 	}
 
 }

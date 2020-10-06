@@ -77,6 +77,7 @@ public class SingleData {
 	
 	public void updateClustering( String []circ, int gc,int start, int end) {
 		group_count = gc;
+		
 		if(circ.length!=3)
 			System.err.println("wrong circuit");
 		try {
@@ -154,32 +155,6 @@ public class SingleData {
 	}
 	
 	
-	
-	public Color getColor(double value) {
-		// MAIN COLOR source
-		double scale =255;
-//		
-		value = (value/max)*scale;
-		value = cm.color((int) value);
-		if(value>=255)
-			value = 255;
-		if(value>=0) {
-//			if(value<min||value>max) {return Color.red.getRGB();} ;
-			hold = new Color((int)value,(int)value,(int)value,255);
-			if(contrast) return combineColors(hold, mc,0.9f);
-			else return hold;//
-			}
-		return Color.black;
-	}
-	
-	
-	
-	
-	public Color getOrColor(int sec_idx, int row, int idx) {
-	
-		double value = c.flat_c.getOriginal(sec_idx, row, idx);
-		return getColor(value);/////
-	}
 	
 	public double getOrValue(int sec_idx, int row, int idx) {
 		return c.flat_c.getOriginal(sec_idx, row, idx);

@@ -112,7 +112,7 @@ public class Controls extends JFrame implements MouseListener{
 	    
 	    //Circuit List
 	    JComboBox jsc = new JComboBox<String>(data.circ.clustering);
-	    jsc.setBounds(0,10,50,20);  
+	    jsc.setBounds(0,10,70,20);  
 	    jsc.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -122,7 +122,7 @@ public class Controls extends JFrame implements MouseListener{
 	    });
 	    add(jsc);
 	    JComboBox jsl = new JComboBox<String>(data.circ.linkage);
-	    jsl.setBounds(50,10,50,20);  
+	    jsl.setBounds(80,10,70,20);  
 	    jsl.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -132,7 +132,7 @@ public class Controls extends JFrame implements MouseListener{
 	    });
 	    add(jsl);
 	    JComboBox jss = new JComboBox<String>(data.circ.similarity);
-	    jss.setBounds(100,10,50,20);  
+	    jss.setBounds(160,10,70,20);  
 	    jss.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {

@@ -1,5 +1,6 @@
 package pixelvisu.data;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -42,8 +43,6 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		points.add(new Vec2 ( 119.0 , 35.0 ) );
 		points.add(new Vec2(size, size));
 		makeMap();
-		
-		repaint();
 	}
 
 	public void paint(Graphics g_) {
@@ -55,6 +54,20 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 
 		makeMap();
 		
+		// draws background color scale
+		g.setStroke(new BasicStroke(2));
+		for(int i=0;i<size;i++) {
+			try {
+				g.setColor(data.getColor(i));
+			}
+			catch (Exception e) {
+				System.out.println("cant get color at: "+i);
+				continue;
+			}
+			g.drawLine(i, 0, i, size);
+		}
+		
+		// draws lagrange transfer function
 
 		g.setColor(Color.red);
 		double count =0;
