@@ -11,6 +11,7 @@ public class Scale  {
 	// Horizontal Scale for data visu
 	Vec2 mouse = new Vec2(0,0);
 	String hover_data = " ";
+	Data data;
 	int start=0, end=0;
 	int hover = 0;
 	
@@ -29,7 +30,7 @@ public class Scale  {
 	}
 	
 	public void resize(int with, int heit) {
-		width = with; height = 50;
+		width = with; height = heit-80;
 	}
 	
 	public void setMax(float max) {
@@ -117,11 +118,11 @@ public class Scale  {
 //		g.drawLine(0, 0, width, height);
 		
 		
-		// top select 
-		g2d.setColor(new Color(1,0,0, 0.4f));
+		// top selection ( rect and line)
+		g2d.setColor(new Color(0,0,0,0.2f));
 		g2d.fillRect(getUnscaledIdx(start), 0,getUnscaledIdx(end)-getUnscaledIdx(start), 50);
 				
-		g2d.drawLine(hover, 0, hover, 10000);
+		g2d.drawLine(hover, 0, hover, height);
 				
 
 		// drawing cuts
@@ -132,17 +133,38 @@ public class Scale  {
 			if(i%cuts==0) {
                if(i%24==0) g2d.setStroke(new BasicStroke(2));
                else g2d.setStroke(new BasicStroke(1));
-				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), height);//System.out.println(i);
-				if(i%24==0||end_idx-start_idx<15)g2d.drawString(i+"h", getUnscaledIdx(i)+3, 42);
+				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), 50);//System.out.println(i);
+				if(i%24==0||end_idx-start_idx<15)
+					if(cuts==24)
+						g2d.drawString(i/24+"t", getUnscaledIdx(i)+3, 42);
+					else
+						g2d.drawString(i+"h", getUnscaledIdx(i)+3, 42);
 				}
 
             else g2d.setStroke(new BasicStroke(3));
 		
+		// data names
+		g2d.setColor(new Color(0,0,0,0.2f));
+		g2d.fillRect((int)10-2, 80-22, 200, 16);
+		g2d.setColor(new Color(0, 0, 0, 1f));
+		g2d.drawString(data.data_main.dataname, 10,80-10);
+
+		g2d.setColor(new Color(0,0,0,0.2f));
+		g2d.fillRect((int)10-2, (int)(80+height/3)-22, 200, 16);
+		g2d.setColor(new Color(0, 0, 0, 1f));
+		g2d.drawString(data.data_compare.dataname, 10, (int)(80+height/3)-10);
+
+		g2d.setColor(new Color(0,0,0,0.2f));
+		g2d.fillRect((int)10-2, (int)(80+2*height/3)-22, 200, 16);
+		g2d.setColor(new Color(0, 0, 0, 1f));
+		g2d.drawString(data.data_compare_two.dataname, 10,(int)(80+2*height/3)-10);
+		
+		
+		
 		// hover data
-		g2d.setColor(new Color(1, 0, 0,0.4f));
+		g2d.setColor(new Color(1, 1, 1,0.5f));
 		g2d.fillRect((int)mouse.y-2, (int)mouse.x-22, hover_data.length()*7, 16);
 		g2d.setColor(new Color(0, 0, 0, 1.0f));
-//		g2d.drawRect((int)mouse.y-1, (int)mouse.x-1,1,1);
 		g2d.drawString(hover_data, (int)mouse.y, (int)mouse.x-10);
 		
 		

@@ -7,6 +7,7 @@ public class Data {
 	SingleData data_main;
 	SingleData data_compare; // secondary data to be compared structurally
 	SingleData data_compare_two;
+	
 	int group_count = 44;
 	String section = "similarity";
 	boolean contrast;
@@ -53,6 +54,7 @@ public class Data {
 //		p.update(data_main.c, group_count);
 		contrast=!contrast;
 		contrast();
+		cm.repaint();
 		
 	}
 	public void up() {
@@ -77,6 +79,7 @@ public class Data {
 	}
 
 	public Color getOrColor(SingleData d,int sec_idx, int row, int idx) {
+		if(d.c==null&&d.c.flat_c==null)return null;
 		double value = d.c.flat_c.getOriginal(sec_idx, row,sc.getScaleIdx(idx));
 		return getColor(value);/////
 	}
@@ -84,26 +87,35 @@ public class Data {
 	
 
 	public int getDiff(SingleData d,int dataRowIdx, int pos) {
-		return d.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
+		if(d.c==null&&d.c.flat_c==null)return -1;
+			return d.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );
+		
 	}
 
 	public Color getColor(double value) {
 		// MAIN COLOR source
 		double scale =255;
-//		
-		value = (value/data_main.max)*scale;
-		value = cm.color((int) value);
-//			if(value<min||value>max) {return Color.red.getRGB();} ;
+		value = (value/data_main.max)*scale; // GLOBAL normalizing
+		
+		Color hold = colorScale(value);
+		if(contrast) return combineColors(hold, Color.red,0.9f);
+		else return hold;//
+			
+	}
+	
+	public Color colorScale(double val) {
+		
+		int value = cm.color((int) val);
 		int r,g,b;
 		if(value<127.5) {
-			r = 255;
+			b = 255;
 			g = (int)(2*value);
-			b = (int)(2*value);
+			r = (int)(2*value);
 		}
 		else {
-			r =(int)(-2*value)+255*2;
+			b =(int)(-2*value)+255*2;
 			g =(int)(-2*value)+255*2;
-			b = 255;
+			r = 255;
 		}
 		if(r>255) r = 255;
 		if(g>255) g = 255;
@@ -112,12 +124,8 @@ public class Data {
 		if(g<0)g=0;
 		if(b<0)b=0;
 //			Color hold = new Color(255-(int)value,(int)(-(1/184)*(value-125)*(value-125)+125),(int)value,255);
-		Color hold = new Color(r,g,b,255);	
-		if(contrast) return combineColors(hold, Color.red,0.9f);
-		else return hold;//
-			
+		return new Color(r,g,b,255);
 	}
-	
 	
 	
 	

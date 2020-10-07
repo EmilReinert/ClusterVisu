@@ -23,6 +23,7 @@ import org.json.JSONObject;
 public class SingleData {
 	Group sequences;// unordered weights // image
 	Cluster c;
+	int [] values; // value distribution
 	
 	double min;
 	double max;
@@ -38,7 +39,6 @@ public class SingleData {
 		this.mc = mc;
 		this.cm = cm;
 		this.group_count = gc;
-		sequences = new Group(group_count);
 		
 		readData(path);
 
@@ -53,7 +53,6 @@ public class SingleData {
 		this.mc = mc;
 		this.cm = cm;
 		this.group_count = gc;
-		sequences = new Group(group_count);
 		
 		readData(path);
 
@@ -66,7 +65,6 @@ public class SingleData {
 	public void update(String path,String []circ, int gc, int start, int end) throws IOException {
 		// Update Circ and given Data
 		this.group_count = gc;
-		sequences = new Group(group_count);
 		
 		readData(path);
 
@@ -100,6 +98,7 @@ public class SingleData {
 	
 
 	protected void readData(String path) throws IOException {
+		sequences = new Group(this.group_count);
 		try {
 			sequences = serializeDataIn("save/data", path);
 		} 
@@ -132,6 +131,13 @@ public class SingleData {
 		for(Sequence s:sequences.sequences) {
 			if(s.getMin()<min) min = s.getMin();
 			if(s.getMax()>max) max = s.getMax();
+		}
+		// getting data value distribution
+		values = new int[(int)max];
+		for(Sequence seq: sequences.sequences) {
+			for(double d:seq.data) {
+				values[(int)((d/max)*255)]++;
+			}
 		}
 	}
 	

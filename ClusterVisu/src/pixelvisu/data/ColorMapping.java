@@ -30,10 +30,10 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 
 
 		f = new JFrame("Color");
-		f.setSize(w	,h);
-		f.setResizable(true);
+		f.setSize(200, 290);
 		f.add(this);
 		f.setVisible(true);
+		f.setResizable(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -58,15 +58,31 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		g.setStroke(new BasicStroke(2));
 		for(int i=0;i<size;i++) {
 			try {
-				g.setColor(data.getColor(i));
+				g.setColor(data.colorScale(i));
 			}
 			catch (Exception e) {
-				System.out.println("cant get color at: "+i);
+//				System.out.println("cant get color at: "+i);
 				continue;
 			}
 			g.drawLine(i, 0, i, size);
 		}
+
+		g.setStroke(new BasicStroke(1));
+		// draws value distribution
+		g.setColor(new Color(0,0,0, 0.4f));
+		int value_cnt;
+		try{
+			value_cnt = data.data_main.sequences.getLength()*data.data_main.sequences.getDepth();
+
+			for(int i=0;i<size;i++) {
+				
+				g.drawLine(i, 0, i, data.data_main.values[i]/30);
+			}
+			
 		
+		}catch(Exception e) {
+			value_cnt = 1;
+		}
 		// draws lagrange transfer function
 
 		g.setColor(Color.red);

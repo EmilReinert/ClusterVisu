@@ -49,6 +49,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		ColorMapping cm = new ColorMapping();
 		Data data= new Data(WIDTH, HEIGHT,sc,cm);
 		cm.data =data;
+		sc.data = data;
 		sc.setMax(data.getLength());
 		Controls c = new Controls(data);
 //		String path ="Data/Memory usage.json";
