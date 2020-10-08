@@ -136,7 +136,7 @@ public class Scale  {
 				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), 50);//System.out.println(i);
 				if(i%24==0||end_idx-start_idx<15)
 					if(cuts==24)
-						g2d.drawString(i/24+"t", getUnscaledIdx(i)+3, 42);
+						g2d.drawString(i/24+"d", getUnscaledIdx(i)+3, 42);
 					else
 						g2d.drawString(i+"h", getUnscaledIdx(i)+3, 42);
 				}
@@ -167,6 +167,17 @@ public class Scale  {
 		g2d.setColor(new Color(0, 0, 0, 1.0f));
 		g2d.drawString(hover_data, (int)mouse.y, (int)mouse.x-10);
 		
+		
+		
+		// graphs
+//		g2d.setStroke(new BasicStroke(1));
+//		for(Sequence s:data.data_main.sequences.sequences) {
+//			Vec2 prev = new Vec2(0,0);
+//			for(int i = 0; i<s.data.size();i++) {
+//				g2d.drawLine(i, s.data.get(i).intValue(), (int)prev.x, (int)prev.y);
+//				prev = new Vec2(i,s.data.get(i));
+//			}
+//		}
 		
 	}
 

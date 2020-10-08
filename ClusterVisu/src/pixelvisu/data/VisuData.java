@@ -27,7 +27,7 @@ import javax.swing.JFrame;
 
 public class VisuData implements MouseListener,MouseMotionListener,MouseWheelListener,KeyListener{
 
-	private int width, height; // width, height for diagram
+	private int width, height,off; // width, height for diagram
 	
 	Data data; // secondary data to be compared structurally
 	Scale sc;
@@ -63,16 +63,20 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		
 		length = data.data_main.getLength();
 		sc =s;
+		sc.setBounds(data.start, data.end);
 		data.updateSection();
 	}
 
 	
 	
 	// UPDATE ----------------------------------------------------
+	public void setSize(int w,int h,int off) {
+
+		this.width=w; this.height = h-off;
+		this.off = w*off;
+	}
 	
-	public void update(int[] pixels, int w,int h,int off) {
-		width=w; height = h-off;
-		off = w*off;
+	public void update(int[] pixels) {
 		drawBackground(pixels);
 		
 //		drawData(pixels, data.sequences, off, width*height/3+off);
@@ -167,12 +171,12 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			int pos = ((n%(width))-startpos%width);
 			col_hold = data.getColor(d,dataRowIdx,pos);
 			if(col_hold!=null) {
-				diff_color =data.getDiff(d,dataRowIdx,pos);
-				diff_fade =(int) Math.pow(diff_color*0.005,4);
-				if(diff_color>255)diff_color =255;
-				if(diff_fade>255)diff_fade =255;
-				diff_color = new Color(diff_fade,0,0 ).getRGB();
-				pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
+//				diff_color =data.getDiff(d,dataRowIdx,pos);
+//				diff_fade =(int) Math.pow(diff_color*0.005,4);
+//				if(diff_color>255)diff_color =255;
+//				if(diff_fade>255)diff_fade =255;
+//				diff_color = new Color(diff_fade,0,0 ).getRGB();
+				pixels[n] =col_hold.getRGB();//mixColors(diff_color, col_hold.getRGB(), 0.1f);
 				
 				if(vec2Int(mouse_hover)==n)dataText=data.getValue(d,dataRowIdx,pos);
 				}

@@ -67,8 +67,8 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 			g.drawLine(i, 0, i, size);
 		}
 
-		g.setStroke(new BasicStroke(1));
 		// draws value distribution
+		g.setStroke(new BasicStroke(1));
 		g.setColor(new Color(0,0,0, 0.4f));
 		int value_cnt;
 		try{
@@ -83,20 +83,21 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		}catch(Exception e) {
 			value_cnt = 1;
 		}
-		// draws lagrange transfer function
+		// draws transfer function
 
 		g.setColor(Color.red);
-		double count =0;
+		double count =0;Vec2 prev = new Vec2(0,0);
 		for(double val: map) {
 			Vec2 iside =null;
 			for(Vec2 p:points)
 				if(p.x ==count)
 					iside=p;
 			if(iside!=null) {
-				g.drawRect((int)iside.x,(int)iside.y, 3,3);
+				g.fillRect((int)iside.x-1,(int)iside.y-1, 3,3);
 				
-			}
-			else g.drawRect((int)count,(int)val, 1,1);
+			}else {
+			g.drawLine((int)prev.x, (int)prev.y, (int)count, (int)val);
+			prev = new Vec2(count,val);}
 			count++;
 		}
 //		Vec2 prev = new Vec2(0,0);

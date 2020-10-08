@@ -62,6 +62,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		
 		
 		visu = new VisuData(WIDTH,HEIGHT,data,bg_color,sc);
+		visu.setSize( WIDTH,HEIGHT,OFF);
 //		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
 
 		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
@@ -81,6 +82,8 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		        	sc.resize(WIDTH, HEIGHT);
 					image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
 					pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+					visu.setSize( WIDTH,HEIGHT,OFF);
 		        }
 		});
 		
@@ -140,7 +143,8 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			{
 				
 				//handles all of the logic restricted time
-				visu.update(pixels, WIDTH,HEIGHT,OFF);
+//				visu.setSize( WIDTH,HEIGHT,OFF);
+				visu.update(pixels);
 				delta--;
 			}
 			render();//displays to the screen unrestricted time
