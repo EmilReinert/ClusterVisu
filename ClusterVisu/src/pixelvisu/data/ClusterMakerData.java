@@ -2,6 +2,8 @@ package pixelvisu.data;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferStrategy;
@@ -19,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class ClusterMakerData extends JFrame implements Runnable {
@@ -79,7 +82,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		        public void componentResized(ComponentEvent evt) {
 		        	HEIGHT = getHeight();
 		        	WIDTH = getWidth();
-		        	sc.resize(WIDTH, HEIGHT);
+		        	sc.resize(WIDTH, HEIGHT, OFF);
 					image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
 					pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
@@ -126,7 +129,6 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		sc.paint(g);
 		bs.show();
 		
-
 	}
 	
 	

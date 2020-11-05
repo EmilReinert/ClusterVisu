@@ -71,6 +71,9 @@ public class Data {
 	public double getOrValue(SingleData d,int sec_idx, int row, int idx) {
 		return d.getOrValue(sec_idx, row, sc.getScaleIdx(idx));
 	}
+	public String getOrNode(SingleData d,int sec_idx, int row, int idx) {
+		return d.getOrNode(sec_idx, row, sc.getScaleIdx(idx));
+	}
 	
 	public Color getColor(SingleData d,int dataRowIdx, int pos) {
 		if(d==null)return null;
@@ -107,9 +110,11 @@ public class Data {
 		
 		int value = cm.color((int) val);
 		int r,g,b;
+		if(value<0)value=0;
+		if(value>255)value=255;
 		if(value<127.5) {
 			b = 255;
-			g = (int)(2*value);
+			g = (int)(value+127.5);
 			r = (int)(2*value);
 		}
 		else {
@@ -193,7 +198,7 @@ public class Data {
 		// TODO Auto-generated method stub
 		start = x; end = y;
 		sc.setBounds(x,y);
-		System.out.println("new bounds "+start+" "+end);
+//		System.out.println("new bounds "+start+" "+end);
 	}
 
 }

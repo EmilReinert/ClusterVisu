@@ -16,30 +16,33 @@ public class Scale  {
 	int hover = 0;
 	
 	Color bg = Color.white;
-	int width, height;
+	int width, height,off;
 	float s, e; // origninal start and end
 	float start_idx, end_idx;
 	int cuts=24; //seconds // vertical time cut intervals after specific instances
 	
 	public Scale(int with, int heit, Color bg) {
-		resize(with, heit);
+		resize(with, heit,130);
 		start_idx=s=0;
 		end_idx = e=12000;
 		this.bg = bg;
 //		zoom(1,new Vec2(0,0));
 	}
 	
-	public void resize(int with, int heit) {
-		width = with; height = heit-80;
+	public void resize(int with, int heit, int off) {
+		this.off = off;width = with; height = heit-off;
 	}
 	
 	public void setMax(float max) {
 		e=end_idx=max;
 	}
 	
-	public void dataClick( Vec2 mouse, double data) {
+	public void dataHover( Vec2 mouse, double data, String node) {
+		// called upon click on data bar,,
+		// updates click position and local data
 		this.mouse = mouse;
-		hover_data = ((float)Math.round(data*100))/100+"";
+		hover_data = ((float)Math.round(data*100))/100+" ";
+		hover_data += node;
 	}
 	
 	public void zoom(double d, Vec2 mouse) {
@@ -120,9 +123,9 @@ public class Scale  {
 		
 		// top selection ( rect and line)
 		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect(getUnscaledIdx(start), 0,getUnscaledIdx(end)-getUnscaledIdx(start), 50);
+		g2d.fillRect(getUnscaledIdx(start), off/2-10,getUnscaledIdx(end)-getUnscaledIdx(start), 20);
 				
-		g2d.drawLine(hover, 0, hover, height);
+		g2d.drawLine(hover, off, hover, height);
 				
 
 		// drawing cuts
@@ -133,33 +136,31 @@ public class Scale  {
 			if(i%cuts==0) {
                if(i%24==0) g2d.setStroke(new BasicStroke(2));
                else g2d.setStroke(new BasicStroke(1));
-				g2d.drawLine(getUnscaledIdx(i), 0, getUnscaledIdx(i), 50);//System.out.println(i);
+				g2d.drawLine(getUnscaledIdx(i), off/2-10, getUnscaledIdx(i), off/2+20-10);//System.out.println(i);
 				if(i%24==0||end_idx-start_idx<15)
 					if(cuts==24)
-						g2d.drawString(i/24+"d", getUnscaledIdx(i)+3, 42);
+						g2d.drawString(i/24+"d", getUnscaledIdx(i)+3, 12+off/2-10);
 					else
-						g2d.drawString(i+"h", getUnscaledIdx(i)+3, 42);
+						g2d.drawString(i+"h", getUnscaledIdx(i)+3, 12+off/2-10);
 				}
 
             else g2d.setStroke(new BasicStroke(3));
 		
 		// data names
 		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect((int)10-2, 80-22, 200, 16);
+		g2d.fillRect((int)10-2, off-22, 200, 16);
 		g2d.setColor(new Color(0, 0, 0, 1f));
-		g2d.drawString(data.data_main.dataname, 10,80-10);
+		g2d.drawString(data.data_main.dataname, 10,off-10);
 
 		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect((int)10-2, (int)(80+height/3)-22, 200, 16);
+		g2d.fillRect((int)10-2, (int)(off+height/3)-22, 200, 16);
 		g2d.setColor(new Color(0, 0, 0, 1f));
-		g2d.drawString(data.data_compare.dataname, 10, (int)(80+height/3)-10);
+		g2d.drawString(data.data_compare.dataname, 10, (int)(off+height/3)-10);
 
 		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect((int)10-2, (int)(80+2*height/3)-22, 200, 16);
+		g2d.fillRect((int)10-2, (int)(off+2*height/3)-22, 200, 16);
 		g2d.setColor(new Color(0, 0, 0, 1f));
-		g2d.drawString(data.data_compare_two.dataname, 10,(int)(80+2*height/3)-10);
-		
-		
+		g2d.drawString(data.data_compare_two.dataname, 10,(int)(off+2*height/3)-10);
 		
 		// hover data
 		g2d.setColor(new Color(1, 1, 1,0.5f));

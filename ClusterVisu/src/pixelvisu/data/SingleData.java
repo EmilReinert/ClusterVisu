@@ -166,7 +166,9 @@ public class SingleData {
 		return c.flat_c.getOriginal(sec_idx, row, idx);
 	}
 
-	
+	public String getOrNode(int sec_idx, int row, int idx) {
+		return c.flat_c.getNodeName(sec_idx, row);
+	}
 	
 	
 	

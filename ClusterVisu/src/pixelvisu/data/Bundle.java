@@ -30,7 +30,13 @@ public class Bundle extends Group{
 //		densityOrder();
 		
 	}
-	
+
+	public double get(int row, int idx) {
+		// returns average differential value of specific compressed bundle element
+		if(row<sequences.size()&&idx<getLength())
+			return (sequences.get(row).get(idx));
+		return 0;
+	}
 	public void compress() {
 		// compresses sequences data by section 
 		// and stores results in compressed data and densities
@@ -137,12 +143,24 @@ public class Bundle extends Group{
 			return (int)(differentials.get(row).get(idx));
 		return 0;
 	}
-	public double get(int row, int idx) {
-		// returns average differential value of specific compressed bundle element
-		if(row<sequences.size()&&idx<getLength())
-			return (sequences.get(row).get(idx));
-		return 0;
+	
+	public String getNodeName(int sec_idx, int i) {
+		if(i<0)return "";
+		int sec_sum = 0;
+		if(mapping!=null) {
+			sec_idx=mapping.get(sec_idx);
+			for(int s = 0;s<sec_idx;s++)
+				sec_sum += getDensity(mapping.indexOf(s));
+		}
+		else for(int s = 0;s<sec_idx;s++) 
+				sec_sum += getDensity(s);
+		
+		
+		if((sec_sum+i)>=original.size())return "";
+//		System.out.println(original.get(sec_sum+i).name);
+		return original.get(sec_sum+i).getName();
 	}
+
 	
 	public double getOriginal(int sec_idx, int i,int j) {
 		//returns original value with index of compressed data
@@ -168,30 +186,5 @@ public class Bundle extends Group{
 		if((sec_sum+i)>=original.size())return -1;
 		return original.get(sec_sum+i).get(j);
 	}
-	public double getOriginalContrast(int sec_idx, int i,int j) {
-		//returns original value with index of compressed data
-		if(i<0||j>getLength())return -2;
-		int sec_sum = 0;
-		if(mapping!=null) {
-			sec_idx=mapping.get(sec_idx);
-			for(int s = 0;s<sec_idx;s++) {
-				sec_sum += getDensity(mapping.indexOf(s));
-				//System.out.println(getDensity(mapping.get(s)));
-			}
-		}
-		else {
-			for(int s = 0;s<sec_idx;s++) {
-		
-				sec_sum += getDensity(s);
-			//System.out.println(sec_sum);
-			}
-		}
-		
-		//System.out.println("sum = "+sec_sum+'\n');
-		//System.out.println("Opening Original Section: "+sec_idx+" at Row Idx "+sec_sum+"; size = "+getDensity(mapping.indexOf(sec_idx)));
-		if((sec_sum+i)>=original.size())return -2;
-		return original.get(sec_sum+i).getContrast(j);
-	}
-
 
 }

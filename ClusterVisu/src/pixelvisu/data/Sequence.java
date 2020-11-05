@@ -14,8 +14,8 @@ public class Sequence implements Serializable {
 //	ArrayList<Double> timestamps;
 	int sect =60; // for horizontal clustering of size 'sect'
 	int sect_vis; // sections for 
-	String name ="";
-	int pos =0;
+	String name ="x";
+	private int pos =0;
 	double min=10000;
 	double max=-10000;
 
@@ -48,51 +48,19 @@ public class Sequence implements Serializable {
 	
 	public Sequence(Sequence s){
 		pos = s.pos;
+		name = s.name;
 		data = new ArrayList<>(s.data);
 //		timestamps = new ArrayList<>(s.timestamps);
 		min = s.min;
 		max = s.max;
-		
 	}
-	
-//	public Sequence(JSONArray a, int size, JSONObject nj, int pos) {
-//		this.pos = pos;
-//		String n = nj.optString("instance");
-//		this.name = n;
-//		
-//		// a is multidimensional so we have to first take the array at the index and 
-//		// then extract the wanted data ( at 0 or 1 )
-//		ArrayList<Float> data_hold = new ArrayList<>();
-//		
-//		// Storing data in holder float arraylist so we can adjust them to
-//		// x>=0 to 255 spectrum for all data// that is int color spectrum
-//		JSONArray hold ;
-//		for(int i = 0; i<size;i++) {
-//			if(i<a.length()) { 
-//				hold = a.getJSONArray(i);
-//				data_hold.add(hold.getFloat(1));
-//			}
-//			else data_hold.add(0.0f);
-//		}
-//
-//		data = new ArrayList<>();
-//		
-//		float scale =0;
-//		// min and max value for scaling
-//		min = getMin(data_hold);
-//		max = getMax(data_hold);
-//		
-//		for(float f: data_hold) {
-//			data.add((double)f);
-//		}
-//		compress(10);
-//	}
 	
 	
 	public Sequence(String group, int pos) {
 		// Takes full string arraylist and splits it into sequence data
 		this();
 		this.pos = pos;
+		this.name = "Node_"+pos;
 		String [] cuts = group.split(",");
 		for(int i=1;i<cuts.length;i++ ) {
 //			System.out.println(cuts[i]);
@@ -164,6 +132,9 @@ public class Sequence implements Serializable {
 	
 	
 	
+	public int getPos() {
+		return this.pos;
+	}
 	
 
 	private int getWeight(int start, int end) {

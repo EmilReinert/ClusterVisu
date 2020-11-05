@@ -51,7 +51,7 @@ public class Cluster implements Serializable {
 		ArrayList<Sequence> seq = new ArrayList<Sequence>();
 		ArrayList<Integer> mapping = other.original.getMapping(other.flat);
 		for(Sequence s:other.flat.sequences) {
-			seq.add(sequences.get(s.pos));
+			seq.add(sequences.get(s.getPos()));
 		}
 		flat.sequences=seq;
 		flat_c = new Bundle(flat);
