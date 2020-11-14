@@ -1,4 +1,4 @@
-package pixelvisu.data;
+package pixelvisu.visu;
 
 import java.awt.Color;
 import java.io.BufferedInputStream;
@@ -135,11 +135,10 @@ public class Group implements Serializable{
 		return -1;
 	}
 	public int getLength() {
-		return sequences.get(0).getLength();
-//		if(length>sequences.get(0).getLength())
-//			return length;
-//		else
-//			return sequences.get(0).getLength();
+		if(length>sequences.get(0).getLength())
+			return length;
+		else
+			return sequences.get(0).getLength();
 	}
 	public double getMaxDiff() {
 		// 

@@ -1,4 +1,4 @@
-package pixelvisu.data;
+package pixelvisu.visu;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -43,7 +43,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 
 	Vec2 mouse_click = new Vec2(0,0);
 	Vec2 mouse_click_prev = new Vec2(0,0);
-	ArrayList<Vec2> clicksquares = new ArrayList<>();
+	Vec2 clicksquare = new Vec2(0,0);
 	
 	Vec2 mouse_hover = new Vec2(0,0);
 	Vec2 mouse_pressed =new Vec2(0,0);
@@ -60,7 +60,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	int posXY = 0;
 	
 	public VisuData(int w, int h,Data data, Color bg_c, Scale s,int pointer)  {
-		datapointer = pointer;
+		datapointer = 0;
 		width = w;
 		height = h;
 		bg_color= bg_c;
@@ -95,6 +95,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	public void update(int[] pixels) {
 		drawBackground(pixels);
 		time++;
+		hoverData =0; hoverNode = "";
 //		drawData(pixels, data.sequences, off, width*height/3+off);
 //		Panel p = new Panel();
 		// DATA
@@ -145,32 +146,46 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		int den = 0;
 		boolean clicked = false;
 		int pixelheight = 1; // height of a singular pixel
+
+		sc.b = new ArrayList<String>();
+		
 		if(cl.c.flat_c==null)return;
 		for(int i=0; i< cl.c.flat_c.getDepth();i++) {
 			if(denden)den =  (dens.get(i)+30)/5;// 5; //for static sizes
 			else den = 5;
-			if (unpack_all) {
-				drawDataSec(pixels, cl, start + jump * width, i, pixelheight, dens.get(i));
-				jumping = dens.get(i) + 2;
-			} else {
-				Vec2 square = new Vec2(start + (jump) * width, start + (jump + den) * width + 19*width/20);
-				if (clickSquare(mouse_click,square)){
-					jumping = drawDataSec(pixels, cl, start + jump * width, i, pixelheight, dens.get(i));
-
-					jumping += 2;
+			Vec2 square = new Vec2(start + (jump) * width, start + (jump + den) * width + 19*width/20);
+			
+			// HOVER BUNDLE
+			if(isInsideSquare(mouse_hover, (int)square.x,(int)square.y)) {
+				// hover over section and sends bundle to sc
+				for (int n =0; n< dens.get(i);n++) {
+						
+							sc.b.add(data.getOrNode(cl, i,n));
+						
+					
 				}
-				// normal
-				else {
-//					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) 	den*=3;
-					drawDataBar(pixels,cl,  start + jump * width, i, den);
-					jumping = den + 2;
-				}
-				// drawing density dots
-//			drawDots2(pixels, start+jump*width+ getLength() , dens.get(i));
+				
 			}
-			jump += jumping;
 
+			// OPEN BUNDLE
+			if (clickSquare(mouse_click,square)){
+				jumping = drawDataSec(pixels, cl, start + jump * width, i, pixelheight, dens.get(i));
+
+				jumping += 2;
+			}
+
+			// REPRESENTATIVE AVERAGE
+			else {
+//					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) 	den*=3;
+				drawDataBar(pixels,cl,  start + jump * width, i, den);
+				jumping = den + 2;
+			}
+			// drawing density dots
+//			drawDots2(pixels, start+jump*width+ getLength() , dens.get(i));
+			jump += jumping;
 		}
+
+		
 	}
 	
 	public void drawDataBar(int[] pixels, SingleData d, int startpos,int dataRowIdx, int lenght) {
@@ -183,12 +198,12 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			int pos = ((n%(width))-startpos%width);
 			col_hold = data.getColor(d,dataRowIdx,pos);
 			if(col_hold!=null) {
-//				diff_color =data.getDiff(d,dataRowIdx,pos);
-//				diff_fade =(int) Math.pow(diff_color*0.005,4);
-//				if(diff_color>255)diff_color =255;
-//				if(diff_fade>255)diff_fade =255;
-//				diff_color = new Color(diff_fade,0,0 ).getRGB();
-				pixels[n] =col_hold.getRGB();//mixColors(diff_color, col_hold.getRGB(), 0.1f);
+				diff_color =data.getDiff(d,dataRowIdx,pos);
+				diff_fade =(int) Math.pow(diff_color*0.005,4);
+				if(diff_color>255)diff_color =255;
+				if(diff_fade>255)diff_fade =255;
+				diff_color = new Color(diff_fade,0,0 ).getRGB();
+				pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
 				
 				if(vec2Int(mouse_hover)==n)
 					hoverData=data.getValue(d,dataRowIdx,pos);
@@ -201,10 +216,14 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		Color col_hold;
 		// iterate over rows : start and end _idx
 		// and then over individual data values
+
+		sc.b = new ArrayList<String>();
 		int step =0;
 		for (int n =0; n<length;n++) {
 			double pix= getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
 			for(int hei=0;hei<pix;hei++) {
+				sc.b.add(data.getOrNode(d, sec_idx,n));
+				
 				
 				for(int i =0;i<width;i++) {
 					col_hold = data.getOrColor(d,sec_idx,n,i);
@@ -215,7 +234,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	
 						if(vec2Int(mouse_hover)==startpos+n*width+i) {
 							hoverData=data.getOrValue(d,sec_idx,n,i);
-							hoverNode = data.getOrNode(d,sec_idx,n,i);}
+							hoverNode = data.getOrNode(d,sec_idx,n);}
 						}
 				}
 				step++;
@@ -304,19 +323,15 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	}
 	public boolean clickSquare(Vec2 mouse_, Vec2 square) {
 
-		if(clicksquares.contains(square)&&!isInsideSquare(mouse_, (int)square.x,(int)square.y))
+		if(clicksquare.equals(square)&&!isInsideSquare(mouse_, (int)square.x,(int)square.y))
 			return true;
 		
 		if(isInsideSquare(mouse_, (int)square.x,(int)square.y)) {
-			if(!clicksquares.contains(square)) {
-				clicksquares.add(square);
+			if(!clicksquare.equals(square)) {
+				clicksquare =(square);
 				mouse_click = new Vec2(0,0);
 				return true;
 			}
-			else {
-				clicksquares.remove(square);
-				mouse_click = new Vec2(0,0);
-				return false;}
 		}
 		return false;
 		
@@ -551,7 +566,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquares = new ArrayList<Vec2>();
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquare = new Vec2(0,0);
 		else {
 			mouse_pressed =  new Vec2(e.getY()-localOff, e.getX());
 			mouse_dragged=  new Vec2(e.getY()-localOff, e.getX());

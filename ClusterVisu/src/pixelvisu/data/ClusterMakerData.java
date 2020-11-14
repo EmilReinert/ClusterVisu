@@ -43,8 +43,6 @@ public class ClusterMakerData extends JFrame implements Runnable {
 	public ColorMapping cm;
 //	public VisuSeriation visu;
 	
-	SingleData data;
-	SingleData data_compare;
 	
 	public ClusterMakerData(){
 

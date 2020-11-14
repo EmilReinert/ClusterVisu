@@ -1,4 +1,4 @@
-package pixelvisu.data;
+package pixelvisu.visu;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -16,8 +16,8 @@ public class Data {
 	int start, end; 
 //	TreePanel p;
 
-	String maindata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
-	String comparedata_path = "Data/4w_14_9_1h/node_memory_Active_bytes.txt";
+	String maindata_path ="Data/4w_14_9_1h/node_memory_Active_bytes.txt"; 
+	String comparedata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
 	String comparedata_two = "Data/4w_14_9_1h/node_memory_Cached_bytes.txt";
 	
 	public Data(int width, int height, Scale s, ColorMapping m)  {
@@ -27,7 +27,6 @@ public class Data {
 		start = 0; end = 100000000;
 		try {
 			SingleData data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,Color.green,cm,  start, end);
-
 			SingleData data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
 			SingleData data_compare_two = new SingleData(comparedata_two, group_count, Color.orange, cm);
 			data.add(data_main);
@@ -79,8 +78,8 @@ public class Data {
 	public double getOrValue(SingleData d,int sec_idx, int row, int idx) {
 		return d.getOrValue(sec_idx, row, sc.getScaleIdx(idx));
 	}
-	public String getOrNode(SingleData d,int sec_idx, int row, int idx) {
-		return d.getOrNode(sec_idx, row, sc.getScaleIdx(idx));
+	public String getOrNode(SingleData d,int sec_idx, int row) {
+		return d.getOrNode(sec_idx, row);
 	}
 	
 	public Color getColor(SingleData d,int dataRowIdx, int pos) {

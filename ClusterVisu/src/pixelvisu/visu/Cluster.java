@@ -1,4 +1,4 @@
-package pixelvisu.data;
+package pixelvisu.visu;
 
 import java.io.BufferedInputStream;
 import java.io.File;
