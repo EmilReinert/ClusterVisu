@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -26,19 +27,18 @@ import javax.swing.JFrame;
 
 public class ClusterMakerData extends JFrame implements Runnable {
 	public static int WIDTH = 300*3;//TODO make adjustable
-	public static int OFF = 80;
+	public static int OFF = 30;
 	public static int HEIGHT = 600+OFF;	
 //	public static int HEIGHT_controls = HEIGHT ;//+30;	
 	public Color bg_color = Color.WHITE;
 	
 	private Thread thread;
 	private boolean running;
-	private BufferedImage image;
-	public int[] pixels;
-	public byte[]pixels_b;
+	private ArrayList<BufferedImage> images = new ArrayList<>();
+	public ArrayList<int[]> pixelss= new ArrayList<>();
 	
 	public Controls controls;
-	public VisuData visu; 
+	public ArrayList<VisuData> visus= new ArrayList<>();
 	public Scale sc;
 	public ColorMapping cm;
 //	public VisuSeriation visu;
@@ -60,16 +60,10 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		
 		controls = c;
 		thread = new Thread(this);
-		image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
-		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		
-		
-		visu = new VisuData(WIDTH,HEIGHT,data,bg_color,sc);
-		visu.setSize( WIDTH,HEIGHT,OFF);
-//		visu = new VisuSeriation(WIDTH,HEIGHT,d, bg_color);
-
-		addMouseListener(visu);addMouseMotionListener(visu);addMouseWheelListener(visu);
-		addKeyListener(visu);
+		addVisu(new VisuData(WIDTH,HEIGHT,data,bg_color,sc,0),0);
+		addVisu(new VisuData(WIDTH,HEIGHT,data,bg_color,sc,1),1);
+		addVisu(new VisuData(WIDTH,HEIGHT,data,bg_color,sc,2),2);
 		
 		setSize(WIDTH, HEIGHT);
 		setTitle("Pixel Clustering");
@@ -82,24 +76,35 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		        public void componentResized(ComponentEvent evt) {
 		        	HEIGHT = getHeight();
 		        	WIDTH = getWidth();
-		        	sc.resize(WIDTH, HEIGHT, OFF);
-					image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-					pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		        	sc.resize(WIDTH, HEIGHT);
+		        	
+		        	pixelss = new ArrayList<>();
+		        	images = new ArrayList<>();
+		    		for(int i =0;i<visus.size();i++) {
+						visus.get(i).upSize( WIDTH,HEIGHT,OFF,visus.size());
+						
+						images.add(new BufferedImage(getWidth(),200, BufferedImage.TYPE_INT_RGB));
+						pixelss.add( ((DataBufferInt) images.get(i).getRaster().getDataBuffer()).getData());
 
-					visu.setSize( WIDTH,HEIGHT,OFF);
+		    		}
 		        }
 		});
 		
-		
+
 		setVisible(true);
 		start();
 	}
 	
+	private void addVisu(VisuData vi, int off) {
+		vi.setSize( WIDTH,HEIGHT,OFF,off,visus.size()+1);
+		addMouseListener(vi);addMouseMotionListener(vi);addMouseWheelListener(vi);
+		addKeyListener(vi);
 
+		visus.add(vi);
+	}
+	
 	private synchronized void start() {
 		running = true;
-		
-		visu.drawBackground(pixels);
 		thread.start();
 	}	
 
@@ -122,10 +127,17 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
+		// bg
+		g.setColor(bg_color);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
 		//draws info box
 //		controls.paint(g);
+		
 		//draws diagram image
-		g.drawImage(image, 3, 0,image.getWidth(), image.getHeight(), null);
+		for(int i=0; i<images.size();i++) 
+			if(images.size()>i)
+				g.drawImage(images.get(i), 0,visus.get(i).getOff(),images.get(i).getWidth(),images.get(i).getHeight(), null);
 		sc.paint(g);
 		bs.show();
 		
@@ -146,7 +158,9 @@ public class ClusterMakerData extends JFrame implements Runnable {
 				
 				//handles all of the logic restricted time
 //				visu.setSize( WIDTH,HEIGHT,OFF);
-				visu.update(pixels);
+				for(int i =0; i<visus.size();i++) 
+					if(visus.size()>i&&pixelss.size()>i)
+						visus.get(i).update(pixelss.get(i));
 				delta--;
 			}
 			render();//displays to the screen unrestricted time

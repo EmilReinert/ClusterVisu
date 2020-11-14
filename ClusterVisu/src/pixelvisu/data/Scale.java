@@ -22,15 +22,15 @@ public class Scale  {
 	int cuts=24; //seconds // vertical time cut intervals after specific instances
 	
 	public Scale(int with, int heit, Color bg) {
-		resize(with, heit,130);
+		resize(with, heit);
 		start_idx=s=0;
 		end_idx = e=12000;
 		this.bg = bg;
 //		zoom(1,new Vec2(0,0));
 	}
 	
-	public void resize(int with, int heit, int off) {
-		this.off = off;width = with; height = heit-off;
+	public void resize(int with, int heit) {
+		this.off = 80;width = with; height = heit-off;
 	}
 	
 	public void setMax(float max) {
@@ -147,20 +147,14 @@ public class Scale  {
             else g2d.setStroke(new BasicStroke(3));
 		
 		// data names
-		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect((int)10-2, off-22, 200, 16);
-		g2d.setColor(new Color(0, 0, 0, 1f));
-		g2d.drawString(data.data_main.dataname, 10,off-10);
-
-		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect((int)10-2, (int)(off+height/3)-22, 200, 16);
-		g2d.setColor(new Color(0, 0, 0, 1f));
-		g2d.drawString(data.data_compare.dataname, 10, (int)(off+height/3)-10);
-
-		g2d.setColor(new Color(0,0,0,0.2f));
-		g2d.fillRect((int)10-2, (int)(off+2*height/3)-22, 200, 16);
-		g2d.setColor(new Color(0, 0, 0, 1f));
-		g2d.drawString(data.data_compare_two.dataname, 10,(int)(off+2*height/3)-10);
+		int count= 0;
+		for(SingleData d: data.data) {
+			g2d.setColor(new Color(0,0,0,0.2f));
+			g2d.fillRect((int)10-2, (int)(off+20+count*height/3)-22, 200, 16);
+			g2d.setColor(new Color(0, 0, 0, 1f));
+			g2d.drawString(d.dataname, 10,(int)(off+20+count*height/3)-10);
+			count++;
+		}
 		
 		// hover data
 		g2d.setColor(new Color(1, 1, 1,0.5f));

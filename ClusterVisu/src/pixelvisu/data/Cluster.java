@@ -38,6 +38,7 @@ public class Cluster implements Serializable {
 				clusterize(tree,clustering, link, sim);
 			
 			flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
+			System.out.println("Cluster size: "+flat.getDepth()+", Sequence Length: "+flat.getLength());
 			System.out.println(
 					"----Clusterized----");
 			

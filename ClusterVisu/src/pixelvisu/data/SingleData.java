@@ -27,7 +27,6 @@ public class SingleData {
 	
 	double min;
 	double max;
-	boolean contrast = false;
 	String path = "";
 	String dataname="error";
 	int group_count = 0;

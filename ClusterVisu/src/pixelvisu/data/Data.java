@@ -2,12 +2,11 @@ package pixelvisu.data;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class Data {
-	SingleData data_main;
-	SingleData data_compare; // secondary data to be compared structurally
-	SingleData data_compare_two;
-	
+public class Data {		
+	ArrayList<SingleData> data = new ArrayList<SingleData>();
+	int lockedPointer;
 	int group_count = 44;
 	String section = "similarity";
 	boolean contrast;
@@ -27,10 +26,14 @@ public class Data {
 		cm = m;
 		start = 0; end = 100000000;
 		try {
-			data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,Color.green,cm,  start, end);
+			SingleData data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,Color.green,cm,  start, end);
 
-			data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
-			data_compare_two = new SingleData(comparedata_two, group_count, Color.orange, cm);
+			SingleData data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
+			SingleData data_compare_two = new SingleData(comparedata_two, group_count, Color.orange, cm);
+			data.add(data_main);
+			data.add(data_compare);
+			data.add(data_compare_two);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,15 +44,17 @@ public class Data {
 	}
 
 	public void updateClustering() {
-		data_main.updateClustering(circ.getCircuit(), group_count,start,end);
+		data.get(lockedPointer).updateClustering(circ.getCircuit(), group_count,start,end);
 		updateSection();
 		
 	}
 	
 	public void updateSection() {
-		data_main.section(group_count,section);
-		data_compare.update(data_main.c);
-		data_compare_two.update(data_main.c);
+		for(int i = 0; i<data.size();i++)
+			if(i==lockedPointer) 
+				data.get(i).section(group_count,section);
+			else data.get(i).update(data.get(lockedPointer).c);
+		
 		
 //		p.update(data_main.c, group_count);
 		contrast=!contrast;
@@ -62,6 +67,9 @@ public class Data {
 	}
 	public void down() {
 		circ.down();
+	}
+	public SingleData getMain() {
+		return data.get(lockedPointer);
 	}
 	
 	public double getValue(SingleData d,int dataRowIdx, int pos) {
@@ -98,30 +106,34 @@ public class Data {
 	public Color getColor(double value) {
 		// MAIN COLOR source
 		double scale =255;
-		value = (value/data_main.max)*scale; // GLOBAL normalizing
+		value = (value/data.get(lockedPointer).max)*scale; // GLOBAL normalizing
 		
 		Color hold = colorScale(value);
-		if(contrast) return combineColors(hold, Color.red,0.9f);
-		else return hold;//
+		return hold;//
 			
 	}
 	
 	public Color colorScale(double val) {
-		
 		int value = cm.color((int) val);
 		int r,g,b;
 		if(value<0)value=0;
 		if(value>255)value=255;
-		if(value<127.5) {
-			b = 255;
-			g = (int)(value+127.5);
-			r = (int)(2*value);
+		
+		if (contrast) {
+			if (value < 127.5) {
+				b = 255;
+				g = (int) (value + 127.5);
+				r = (int) (2 * value);
+			} else {
+				b = (int) (-2 * value) + 255 * 2;
+				g = (int) (-2 * value) + 255 * 2;
+				r = 255;
+			}
+		} else {
+			r=g=b= value;
+
 		}
-		else {
-			b =(int)(-2*value)+255*2;
-			g =(int)(-2*value)+255*2;
-			r = 255;
-		}
+		
 		if(r>255) r = 255;
 		if(g>255) g = 255;
 		if(b>255) b = 255;
@@ -139,28 +151,22 @@ public class Data {
 	
 	public void order(String mode) {
 		updateSection();
-		data_main.order(mode);
-		data_compare.order(mode);
-		data_compare_two.order(mode);
+		for(SingleData d: data)
+			d.order(mode);
 	}
 	
 	public int getLength() {
-		return data_main.getLength();
+		return data.get(lockedPointer).getLength();
 	}
 	
 	public void contrast() {
 		if (contrast) {
 			contrast = false;
-			data_main.contrast = false;
-			data_compare.contrast = false;
-			data_compare_two.contrast = false;
 		}
 		else {
 			contrast = true;
-			data_main.contrast = true;
-			data_compare.contrast = true;
-			data_compare_two.contrast = true;
 		}
+		cm.repaint();
 	}
 
 

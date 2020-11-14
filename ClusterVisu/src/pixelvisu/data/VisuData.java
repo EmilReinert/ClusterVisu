@@ -28,9 +28,14 @@ import javax.swing.JFrame;
 
 public class VisuData implements MouseListener,MouseMotionListener,MouseWheelListener,KeyListener{
 
-	private int width, height, off; // width, height for diagram
+	private int width, height, off; // width, height for diagram and global off
+	public int localOffCount; // calculates position of visu
+	private int localOff; // resulting pixel position
+	public int visuNum; // amount of visus on display
+	private int time =0;
 	
 	Data data; // secondary data to be compared structurally
+	int datapointer = 0;
 	Scale sc;
 	
 	Color bg_color;
@@ -54,16 +59,16 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	String hoverNode = "";
 	int posXY = 0;
 	
-	public VisuData(int w, int h,Data data, Color bg_c, Scale s)  {
+	public VisuData(int w, int h,Data data, Color bg_c, Scale s,int pointer)  {
+		datapointer = pointer;
 		width = w;
 		height = h;
 		bg_color= bg_c;
 
-
 		
 		this.data = data;
 		
-		length = data.data_main.getLength();
+		length = data.data.get(0).getLength();
 		sc =s;
 		sc.setBounds(data.start, data.end);
 		data.updateSection();
@@ -72,15 +77,24 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	
 	
 	// UPDATE ----------------------------------------------------
-	public void setSize(int w,int h,int off) {
-
+	public void setSize(int w,int h,int off, int localoff,int sum) {
+		// initial sizing
+		this.localOffCount = localoff;
+		upSize(w, h, localoff, sum);
+	}
+	public void upSize(int w,int h,int off, int sum) {
+		// initial sizing
+		this.localOff = 40+ localOffCount*(h-40-off)/sum;
 		this.width=w; this.height = h-off;
 		this.off = w*off;
+	}
+	public int getOff() {
+		return localOff;
 	}
 	
 	public void update(int[] pixels) {
 		drawBackground(pixels);
-		
+		time++;
 //		drawData(pixels, data.sequences, off, width*height/3+off);
 //		Panel p = new Panel();
 		// DATA
@@ -88,14 +102,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// for single
 //		drawData(pixels,data.data_main.sequences,off,pixels.length);
 //		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
-		if(data.data_main.c!=null&&data.data_main.c.flat_c!=null) {
-			drawBarsDen(pixels, data.data_main, off, off+height/3*width);
-		}
-		if(data.data_compare.c!=null) {
-			drawBarsDen(pixels, data.data_compare, off+height/3*width, off+2*height/3*width);
-		}
-		if(data.data_compare_two.c!=null) {
-			drawBarsDen(pixels, data.data_compare_two, off+2*height/3*width, pixels.length);
+		if(data.data.get(datapointer).c!=null&&data.data.get(datapointer).c.flat_c!=null) {
+			drawBarsDen(pixels, data.data.get(datapointer), off, off+height/3*width);
 		}
 		
 
@@ -195,7 +203,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// and then over individual data values
 		int step =0;
 		for (int n =0; n<length;n++) {
-			double pix= getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
+			double pix= 1;//getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
 			for(int hei=0;hei<pix;hei++) {
 				
 				for(int i =0;i<width;i++) {
@@ -504,7 +512,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// TODO Auto-generated method stub
 
 //		System.out.println(sc.start+" "+sc.end);
-		if(mouse_pressed.x<60)
+		if(mouse_pressed.x+localOff<60)
 			select = true;
 	
 		if(select) {
@@ -512,8 +520,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			data.setBounds((int)mouse_pressed.y, e.getX());
 		}
 		else {
-			sc.drag(mouse_dragged,new Vec2(e.getY(), e.getX()));
-			mouse_dragged = new Vec2(e.getY(), e.getX());
+			sc.drag(mouse_dragged,new Vec2(e.getY()-localOff, e.getX()+localOff));
+			mouse_dragged = new Vec2(e.getY()-localOff, e.getX());
 			mouseMoved(e);
 		}
 	}
@@ -523,8 +531,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// TODO Auto-generated method stub
 		mouse_hover = new Vec2(e.getY(), e.getX());
 		sc.dataHover(mouse_hover, hoverData, hoverNode);
+		mouse_hover = new Vec2(e.getY()-localOff, e.getX());
 //		System.out.println(hoverData +hoverNode);
-		if(mouse_hover.x<60)
+		if(mouse_hover.x+localOff<60)
 			sc.setSelect((int)mouse_hover.y);
 		else
 			sc.setSelect(0);
@@ -536,7 +545,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// TODO Auto-generated method stub
 		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {}
 		else
-			mouse_click = new Vec2(e.getY(), e.getX());
+			mouse_click = new Vec2(e.getY()-localOff, e.getX());
 	}
 
 	@Override
@@ -544,8 +553,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		// TODO Auto-generated method stub
 		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquares = new ArrayList<Vec2>();
 		else {
-			mouse_pressed =  new Vec2(e.getY(), e.getX());
-			mouse_dragged=  new Vec2(e.getY(), e.getX());
+			mouse_pressed =  new Vec2(e.getY()-localOff, e.getX());
+			mouse_dragged=  new Vec2(e.getY()-localOff, e.getX());
 		
 		}
 	}
