@@ -118,7 +118,10 @@ public class Scale  {
 	public int getUnscaledIdx(int idx) {
 
 		float scale = end_idx-start_idx;
-		return (int)(((idx-start_idx)/scale)*width);
+		 scale =(((idx-start_idx)/scale)*width);
+		 
+		 if(scale<0)return 0;
+		 else return (int) scale;
 	}
 	
 	public void paint(Graphics g) {
@@ -173,10 +176,14 @@ public class Scale  {
 //			g2d.setColor(new Color(1, 1, 1,1f));
 //			g2d.fillRect(0, height/2, width, height);
 			
+			//relative steps
 			double stepX = (double)width/ data.getLength();
 			double stepY = (double)height/ (2*data.getMain().max);
 			
-			
+			//step amount for index limit
+			double stepIDX = 5*(end_idx-start_idx)/data.getLength();
+			System.out.println(stepIDX);
+			if(stepIDX<1)stepIDX=1;
 			// graphs
 			g2d.setColor(new Color(0, 0, 0,0.2f));
 			g2d.setStroke(new BasicStroke(1));
@@ -187,10 +194,10 @@ public class Scale  {
 					g2d.setColor(new Color(0, 0, 0,0.2f));
 				else g2d.setColor(new Color(0, 0.2f, 1,0.2f));
 				
-				Vec2 prev = new Vec2(0,0);Vec2 curr = new Vec2(0,0);
-				for(int j = 0; j<width;j+=10) {
+				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
+				for(int j = -1; j<width;j+=stepIDX) {
 					i = getUnscaledIdx((int) j);
-					if (i>= s.data.size()||i<0) continue;
+					if (i>= s.data.size()||i<=0) continue;
 					curr.x = i*stepX; curr.y= (s.data.get( (int) i).intValue()*stepY+height/2+off/2);
 					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x)+1, (int)(prev.y));
 					prev.x=i*stepX;
@@ -202,10 +209,10 @@ public class Scale  {
 			g2d.setColor(new Color(1, 0, 0,1.0f));
 			for(Sequence s:data.getMain().sequences.sequences) {
 				if(name!=s.name) continue;
-				Vec2 prev = new Vec2(0,0);Vec2 curr = new Vec2(0,0);
-				for(int j = 0; j<width;j+=10) {
+				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
+				for(int j = -1; j<width;j+=stepIDX) {
 					i = getUnscaledIdx((int) j);
-					if (i>= s.data.size()||i<0) continue;
+					if (i>= s.data.size()||i<=0) continue;
 					curr.x = i*stepX; curr.y= (s.data.get( (int) i).intValue()*stepY+height/2+off/2);
 					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x)+1, (int)(prev.y));
 					prev.x=i*stepX;

@@ -535,7 +535,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			data.setBounds((int)mouse_pressed.y, e.getX());
 		}
 		else {
-			sc.drag(mouse_dragged,new Vec2(e.getY()-localOff, e.getX()+localOff));
+			sc.drag(mouse_dragged,new Vec2(e.getY()-localOff, e.getX()));
 			mouse_dragged = new Vec2(e.getY()-localOff, e.getX());
 			mouseMoved(e);
 		}
