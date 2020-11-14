@@ -50,7 +50,6 @@ public class Cluster implements Serializable {
 		original = sequences;
 		flat = new Group(other.flat);
 		ArrayList<Sequence> seq = new ArrayList<Sequence>();
-		ArrayList<Integer> mapping = other.original.getMapping(other.flat);
 		for(Sequence s:other.flat.sequences) {
 			seq.add(sequences.get(s.getPos()));
 		}
@@ -131,7 +130,7 @@ public class Cluster implements Serializable {
 
 			for (Sequence sa : a.sequences) {
 				for (Sequence sb : b.sequences) {
-					hold += (compare(sa, sb, sim) / (one.length * one.length));
+					hold += (compare(sa, sb, sim) / (sa.getLength() * sb.getLength()));
 
 				}
 				if (hold < 0) {
@@ -161,7 +160,7 @@ public class Cluster implements Serializable {
 		bs.add(new Node(tree.getBranch(a)));
 		bs.add(new Node(tree.getBranch(b)));
 //		System.out.println(sim);
-		Node merged = new Node(bs,sim);
+		Node merged = new Node(bs,sim,original.length);
 		tree.branches.remove(tree.getBranch(b));
 		tree.branches.remove(tree.getBranch(a));
 		tree.branches.add(merged);

@@ -27,6 +27,8 @@ public class SingleData {
 	
 	double min;
 	double max;
+	int length;
+	
 	String path = "";
 	String dataname="error";
 	int group_count = 0;
@@ -133,11 +135,18 @@ public class SingleData {
 		}
 		// getting data value distribution
 		values = new int[(int)max];
+		length = 0;
 		for(Sequence seq: sequences.sequences) {
 			for(double d:seq.data) {
 				values[(int)((d/max)*255)]++;
 			}
+			if(seq.getLength()>length)
+				length = seq.getLength();
 		}
+		
+		// length to seq
+		sequences.length = length;
+		
 	}
 	
 	
@@ -219,7 +228,7 @@ public class SingleData {
 		return color4;
 	}
 	public int getLength() {
-		return sequences.getLength();
+		return length;
 	}
 	public int getWeight(int i) {
 		return sequences.get(i).getWeight();

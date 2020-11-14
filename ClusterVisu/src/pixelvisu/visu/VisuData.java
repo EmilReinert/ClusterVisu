@@ -68,7 +68,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		
 		this.data = data;
 		
-		length = data.data.get(0).getLength();
+		length = data.getLength();
 		sc =s;
 		sc.setBounds(data.start, data.end);
 		data.updateSection();

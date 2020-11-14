@@ -18,10 +18,12 @@ public class Sequence implements Serializable {
 	private int pos =0;
 	double min=10000;
 	double max=-10000;
+	int weight;
 
 	public Sequence(){
 		data = new ArrayList<>();
 //		timestamps = new ArrayList<>();
+		weight =0;
 	}
 	public Sequence(int size) {
 		// zero value
@@ -29,6 +31,7 @@ public class Sequence implements Serializable {
 //		timestamps = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(0.0);
+		weight = 0;
 	}
 	public Sequence(int size, double val) {
 		//one value
@@ -36,6 +39,8 @@ public class Sequence implements Serializable {
 //		timestamps = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(val);
+
+		makeWeight();
 	}
 	
 	public Sequence(int size, double val, String random) {
@@ -44,10 +49,12 @@ public class Sequence implements Serializable {
 //		timestamps = new ArrayList<>();
 		for(int i = 0; i< size;i++)
 			data.add(Math.random()*100);
+		makeWeight();
 	}
 	
 	public Sequence(Sequence s){
 		pos = s.pos;
+		weight = s.weight;
 		name = s.name;
 		data = new ArrayList<>(s.data);
 //		timestamps = new ArrayList<>(s.timestamps);
@@ -82,7 +89,8 @@ public class Sequence implements Serializable {
 		}
 		min = getMin();
 		max = getMax();
-		
+
+		makeWeight();
 		//compress(10);
 	}
 	
@@ -123,7 +131,8 @@ public class Sequence implements Serializable {
 	}
 	
 	public double compareWeight(Sequence other, int start,int end) {
-		return Math.abs(other.getWeight(start, end)-getWeight(start,end));
+		double w = Math.abs(other.getWeight(start, end)-getWeight(start,end));
+		return w;
 	}
 	
 	public double compareMaximum(Sequence other, int start,int end) {
@@ -137,10 +146,24 @@ public class Sequence implements Serializable {
 	}
 	
 
-	private int getWeight(int start, int end) {
+	private void makeWeight() {
 		// TODO Auto-generated method stub
-		return 0;
+		weight = 0;
+		for (double i: data)
+		{
+			weight+= i;
+		}
 	}
+	
+	public int getWeight() {
+		return weight;
+	}
+	
+	public double getWeight(int start, int end) {
+
+		return weight;
+	}
+
 	private int getMax(int start, int end) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -226,17 +249,6 @@ public class Sequence implements Serializable {
 
 
 	//Math
-	
-	public int getWeight() {
-		return 0;
-//		double weight = 0;
-//		for(int i = 0; i<data.size();i++) {
-//			weight+=data.get(i);
-//		}
-//		return (int) Math.abs(weight);
-	}
-	
-
 	
 	
 	

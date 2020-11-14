@@ -11,12 +11,10 @@ public class Node implements Serializable{
 	Sequence data;
 	boolean isLeaf;
 	double similarity=-1; // similarity value of combined clusters
-	int length; // sequence length
 	float x_pos; // horizontal position for tree drawing
 	
 	public Node() {
 		x_pos =0;
-		length = 0;
 		similarity = 0;
 		branches = new ArrayList<Node>();
 		isLeaf = true;
@@ -26,16 +24,14 @@ public class Node implements Serializable{
 	public Node(Sequence s, int idx) {
 		// Making branch
 		x_pos = idx;
-		length=s.getLength();
 		similarity = 0;
 		branches = new ArrayList<Node>();
 		isLeaf = true;
 		data = new Sequence(s);
 	}
 	
-	public Node(ArrayList<Node> bs, double sim) {
+	public Node(ArrayList<Node> bs, double sim, int length) {
 		// making cluster
-		length = bs.get(0).length;
 		similarity =sim;
 		branches =bs ;
 		isLeaf = false;
@@ -51,7 +47,6 @@ public class Node implements Serializable{
 	
 	public Node(Node other) {
 		x_pos = other.x_pos;
-		length=other.length;
 		similarity = other.similarity;
 		isLeaf = other.isLeaf;
 		data = new Sequence(other.data);
@@ -63,7 +58,6 @@ public class Node implements Serializable{
 	public Node(Group sequences) {
 		similarity = -10;
 		x_pos = -10;
-		length = sequences.getLength();
 		isLeaf = false;
 		//branches = mergeSequences(sequences); // adding sequences to depth
 		branches = new ArrayList<Node>();
@@ -234,7 +228,7 @@ public class Node implements Serializable{
 	public Group getFlatBranchesDepth() {
 		Group cl = new Group();
 		ArrayList<Integer> mapping = new ArrayList<Integer>();
-		if(isLeaf) {cl.add(this.data); return cl;}
+		if(isLeaf) {cl.add(this.data);cl.length++; return cl;}
 		
 
 		ArrayList<Node> all = getChildrenValues(branches);

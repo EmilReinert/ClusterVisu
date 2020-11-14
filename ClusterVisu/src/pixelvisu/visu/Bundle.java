@@ -22,13 +22,16 @@ public class Bundle extends Group{
 	
 	
 	public Bundle(Group g) {
-
+		length = g.length;
 		sections = g.sections;
 		original = copySeqs(g.sequences);
 		sequences =copySeqs(g.sequences);
 		compress();
 //		densityOrder();
 		
+	}
+	public int getLength() {
+		return length;
 	}
 
 	public double get(int row, int idx) {

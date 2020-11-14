@@ -48,7 +48,6 @@ public class Group implements Serializable{
 
 	public Group(Group other) {
 		//copy constructor
-		length = other.length;
 		group_count =other.group_count;
 		sequences =copySeqs(other.sequences) ;
 		densities = other.densities;
@@ -67,8 +66,11 @@ public class Group implements Serializable{
 	}
 	public void makeWeights() {
 		weights = new ArrayList<>();
+		length = 0;
 		for(int i = 0; i<sequences.size();i++) {
 			weights.add(sequences.get(i).getWeight());
+			if(sequences.get(i).getLength()>length) {
+				length = sequences.get(i).getLength();}
 //			System.out.println(sequences.get(i).getWeight());
 		}
 	}
@@ -135,10 +137,8 @@ public class Group implements Serializable{
 		return -1;
 	}
 	public int getLength() {
-		if(length>sequences.get(0).getLength())
-			return length;
-		else
-			return sequences.get(0).getLength();
+//		System.out.println(length);
+		return length;
 	}
 	public double getMaxDiff() {
 		// 
@@ -279,104 +279,6 @@ public class Group implements Serializable{
 	public int getWeight(int i) {
 		return weights.get(i);
 	}
-	public ArrayList<Integer> getMapping(Group other) {
-		// mapping from this group to the other
-		ArrayList<Integer> map = new ArrayList<Integer>();
-		for(Sequence s:sequences) {
-		}
-		return null;
-	}
 
-	/*
-	public ArrayList<Integer> getSectionsWeight(int group_count) {
-		//thresh= amount of groups
-		if(this.group_count == group_count&&sections_w!=null&& sections_w.size()>0) {
-			return sections_w;
-		}
-		if(group_count<2)return new ArrayList<>();
-		this.group_count = group_count;
-
-		makeWeights();
-		
-		// finding threshold size
-		// by taking sections with decreasing threshold
-		// note: the threshold isnt a linear curve
-		int thresh = (getMaxWeight()-getMinWeight())/2;
-		int weight = 0;
-		int hold_weight; int prev = 0;
-		ArrayList<Integer> sec = new ArrayList<>();
-		while(sec.size()<group_count) {
-			 sec = new ArrayList<>();
-			 hold_weight = getWeight(0);
-			 prev = 0;
-			for(int i =0; i<getDepth();i++) {
-				weight = getWeight(i);
-				if(weight>thresh+hold_weight||weight<hold_weight-thresh) {
-//					System.out.println(weight+" - "+thresh+" "+hold_weight+" "+i);
-					if(prev==0||i>prev+1) {
-						sec.add(i);
-						hold_weight = weight;
-						prev= i;
-					}
-				}
-			}
-			thresh--;
-		}
-		if (!sec.contains(getDepth()))sec.add(getDepth());
-		
-		//System.out.println(thresh);
-		System.out.println("Sections: ");
-		for(int i:sec)System.out.print(i+" ");
-		System.out.println('\n');
-		sections_w = sec;
-		return sec;
-	}
-	
-	
-	public ArrayList<Integer> getSectionsSimilar(int group_count) {
-		//thresh= amount of groups
-		if(this.group_count== group_count&&sections_s!=null&& sections_s.size()>0) {
-			return sections_s;
-		}
-		if(group_count<2)return new ArrayList<>();
-		this.group_count  = group_count;
-
-		makeWeights();
-		
-		// finding threshold size
-		// by taking sections with decreasing threshold
-		// note: the threshold isnt a linear curve
-		
-		double thresh = getMaxDiff();
-		double diff = 0;
-		int cut = 0;
-		
-		ArrayList<Integer> sec = new ArrayList<>();
-		
-		while(sec.size()<group_count) {
-			sec = new ArrayList<>();
-			cut = 0;
-			for(int i =0; i<getDepth();i++) {
-				diff = get(0).compare(get(i),get(cut));// RECURSIVE
-				if(diff>(thresh+(thresh*cut*0.001))) {
-					if(i>cut+1) {// groups bigger than 1!
-						sec.add(i);
-						cut= i;
-					}
-				}
-				
-			}
-			thresh*=0.99;
-		}
-		if (!sec.contains(getDepth()))sec.add(getDepth());
-		
-		//System.out.println(thresh);
-		System.out.println("Sections: ");
-		for(int i:sec)System.out.print(i+" ");
-		System.out.println('\n');
-		sections_s = sec;
-		return sec;
-	}
-	*/
 	
 }

@@ -76,6 +76,7 @@ public class Data {
 		return d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) );
 	}
 	public double getOrValue(SingleData d,int sec_idx, int row, int idx) {
+//		System.out.println(sc.getScaleIdx(idx));
 		return d.getOrValue(sec_idx, row, sc.getScaleIdx(idx));
 	}
 	public String getOrNode(SingleData d,int sec_idx, int row) {

@@ -68,6 +68,7 @@ public class Scale  {
 		end_hold += (1 - relativeX) * zoom_strength;
         start_hold -= relativeX * zoom_strength;
         
+//        System.out.println("zooming"+ end_hold+" " +start_hold);
         if(end_hold-start_hold<10)return;
         
         if(end_hold<e) end_idx=end_hold;
@@ -181,8 +182,8 @@ public class Scale  {
 			double stepY = (double)height/ (2*data.getMain().max);
 			
 			//step amount for index limit
-			double stepIDX = 5*(end_idx-start_idx)/data.getLength();
-			System.out.println(stepIDX);
+			double stepIDX = 10*(end_idx-start_idx)/data.getLength();
+			
 			if(stepIDX<1)stepIDX=1;
 			// graphs
 			g2d.setColor(new Color(0, 0, 0,0.2f));
@@ -197,6 +198,7 @@ public class Scale  {
 				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
 				for(int j = -1; j<width;j+=stepIDX) {
 					i = getUnscaledIdx((int) j);
+					System.out.println(i);
 					if (i>= s.data.size()||i<=0) continue;
 					curr.x = i*stepX; curr.y= (s.data.get( (int) i).intValue()*stepY+height/2+off/2);
 					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x)+1, (int)(prev.y));
