@@ -14,7 +14,7 @@ public class Scale  {
 	String hover_data = "";
 	String name = ""; // name of hover node
 	Data data;
-	int start=0, end=0;
+	int start=0, end=0; // Start and end on pixels
 	int hover = 0;
 	public boolean paintit = true;
 	ArrayList<String> b = new  ArrayList<String>();// contains bundle of selected nodes
@@ -22,7 +22,7 @@ public class Scale  {
 	Color bg = Color.white;
 	int width, height,off;
 	float s, e; // origninal start and end
-	float start_idx, end_idx;
+	float start_idx, end_idx; // start and end on data length
 	int cuts=24; //seconds // vertical time cut intervals after specific instances
 	
 	public Scale(int with, int heit, Color bg) {
@@ -121,7 +121,7 @@ public class Scale  {
 		float scale = end_idx-start_idx;
 		 scale =(((idx-start_idx)/scale)*width);
 		 
-		 if(scale<0)return 0;
+		 if(scale<0)return -1;
 		 else return (int) scale;
 	}
 	
@@ -178,7 +178,6 @@ public class Scale  {
 //			g2d.fillRect(0, height/2, width, height);
 			
 			//relative steps
-			double stepX = (double)width/ data.getLength();
 			double stepY = (double)height/ (2*data.getMain().max);
 			
 			//step amount for index limit
@@ -196,31 +195,31 @@ public class Scale  {
 				else g2d.setColor(new Color(0, 0.2f, 1,0.2f));
 				
 				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
-				for(int j = -1; j<width;j+=stepIDX) {
-					i = getUnscaledIdx((int) j);
-					System.out.println(i);
-					if (i>= s.data.size()||i<=0) continue;
-					curr.x = i*stepX; curr.y= (s.data.get( (int) i).intValue()*stepY+height/2+off/2);
-					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x)+1, (int)(prev.y));
-					prev.x=i*stepX;
-					prev.y = (s.data.get((int) i).intValue()*stepY+height/2+off/2);
-				}
+				for(int j = 0; j<width;j+=5) {
+					i = getScaleIdx((int) j);
+					if (i>= s.getLength()||i<0) continue;
+//						System.out.println(j+" Start end:"+start_idx+" "+end_idx+" results in "+i);
+					curr.x = j; curr.y= (s.get( (int) i)*stepY+(float)height/2+off/2);
+					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x), (int)(prev.y));
+					prev.x=curr.x+1;
+					prev.y =curr.y;
+					}
 			}
 
-			
-			g2d.setColor(new Color(1, 0, 0,1.0f));
-			for(Sequence s:data.getMain().sequences.sequences) {
-				if(name!=s.name) continue;
-				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
-				for(int j = -1; j<width;j+=stepIDX) {
-					i = getUnscaledIdx((int) j);
-					if (i>= s.data.size()||i<=0) continue;
-					curr.x = i*stepX; curr.y= (s.data.get( (int) i).intValue()*stepY+height/2+off/2);
-					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x)+1, (int)(prev.y));
-					prev.x=i*stepX;
-					prev.y = (s.data.get((int) i).intValue()*stepY+height/2+off/2);
-				}
-			}
+//			
+//			g2d.setColor(new Color(1, 0, 0,1.0f));
+//			for(Sequence s:data.getMain().sequences.sequences) {
+//				if(name!=s.name) continue;
+//				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
+//				for(int j = -1; j<width;j+=stepIDX) {
+//					i = getUnscaledIdx((int) j);
+//					if (i>= s.data.size()||i<0) continue;
+//					curr.x = i*stepX; curr.y= (s.get( (int) i)*stepY+(float)height/2+off/2);
+//					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x), (int)(prev.y));
+//					prev.x=curr.x+1;
+//					prev.y =curr.y;
+//				}
+//			}
 		
 		}
 	}
