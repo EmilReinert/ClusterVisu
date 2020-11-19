@@ -21,6 +21,13 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 
+import pixelvisu.visu.Cluster;
+import pixelvisu.visu.Group;
+import pixelvisu.visu.Node;
+import pixelvisu.visu.Sequence;
+import pixelvisu.visu.Bundle;
+import pixelvisu.visu.Vec2;
+
 
 
 
@@ -30,7 +37,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	private int width, height; // width, height for diagram
 	
 	Data data;
-	Panel p;
+	TreePanel p;
 	
 	Color bg_color;
 	int group_count =44; // percent of maximum similarity that is considered a group
@@ -44,7 +51,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		data = d;
 		bg_color= bg_c;
 
-		p = new Panel();
+		p = new TreePanel();
 		p.update(data.clusters.get(click_cluster),group_count);
 	}
 
@@ -90,27 +97,6 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		
 		//SECTIONS
 		
-		// for single
-		drawSections(pixels, data.single_euclid.flat, off, width*height/3+off);
-		drawSections(pixels, data.single_maximum.flat, off+width/5, width*height/3+off);
-		drawSections(pixels, data.single_weight.flat, off+2*width/5, width*height/3+off);
-		drawSections(pixels, data.single_trivial.flat, off+3*width/5, width*height/3+off);
-		drawSections(pixels, data.single_manhattan.flat, off+4*width/5, width*height/3+off);
-
-		
-		//for complete
-		drawSections(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
-		drawSections(pixels, data.complete_maximum.flat, width*height/3+off+width/5, off+2*width*height/3);
-		drawSections(pixels, data.complete_weight.flat, width*height/3+off+2*width/5, off+2*width*height/3);
-		drawSections(pixels, data.complete_trivial.flat, width*height/3+off+3*width/5, off+2*width*height/3);
-		drawSections(pixels, data.complete_manhattan.flat, width*height/3+off+4*width/5, off+2*width*height/3);
-		
-		//for average
-		drawSections(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
-		drawSections(pixels, data.average_maximum.flat, 2*width*height/3+off+width/5, pixels.length);
-		drawSections(pixels, data.average_weight.flat, 2*width*height/3+off+2*width/5, pixels.length);
-		drawSections(pixels, data.average_trivial.flat, 2*width*height/3+off+3*width/5, pixels.length);
-		drawSections(pixels, data.average_manhattan.flat, 2*width*height/3+off+4*width/5, pixels.length);
 		
 		//COMPRESSED
 		

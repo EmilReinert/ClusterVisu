@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 public class Cluster implements Serializable {
 
-	String name="none";
-	Group original; 
-	Node tree;
-	Node treeorder;
-	Group flat;
-	Bundle flat_c;
+	public String name="none";
+	public Group original; 
+	public Node tree;
+	public Node treeorder;
+	public Group flat;
+	public Bundle flat_c;
 
 	int start,end;
 	int maxdepth;

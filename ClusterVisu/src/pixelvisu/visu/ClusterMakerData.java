@@ -117,7 +117,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		}
 		
 		
-		public void render() {
+		public void render(int ti) {
 
 			
 			BufferStrategy bs = getBufferStrategy();
@@ -128,14 +128,16 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			Graphics g = bs.getDrawGraphics();
 			// bg
 			g.setColor(bg_color);
-			g.fillRect(0, 0, getWidth(), getHeight());
+			g.fillRect(0, 0, getWidth(), getHeight()/2);
 			
 			//draws info box
 //			controls.paint(g);
 			
 			//draws diagram image
 			g.drawImage(image, 0,visu.getOff(),image.getWidth(),image.getHeight(), null);
-			sc.paint(g);
+			//only draw coords every 10th frame
+			
+				sc.paint(g,ti);
 			bs.show();
 			
 		}
@@ -146,9 +148,10 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			long lastTime = System.nanoTime();
 			double delta = 0;
 			requestFocus();
+			int ti = 0;
 			while(running) {
 				long now = System.nanoTime();
-				delta = delta + ((now-lastTime) / (1000000000.0/2));//60 = FPS
+				delta = delta + ((now-lastTime) / (1000000000.0/10));//60 = FPS
 				lastTime = now;
 				while (delta >= 1)//Make sure update is only happening 60 times a second
 				{
@@ -158,8 +161,10 @@ public class ClusterMakerData extends JFrame implements Runnable {
 							visu.update(pixels);
 					delta--;
 				}
-				render();//displays to the screen unrestricted time
+				render(ti);//displays to the screen unrestricted time
 //				controls.update();
+
+				ti++;
 			}
 		}
 		public static void main(String[] args)  {

@@ -15,7 +15,7 @@ import java.util.Collections;
 public class Group implements Serializable{
 	// Group contains collection of sequences and
 
-	ArrayList<Integer> sections; // holder for same threshold section calculation
+	public ArrayList<Integer> sections; // holder for same threshold section calculation
 	ArrayList<Integer> densities;
 	int group_count=0;
 	int length = 0;

@@ -1,8 +1,8 @@
 package pixelvisu.visu;
 
 public class Vec2 {
-	double x;
-	double y;
+	public double x;
+	public double y;
 	
 	public Vec2(double x, double y) {
 		this.x = x;

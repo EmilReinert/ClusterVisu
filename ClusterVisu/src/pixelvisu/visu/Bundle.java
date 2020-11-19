@@ -6,11 +6,11 @@ import java.util.Collections;
 
 public class Bundle extends Group{
 	
-	ArrayList<Integer> densities; // 
-	ArrayList<Sequence> original; // original sequence
-	ArrayList<Integer> mapping; // mapping from original compressed to ordered compressed
-	ArrayList<Sequence> differentials; // difference measure for compressed data bundles
-	ArrayList<Integer> sections;
+	public ArrayList<Integer> densities; // 
+	public ArrayList<Sequence> original; // original sequence
+	public ArrayList<Integer> mapping; // mapping from original compressed to ordered compressed
+	public ArrayList<Sequence> differentials; // difference measure for compressed data bundles
+	public ArrayList<Integer> sections;
 	
 	public Bundle() {
 		sections = new ArrayList<>();

@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 
 
 
+
 public class VisuData implements MouseListener,MouseMotionListener,MouseWheelListener,KeyListener{
 
 	private int width, height, off; // width, height for diagram and global off
@@ -96,28 +97,20 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		drawBackground(pixels);
 		time++;
 		hoverData =0; hoverNode = "";
-//		drawData(pixels, data.sequences, off, width*height/3+off);
-//		Panel p = new Panel();
-		// DATA
-
-		// for single
-//		drawData(pixels,data.data_main.sequences,off,pixels.length);
-//		drawData(pixels,data.data_main.c.flat,off+width/4,pixels.length);
+		
+		
+		
 		if(data.data.get(datapointer).c!=null&&data.data.get(datapointer).c.flat_c!=null) {
 			drawBarsDen(pixels, data.data.get(datapointer), off, off+height/3*width);
 		}
 		
-
-//		for(Sequence s:data.data_main.sequences.sequences) 
-//			for(int i = 0; i<s.data.size();i++) 
-//				drawPoint(pixels,new Vec2( s.data.get(i).intValue(),i),0);
-		
-//		drawData(pixels,data_compare.sequences,off+3*width/4,pixels.length);
 		
 		return ;
 	}	
 
 	// ----------------------------------------------------
+	
+
 	
 	public void drawSections(int[] pixels,Group seqs, int start, int end) {
 		int top_off =start ;

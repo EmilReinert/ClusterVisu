@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import pixelvisu.pipeline.Cluster;
+
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
 	int lockedPointer;
-	int group_count = 44;
+	int group_count= 44;
 	String section = "similarity";
 	boolean contrast;
 	Scale sc;
@@ -19,6 +21,28 @@ public class Data {
 	String maindata_path ="Data/4w_14_9_1h/node_memory_Active_bytes.txt"; 
 	String comparedata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
 	String comparedata_two = "Data/4w_14_9_1h/node_memory_Cached_bytes.txt";
+	
+	
+	// Compare Methods
+	
+
+	SingleData single_euclid;
+	SingleData single_maximum;
+	SingleData single_weight;
+	SingleData single_trivial;
+	SingleData single_manhattan;
+
+	SingleData complete_euclid;
+	SingleData complete_maximum;
+	SingleData complete_weight;
+	SingleData complete_trivial;
+	SingleData complete_manhattan;
+	
+	SingleData average_euclid;
+	SingleData average_maximum;
+	SingleData average_weight;
+	SingleData average_trivial;
+	SingleData average_manhattan;
 	
 	public Data(int width, int height, Scale s, ColorMapping m)  {
 		circ = new Circuit();
@@ -32,6 +56,7 @@ public class Data {
 			data.add(data_main);
 			data.add(data_compare);
 			data.add(data_compare_two);
+			
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -71,6 +96,8 @@ public class Data {
 		return data.get(lockedPointer);
 	}
 	
+	
+	
 	public double getValue(SingleData d,int dataRowIdx, int pos) {
 		//for string
 		return d.c.flat_c.get(dataRowIdx,sc.getScaleIdx(pos) );
@@ -97,6 +124,7 @@ public class Data {
 	
 	
 
+	
 	public int getDiff(SingleData d,int dataRowIdx, int pos) {
 		if(d.c==null&&d.c.flat_c==null)return -1;
 			return d.c.flat_c.getDiff(dataRowIdx,sc.getScaleIdx(pos) );

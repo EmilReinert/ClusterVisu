@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 
 public class TreePanel extends JPanel{
-	Cluster c;
+	SingleData sd;
 	JFrame f;
 	int group_count =0; // for horizontal line
 	int w, h;
@@ -31,9 +31,9 @@ public class TreePanel extends JPanel{
 	
 
 
-	public void update(Cluster c,int group_count) {
+	public void update(SingleData sd,int group_count) {
 		this.group_count = group_count;
-		this.c = c;
+		this.sd = sd;
 		repaint();
         try
         {
@@ -54,7 +54,7 @@ public class TreePanel extends JPanel{
 
 		g.setColor(Color.white);
 		g.fillRect(0, 0, (int) (w*2), h*2);
-		if (c != null) {
+		if (sd != null) {
 			paintCluster(g);
 }
 	}
@@ -62,12 +62,12 @@ public class TreePanel extends JPanel{
 	
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
-		int depth = c.tree.getDepth();
-		f.setTitle(c.name);
-		System.out.println("Painting Cluster "+c.name);
-		double height_ratio = (0.6*h)/c.treeorder.branches.get(0).similarity;
-		double width_ratio = (0.6*w)/c.treeorder.length;
-		ArrayList<Node> plane = c.treeorder.branches;
+		int depth = sd.c.tree.getDepth();
+		f.setTitle(sd.c.name);
+		System.out.println("Painting Cluster "+sd.c.name);
+		double height_ratio = (0.6*h)/sd.c.treeorder.branches.get(0).similarity;
+		double width_ratio = (0.6*w)/sd.c.treeorder.data.getLength();
+		ArrayList<Node> plane = sd.c.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
 			boolean lastleaf =true;
@@ -85,7 +85,7 @@ public class TreePanel extends JPanel{
 //						(int) (cc.similarity*height_ratio),
 //						(int) (c.x_pos*width_ratio),
 //						(int) (c.similarity*height_ratio));
-				if(cc.similarity<this.c.tree.getMaxSim() * 0.01 * group_count)
+				if(cc.similarity<this.sd.c.tree.getMaxSim() * 0.01 * group_count)
 					g.setColor(Color.red);
 				
 				g.drawLine((int)(left_off+top_off+cc.x_pos*width_ratio),
@@ -131,7 +131,7 @@ public class TreePanel extends JPanel{
 			plane =hold;
 			if(lastleaf) {
 				//draw horizontal line
-				double sim =c.tree.getMaxSim() * 0.01 * group_count;
+				double sim =sd.c.tree.getMaxSim() * 0.01 * group_count;
 		        g.setColor(Color.RED);
 		        g.drawLine(0, (int)(sim*height_ratio), w, (int)(sim*height_ratio));
 				

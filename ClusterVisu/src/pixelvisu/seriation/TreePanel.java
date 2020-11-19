@@ -12,15 +12,20 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import pixelvisu.visu.Cluster;
+import pixelvisu.visu.Group;
+import pixelvisu.visu.Node;
+import pixelvisu.visu.Sequence;
+import pixelvisu.visu.Bundle;
 
-public class Panel extends JPanel{
-	boolean running;
-	Cluster c;
+
+public class TreePanel extends JPanel{
+	Cluster sd;
 	JFrame f;
 	int group_count =0; // for horizontal line
 	int w, h;
 	
-	public Panel() {
+	public TreePanel() {
 		w =1200; h = 600;
 		f = new JFrame("Tree");
 		f.setSize(w	,h);
@@ -32,16 +37,16 @@ public class Panel extends JPanel{
 	
 
 
-	public void update(Cluster c,int group_count) {
+	public void update(Cluster sd,int group_count) {
 		this.group_count = group_count;
-		this.c = c;
+		this.sd = sd;
 		repaint();
         try
         {
             BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2D = image.createGraphics();
             f.paint(graphics2D);
-            ImageIO.write(image,"png", new File("img/"+c.name+".png"));
+//            ImageIO.write(image,"png", new File("img/"+c.name+".png"));
         }
         catch(Exception exception)
         {
@@ -55,7 +60,7 @@ public class Panel extends JPanel{
 
 		g.setColor(Color.white);
 		g.fillRect(0, 0, (int) (w*2), h*2);
-		if (c != null) {
+		if (sd != null) {
 			paintCluster(g);
 }
 	}
@@ -63,12 +68,12 @@ public class Panel extends JPanel{
 	
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
-		int depth = c.treeorder.getDepth();
-		f.setTitle(c.name);
-		System.out.println("Painting Cluster "+c.name);
-		double height_ratio = (0.6*h)/c.treeorder.branches.get(0).similarity;
-		double width_ratio = (0.6*w)/c.treeorder.length;
-		ArrayList<Node> plane = c.treeorder.branches;
+		int depth = sd.tree.getDepth();
+		f.setTitle(sd.name);
+		System.out.println("Painting Cluster "+sd.name);
+		double height_ratio = (0.6*h)/sd.treeorder.branches.get(0).similarity;
+		double width_ratio = (0.6*w)/sd.treeorder.data.getLength();
+		ArrayList<Node> plane = sd.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
 			boolean lastleaf =true;
@@ -86,7 +91,7 @@ public class Panel extends JPanel{
 //						(int) (cc.similarity*height_ratio),
 //						(int) (c.x_pos*width_ratio),
 //						(int) (c.similarity*height_ratio));
-				if(cc.similarity<this.c.tree.getMaxSim() * 0.01 * group_count)
+				if(cc.similarity<this.sd.tree.getMaxSim() * 0.01 * group_count)
 					g.setColor(Color.red);
 				
 				g.drawLine((int)(left_off+top_off+cc.x_pos*width_ratio),
@@ -132,7 +137,7 @@ public class Panel extends JPanel{
 			plane =hold;
 			if(lastleaf) {
 				//draw horizontal line
-				double sim =c.tree.getMaxSim() * 0.01 * group_count;
+				double sim =sd.tree.getMaxSim() * 0.01 * group_count;
 		        g.setColor(Color.RED);
 		        g.drawLine(0, (int)(sim*height_ratio), w, (int)(sim*height_ratio));
 				

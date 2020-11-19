@@ -48,7 +48,18 @@ public class SingleData {
 		updateClustering(circ,gc,start,end);
 		this.path = path;
 	}
-	
+	public SingleData(String path,String a, String b, String c, int gc,Color mc, ColorMapping cm, int start, int end) throws IOException {
+		this.mc = mc;
+		this.cm = cm;
+		this.group_count = gc;
+		
+		readData(path);
+
+		dataname = path.substring(path.lastIndexOf("/") + 1);
+		
+		updateClustering(new String[] {a,b,c},gc,start,end);
+		this.path = path;
+	}
 	public SingleData(String path, int gc,Color mc, ColorMapping cm) throws IOException {
 		// EMPTY CLUSTER for compare data
 		this.mc = mc;

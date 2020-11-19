@@ -7,11 +7,11 @@ import java.util.Collections;
 
 
 public class Node implements Serializable{
-	ArrayList<Node> branches; // already ordered list of sequences
-	Sequence data;
-	boolean isLeaf;
-	double similarity=-1; // similarity value of combined clusters
-	float x_pos; // horizontal position for tree drawing
+	public ArrayList<Node> branches; // already ordered list of sequences
+	public Sequence data;
+	public boolean isLeaf;
+	public double similarity=-1; // similarity value of combined clusters
+	public float x_pos; // horizontal position for tree drawing
 	
 	public Node() {
 		x_pos =0;

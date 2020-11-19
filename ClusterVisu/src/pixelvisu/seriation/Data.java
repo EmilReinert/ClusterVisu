@@ -12,12 +12,20 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import pixelvisu.visu.Cluster;
+import pixelvisu.visu.Group;
+import pixelvisu.visu.Node;
+import pixelvisu.visu.Sequence;
+import pixelvisu.visu.Bundle;
 
 
 
@@ -28,6 +36,7 @@ public class Data implements Serializable{
 	
 	ArrayList<Cluster> clusters;
 	
+	String dataname = "hi";
 	Cluster single_euclid;
 	Cluster single_maximum;
 	Cluster single_weight;
@@ -77,25 +86,25 @@ public class Data implements Serializable{
 		clusters = new ArrayList<Cluster>();
 
 		
-		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean");
-		single_maximum = new Cluster(sequences,"agglomerative","single","maximum");
-		single_weight = new Cluster(sequences,"agglomerative","single","weight");
-		single_trivial = new Cluster(sequences,"agglomerative","single","trivial");
-		single_manhattan = new Cluster(sequences,"agglomerative","single","manhattan");
+		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean","test",0,100000000,true);
+		single_maximum = new Cluster(sequences,"agglomerative","single","maximum","test",0,100000000,true);
+		single_weight = new Cluster(sequences,"agglomerative","single","weight","test",0,100000000,true);
+		single_trivial = new Cluster(sequences,"agglomerative","single","trivial","test",0,100000000,true);
+		single_manhattan = new Cluster(sequences,"agglomerative","single","manhattan","test",0,100000000,true);
 		
 		
-		complete_euclid = new Cluster(sequences,"agglomerative","complete","euclidean");
-		complete_maximum = new Cluster(sequences,"agglomerative","complete","maximum");
-		complete_weight = new Cluster(sequences,"agglomerative","complete","weight");
-		complete_trivial = new Cluster(sequences,"agglomerative","complete","trivial");
-		complete_manhattan = new Cluster(sequences,"agglomerative","complete","manhattan");
+		complete_euclid = new Cluster(sequences,"agglomerative","complete","euclidean","test",0,100000000,true);
+		complete_maximum = new Cluster(sequences,"agglomerative","complete","maximum","test",0,100000000,true);
+		complete_weight = new Cluster(sequences,"agglomerative","complete","weight","test",0,100000000,true);
+		complete_trivial = new Cluster(sequences,"agglomerative","complete","trivial","test",0,100000000,true);
+		complete_manhattan = new Cluster(sequences,"agglomerative","complete","manhattan","test",0,100000000,true);
 		
 		
-		average_euclid = new Cluster(sequences,"agglomerative","average","euclidean");
-		average_maximum = new Cluster(sequences,"agglomerative","average","maximum");
-		average_weight = new Cluster(sequences,"agglomerative","average","weight");
-		average_trivial = new Cluster(sequences,"agglomerative","average","trivial");
-		average_manhattan = new Cluster(sequences,"agglomerative","average","manhattan");
+		average_euclid = new Cluster(sequences,"agglomerative","average","euclidean","test",0,100000000,true);
+		average_maximum = new Cluster(sequences,"agglomerative","average","maximum","test",0,100000000,true);
+		average_weight = new Cluster(sequences,"agglomerative","average","weight","test",0,100000000,true);
+		average_trivial = new Cluster(sequences,"agglomerative","average","trivial","test",0,100000000,true);
+		average_manhattan = new Cluster(sequences,"agglomerative","average","manhattan","test",0,100000000,true);
 		
 
 		clusters.add(single_euclid);
@@ -121,24 +130,27 @@ public class Data implements Serializable{
 
 	}
 	
-	private void readData(String path) throws IOException {
-		System.out.println("READ");
-		String file =new TxtReader().read(path);
-		JSONObject obj = new JSONObject(file);
-		System.out.println("------READ------");
-//		System.out.println(obj.toString());
-
-		//ASSIGNING values
-		JSONArray nodes = obj.getJSONArray("nodes");
-		JSONObject node0;
-		Sequence se;
-
-		for (int i = 0; i<270;i++) {
-			node0 = nodes.getJSONObject(i);
-			se = new Sequence(node0.optJSONArray("values"),175,node0.optJSONObject("metric"));
-			sequences.add(se);
-		}
+	protected void readData(String path) throws IOException {
+		sequences = new Group(this.group_count);
+			// reading data 
+			dataname = path.substring(path.lastIndexOf("/")+1);
+			System.out.println("READ");
+			String file =new TxtReader().read(path);
+			Pattern p = Pattern.compile("\"([^\"]*)\"");
+			Matcher m = p.matcher(file);
+			
+			int count = 0;
+			while (m.find()) {
+				if(m.group(1).length()>100) {
+	//				System.out.println(m.group(1));
+					sequences.add(new Sequence(m.group(1),count));
+					count++;
+				}
+			}
+			
 		
+		
+		System.out.println("------READ------");
 
 	}
 
@@ -187,7 +199,7 @@ public class Data implements Serializable{
 		this.group_count = group_count;
 		
 		for(Cluster c:clusters)
-			c.makeSections(group_count);
+			c.makeSectionsSim(group_count);
 	}
 	
 	public void order(String mode) {
