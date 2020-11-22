@@ -64,7 +64,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		width=w; height = h-off;
 		group_count=new_group_count;
 		off = w*off;
-		data.section(group_count);
+		data.section(10000000);
 		
 		drawBackground(pixels);
 		
@@ -74,25 +74,28 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 
 		// for single
 		drawData(pixels, data.single_euclid, off, width*height/3+off);
-		drawData(pixels, data.single_maximum, off+width/5, width*height/3+off);
-		drawData(pixels, data.single_weight, off+2*width/5, width*height/3+off);
-		drawData(pixels, data.single_trivial, off+3*width/5, width*height/3+off);
-		drawData(pixels, data.single_manhattan, off+4*width/5, width*height/3+off);
+		drawData(pixels, data.single_rms, off+width/6, width*height/3+off);
+		drawData(pixels, data.single_minkowski, off+2*width/6, width*height/3+off);
+		drawData(pixels, data.single_maximum, off+3*width/6, width*height/3+off);
+		drawData(pixels, data.single_absolute, off+4*width/6, width*height/3+off);
+		drawData(pixels, data.single_cosine, off+5*width/6, width*height/3+off);
 
 		
 		//for complete
 		drawData(pixels, data.complete_euclid, width*height/3+off, off+2*width*height/3);
-		drawData(pixels, data.complete_maximum, width*height/3+off+width/5, off+2*width*height/3);
-		drawData(pixels, data.complete_weight, width*height/3+off+2*width/5, off+2*width*height/3);
-		drawData(pixels, data.complete_trivial, width*height/3+off+3*width/5, off+2*width*height/3);
-		drawData(pixels, data.complete_manhattan, width*height/3+off+4*width/5, off+2*width*height/3);
+		drawData(pixels, data.complete_rms, width*height/3+off+width/6, off+2*width*height/3);
+		drawData(pixels, data.complete_minkowski, width*height/3+off+2*width/6, off+2*width*height/3);
+		drawData(pixels, data.complete_maximum, width*height/3+off+3*width/6, off+2*width*height/3);
+		drawData(pixels, data.complete_absolute, width*height/3+off+4*width/6, off+2*width*height/3);
+		drawData(pixels, data.complete_cosine, width*height/3+off+5*width/6, off+2*width*height/3);
 		
 		//for average
 		drawData(pixels, data.average_euclid, 2*width*height/3+off, pixels.length);
-		drawData(pixels, data.average_maximum, 2*width*height/3+off+width/5, pixels.length);
-		drawData(pixels, data.average_weight, 2*width*height/3+off+2*width/5, pixels.length);
-		drawData(pixels, data.average_trivial, 2*width*height/3+off+3*width/5, pixels.length);
-		drawData(pixels, data.average_manhattan, 2*width*height/3+off+4*width/5, pixels.length);
+		drawData(pixels, data.average_rms, 2*width*height/3+off+width/6, pixels.length);
+		drawData(pixels, data.average_minkowski, 2*width*height/3+off+2*width/6, pixels.length);
+		drawData(pixels, data.average_maximum, 2*width*height/3+off+3*width/6, pixels.length);
+		drawData(pixels, data.average_absolute, 2*width*height/3+off+4*width/6, pixels.length);
+		drawData(pixels, data.average_cosine, 2*width*height/3+off+5*width/6, pixels.length);
 		
 		
 		//SECTIONS
@@ -136,6 +139,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 			col_hold = data.getColor(c.flat,(int)int2Vec(n-start).x,(int)int2Vec(n-start).y);
 			if(col_hold>=0)
 				pixels[n] =col_hold;
+			
 		}
 	}
 	

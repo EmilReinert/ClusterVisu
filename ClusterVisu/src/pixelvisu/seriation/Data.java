@@ -25,6 +25,7 @@ import pixelvisu.visu.Cluster;
 import pixelvisu.visu.Group;
 import pixelvisu.visu.Node;
 import pixelvisu.visu.Sequence;
+import pixelvisu.visu.TxtReader;
 import pixelvisu.visu.Bundle;
 
 
@@ -33,27 +34,32 @@ import pixelvisu.visu.Bundle;
 public class Data implements Serializable{
 	Group sequences;// unordered weights // image
 	Group sequences_diff; // ordered by similarity
+
+	double max =0;
 	
 	ArrayList<Cluster> clusters;
 	
 	String dataname = "hi";
 	Cluster single_euclid;
 	Cluster single_maximum;
-	Cluster single_weight;
-	Cluster single_trivial;
-	Cluster single_manhattan;
+	Cluster single_absolute;
+	Cluster single_minkowski;
+	Cluster single_cosine;
+	Cluster single_rms;
 
 	Cluster complete_euclid;
 	Cluster complete_maximum;
-	Cluster complete_weight;
-	Cluster complete_trivial;
-	Cluster complete_manhattan;
+	Cluster complete_absolute;
+	Cluster complete_minkowski;
+	Cluster complete_cosine;
+	Cluster complete_rms;
 	
 	Cluster average_euclid;
 	Cluster average_maximum;
-	Cluster average_weight;
-	Cluster average_trivial;
-	Cluster average_manhattan;
+	Cluster average_absolute;
+	Cluster average_minkowski;
+	Cluster average_cosine;
+	Cluster average_rms;
 	/*
 	single_euclid
 	single_maximum
@@ -80,50 +86,58 @@ public class Data implements Serializable{
 
 //		readData(path);
 //		testCat();
-		testDataLinear();
+		testDataSquare();
 //		testDataRandom();
+		
+		for(Sequence s: sequences.sequences)
+			if(s.getMax()>max)
+				max = s.getMax();				
 		
 		clusters = new ArrayList<Cluster>();
 
 		
 		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean","test",0,100000000,true);
+		single_rms = new Cluster(sequences,"agglomerative","single","rms","test",0,100000000,true);
+		single_minkowski = new Cluster(sequences,"agglomerative","single","minkowski","test",0,100000000,true);
 		single_maximum = new Cluster(sequences,"agglomerative","single","maximum","test",0,100000000,true);
-		single_weight = new Cluster(sequences,"agglomerative","single","weight","test",0,100000000,true);
-		single_trivial = new Cluster(sequences,"agglomerative","single","trivial","test",0,100000000,true);
-		single_manhattan = new Cluster(sequences,"agglomerative","single","manhattan","test",0,100000000,true);
-		
+		single_absolute = new Cluster(sequences,"agglomerative","single","absolute","test",0,100000000,true);
+		single_cosine = new Cluster(sequences,"agglomerative","single","cosine","test",0,100000000,true);
 		
 		complete_euclid = new Cluster(sequences,"agglomerative","complete","euclidean","test",0,100000000,true);
+		complete_rms = new Cluster(sequences,"agglomerative","complete","rms","test",0,100000000,true);
+		complete_minkowski = new Cluster(sequences,"agglomerative","complete","minkowski","test",0,100000000,true);
 		complete_maximum = new Cluster(sequences,"agglomerative","complete","maximum","test",0,100000000,true);
-		complete_weight = new Cluster(sequences,"agglomerative","complete","weight","test",0,100000000,true);
-		complete_trivial = new Cluster(sequences,"agglomerative","complete","trivial","test",0,100000000,true);
-		complete_manhattan = new Cluster(sequences,"agglomerative","complete","manhattan","test",0,100000000,true);
-		
+		complete_absolute = new Cluster(sequences,"agglomerative","complete","absolute","test",0,100000000,true);
+		complete_cosine = new Cluster(sequences,"agglomerative","complete","cosine","test",0,100000000,true);
 		
 		average_euclid = new Cluster(sequences,"agglomerative","average","euclidean","test",0,100000000,true);
+		average_rms = new Cluster(sequences,"agglomerative","average","rms","test",0,100000000,true);
+		average_minkowski = new Cluster(sequences,"agglomerative","average","minkowski","test",0,100000000,true);
 		average_maximum = new Cluster(sequences,"agglomerative","average","maximum","test",0,100000000,true);
-		average_weight = new Cluster(sequences,"agglomerative","average","weight","test",0,100000000,true);
-		average_trivial = new Cluster(sequences,"agglomerative","average","trivial","test",0,100000000,true);
-		average_manhattan = new Cluster(sequences,"agglomerative","average","manhattan","test",0,100000000,true);
+		average_absolute = new Cluster(sequences,"agglomerative","average","absolute","test",0,100000000,true);
+		average_cosine = new Cluster(sequences,"agglomerative","average","cosine","test",0,100000000,true);
 		
 
 		clusters.add(single_euclid);
 		clusters.add(single_maximum);
-		clusters.add(single_weight);
-		clusters.add(single_trivial);
-		clusters.add(single_manhattan);
+		clusters.add(single_absolute);
+		clusters.add(single_minkowski);
+		clusters.add(single_cosine);
+		clusters.add(single_rms);
 
 		clusters.add(complete_euclid);
 		clusters.add(complete_maximum);
-		clusters.add(complete_weight);
-		clusters.add(complete_trivial);
-		clusters.add(complete_manhattan);
+		clusters.add(complete_absolute);
+		clusters.add(complete_minkowski);
+		clusters.add(complete_cosine);
+		clusters.add(complete_rms);
 
 		clusters.add(average_euclid);
 		clusters.add(average_maximum);
-		clusters.add(average_weight);
-		clusters.add(average_trivial);
-		clusters.add(average_manhattan);
+		clusters.add(average_absolute);
+		clusters.add(average_minkowski);
+		clusters.add(average_cosine);
+		clusters.add(average_rms);
 		
 		
 
@@ -131,33 +145,32 @@ public class Data implements Serializable{
 	}
 	
 	protected void readData(String path) throws IOException {
-		sequences = new Group(this.group_count);
-			// reading data 
-			dataname = path.substring(path.lastIndexOf("/")+1);
-			System.out.println("READ");
-			String file =new TxtReader().read(path);
-			Pattern p = Pattern.compile("\"([^\"]*)\"");
-			Matcher m = p.matcher(file);
-			
-			int count = 0;
-			while (m.find()) {
-				if(m.group(1).length()>100) {
-	//				System.out.println(m.group(1));
-					sequences.add(new Sequence(m.group(1),count));
-					count++;
-				}
-			}
-			
-		
-		
-		System.out.println("------READ------");
+		System.out.println("READ");
+		String file =new TxtReader().read(path);
+		JSONObject obj = new JSONObject(file);
 
-	}
+//		System.out.println(obj.toString());
 
-	private void testDataLinear() {
+		//ASSIGNING values
+		JSONArray nodes = obj.getJSONArray("nodes");
+		JSONObject node0;
+		Sequence se;
 
 		for (int i = 0; i<270;i++) {
-			sequences.add(new Sequence(175,i));
+			node0 = nodes.getJSONObject(i);
+			se = new Sequence(node0.optJSONArray("values"),175,node0.optJSONObject("metric"));
+			sequences.add(se);
+		}
+				
+		System.out.println(sequences.getLength()+ " dataseries found");
+		System.out.println("------READ------");
+		
+	}
+
+	private void testDataSquare() {
+
+		for (int i = 0; i<270;i++) {
+			sequences.add(new Sequence(175,i*i));
 		}
 	}
 	private void testDataRandom() {
@@ -212,6 +225,9 @@ public class Data implements Serializable{
 	
 	
 	public int getColor(double value) {
+		double scale =255;
+		value = (value/max)*scale; // GLOBAL normalizing
+		
 		if(value>255)
 			value = 255;
 		if(value>=0)

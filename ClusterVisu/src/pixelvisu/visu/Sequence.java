@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
 //	ArrayList<Double> timestamps;
-	int sect =60; // for horizontal clustering of size 'sect'
+	final int sect =100; // for horizontal clustering of size 'sect'
 	int sect_vis; // sections for 
 	String name ="x";
 	private int pos =0;
@@ -61,6 +61,26 @@ public class Sequence implements Serializable {
 		min = s.min;
 		max = s.max;
 	}
+
+	public Sequence(JSONArray a, int size, JSONObject nj) {
+		String n = nj.optString("instance");
+		this.name = n;
+
+		data = new ArrayList<>();
+		
+		// a is multidimensional so we have to first take the array at the index and 
+		// then extract the wanted data ( at 0 or 1 )
+		ArrayList<Float> data_hold = new ArrayList<>();
+		// Storing data in holder float arraylist so we can adjust them to
+		// x>=0 to 255 spectrum for all data// that is int color spectrum
+		JSONArray hold ;
+		for(int i = 0; i<size;i++) {
+			hold = a.getJSONArray(i);
+			data.add(hold.getDouble(1));
+		}
+		
+	}
+	
 	
 	
 	public Sequence(String group, int pos) {
@@ -80,8 +100,6 @@ public class Sequence implements Serializable {
 			    	if(!next)first+=ch;
 			    	else second +=ch;
 			}
-//			System.out.println(cuts[i]);
-//			System.out.println(first+ " "+second);
 			if(next) {
 				data.add(Double.parseDouble(first));
 //				timestamps.add(Double.parseDouble(second));
@@ -96,18 +114,18 @@ public class Sequence implements Serializable {
 	
 	
 	/// Compress
-	public void compress(int s) {
-		if(s == sect)return;
-		sect = s;
-		
-		for(int i =0; i<=data.size()-sect;i+=sect) {
-			double av = 0;
-			for(int j =0;j<sect;j++) av+=get(j+i)/sect;
-			for(int j =0;j<sect;j++) set(i+j, av);			
-		}
-		
-		
-	}
+//	public void compress(int s) {
+//		if(s == sect)return;
+//		sect = s;
+//		
+//		for(int i =0; i<=data.size()-sect;i+=sect) {
+//			double av = 0;
+//			for(int j =0;j<sect;j++) av+=get(j+i)/sect;
+//			for(int j =0;j<sect;j++) set(i+j, av);			
+//		}
+//		
+//		
+//	}
 	
 	
 	//// PIPELINE SIMILARITY MEASURES
@@ -130,7 +148,7 @@ public class Sequence implements Serializable {
 		
 	}
 	
-	public double compareWeight(Sequence other, int start,int end) {
+	public double compareAbsolute(Sequence other, int start,int end) {
 		double w = Math.abs(other.getWeight(start, end)-getWeight(start,end));
 		return w;
 	}
@@ -138,6 +156,37 @@ public class Sequence implements Serializable {
 	public double compareMaximum(Sequence other, int start,int end) {
 		return Math.abs(other.getMax(start,end)-getMax(start,end));
 	}
+	
+	public double compareMinkowski(Sequence other, int start, int end) {
+		float diff =0; int r = 10;
+		for(int i = start;i<data.size()&&i<end;i+=sect) {
+			diff+= (Math.pow((get(i)-other.get(i)),r));
+		}
+		return Math.pow(diff,1/(float)r);
+	}
+	
+	public double compareCosine(Sequence other, int start,int end) {
+		double dot =0;
+		for(int i =start;i<data.size()&&i<end;i+=sect) {
+			dot+= get(i)*other.get(i);
+		}
+		dot =dot/(getMathLength(start, end)*other.getMathLength(start, end));
+		dot = Math.acos(dot)/Math.PI;
+		if(Double.isNaN(dot)) {
+			return 0;
+		}
+//		System.out.println(dot);
+		return dot;
+	}
+	 	
+	public double compareRMS(Sequence other, int start,int end) {
+		
+		return compareEuclid(other, start, end)/(getLength()/sect);
+		
+	}
+	
+	
+	
 	
 	
 	
@@ -160,13 +209,35 @@ public class Sequence implements Serializable {
 	}
 	
 	public double getWeight(int start, int end) {
-
-		return weight;
+		float sum = 0;
+		for(int i = start; i<data.size()&&i<end;i+=sect) {
+			sum+= get(i);
+		}
+		return sum;
+		
+	}
+	public double getMathLength(int start, int end) {
+		// return spacial length of data vector
+		float sum =0;
+		for(int i = start; i<data.size()&&i<end;i+=sect) {
+			sum+=get(i)*get(i);
+		}
+		return Math.sqrt(sum);
 	}
 
 	private int getMax(int start, int end) {
 		// TODO Auto-generated method stub
-		return 0;
+		double max = -100000;
+		for(int i = start; i<data.size()&&i<end;i+=sect) {
+			if(data.get(i)>max) {
+				max = data.get(i);
+			}
+		}
+		if(max ==-100000)
+		{
+			System.err.println("no max found");return 0;
+		}
+		return (int) max;
 	}
 	public String getName() {
 		return this.name;

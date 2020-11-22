@@ -27,22 +27,24 @@ public class Cluster implements Serializable {
 	public Cluster(Group sequences, String clustering, String link, String sim, String dataname, int start, int end, boolean save) throws IOException {
 		// Cluster creation (saving/loading) happens here
 		// Tree structure is defined as linked node instances
+		sequences.shuffle();
+		
 		this.start = start; this.end = end;
 		original = sequences;
 		name = dataname + "/" + clustering + link + sim;
-		System.out.println(
-				"Clustering from " + start+" to " +end);
+//		System.out.println(				"Clustering from " + start+" to " +end);
 		System.out.println(name);
 		//  MAKING FILES
-				tree = new Node(sequences);
-				clusterize(tree,clustering, link, sim);
+		tree = new Node(sequences);
+		clusterize(tree,clustering, link, sim,sequences.getDepth());
+		
+		flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
+//			System.out.println("Cluster size: "+flat.getDepth()+", Sequence Length: "+flat.getLength());
+//			System.out.println(					"----Clusterized----");
 			
-			flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
-			System.out.println("Cluster size: "+flat.getDepth()+", Sequence Length: "+flat.getLength());
-			System.out.println(
-					"----Clusterized----");
-			
-			
+		
+		treeorder = new Node(flat);
+		clusterize(treeorder,clustering, link, sim,sequences.getDepth());
 	}
 
 	public Cluster(Group sequences,Cluster other) {
@@ -62,7 +64,7 @@ public class Cluster implements Serializable {
 	
 	
 	
-	public void clusterize(Node tree, String clustering, String link, String similarity) {
+	public void clusterize(Node tree, String clustering, String link, String similarity, int depth) {
 		// cluster whole child nodes into tree by given parameters
 		long last_time = System.nanoTime();
 		if(clustering == "agglomerative")
@@ -70,8 +72,7 @@ public class Cluster implements Serializable {
 			int a =0; int b =0; // indices to most similar clusters
 			double min_diff = 100000000;
 			double hold = min_diff;
-			for (int o = 0; o<=100000000;o++) {
-				if(tree.branches.size()<2)return;
+			for (int o = 0; o<=depth;o++) {
 				for (int i = 0; i<tree.branches.size();i++) {
 					for(int j = i+1; j<tree.branches.size();j++) {
 						hold = compare(tree.getBranch(i),tree.getBranch(j),link, similarity);
@@ -79,15 +80,12 @@ public class Cluster implements Serializable {
 //						long time = System.nanoTime();System.out.println(((time - last_time) / 1000));last_time = time;
 					}
 				}
-				// -> debug
-//				System.out.println(o+" "+branches.size()+" "+min_diff);	System.out.println(a+" "+b);if(branches.size()==200) return;
-
-//				if(o%(int)(length/(10*60))==0)System.out.print(",");
+				if((o%(int)(300/(10)))==0)System.out.print(",");
 				merge(tree,a,b,min_diff);a=0;b =0; min_diff = 1000000;
 			}
-			System.out.println("\n");//br
 		
 		}
+		System.out.println("Clustering Time: "+(double)(System.nanoTime()-last_time)/1000000000);
 	}
 	
 	
@@ -144,10 +142,13 @@ public class Cluster implements Serializable {
 	}
 	
 	public double compare(Sequence one,Sequence other, String measure) {
-		if(measure =="euclidean") return one.compareEuclid(other,0,end);
+		if(measure =="euclidean") return one.compareEuclid(other,start,end);
 		if(measure =="maximum") return one.compareMaximum(other,start,end);
-		if(measure =="weight") return one.compareWeight(other,start,end);
+		if(measure =="absolute") return one.compareAbsolute(other,start,end);
 		if(measure =="manhattan") return one.compareManhattan(other,start,end);
+		if(measure =="minkowski") return one.compareMinkowski(other,start,end);
+		if(measure =="cosine") return one.compareCosine(other,start,end);
+		if(measure =="rms") return one.compareRMS(other,start,end);
 		else
 			
 			return -10;

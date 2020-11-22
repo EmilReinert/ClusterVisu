@@ -72,7 +72,7 @@ public class TreePanel extends JPanel{
 		f.setTitle(sd.name);
 		System.out.println("Painting Cluster "+sd.name);
 		double height_ratio = (0.6*h)/sd.treeorder.branches.get(0).similarity;
-		double width_ratio = (0.6*w)/sd.treeorder.data.getLength();
+		double width_ratio = (0.6*w)/sd.original.sequences.size();
 		ArrayList<Node> plane = sd.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();

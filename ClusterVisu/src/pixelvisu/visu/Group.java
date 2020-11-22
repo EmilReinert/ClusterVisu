@@ -16,11 +16,11 @@ public class Group implements Serializable{
 	// Group contains collection of sequences and
 
 	public ArrayList<Integer> sections; // holder for same threshold section calculation
-	ArrayList<Integer> densities;
-	int group_count=0;
-	int length = 0;
-	ArrayList<Sequence> sequences ; // already ordered list of sequences
-	ArrayList<Integer> weights;
+	public ArrayList<Integer> densities;
+	public int group_count=0;
+	public int length = 0;
+	public ArrayList<Sequence> sequences ; // list of sequences
+	public ArrayList<Integer> weights;
 	
 	public Group(int group) {
 		group_count = group;
@@ -54,6 +54,10 @@ public class Group implements Serializable{
 		makeWeights();
 		sections = new ArrayList<Integer>();
 //		this.mapping =other.mapping;
+	}
+	
+	public void shuffle() {
+		Collections.shuffle(sequences);
 	}
 	
 	public void makeDensities(ArrayList<Integer> halfden) {

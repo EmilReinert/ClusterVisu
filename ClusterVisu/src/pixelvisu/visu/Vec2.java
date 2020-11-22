@@ -13,7 +13,7 @@ public class Vec2 {
 		this.x = other.x;
 		this.y = other.y;
 	}
-
+	
 	public Vec2 lineVec(Vec2 end) {
 		return new Vec2(end.x-x,end.y-y);
 	}
