@@ -16,7 +16,7 @@ public class Circuit {
 
 		linkage=new String[]{"single","complete","average"};
 				
-		similarity=new String[]{"euclidean","maximum","weight","trivial","manhattan"};
+		similarity=new String[]{"euclidean","rms","minkowski","maximum","absolute","cosine"};
 		
 	}
 	

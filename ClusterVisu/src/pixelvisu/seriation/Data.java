@@ -84,9 +84,10 @@ public class Data implements Serializable{
 	public Data(String path) throws IOException {
 		sequences = new Group(group_count);
 
-//		readData(path);
+		readData(path);
 //		testCat();
-		testDataSquare();
+//		testDataLinear();
+//		testDataSquare();
 //		testDataRandom();
 		
 		for(Sequence s: sequences.sequences)
@@ -96,48 +97,48 @@ public class Data implements Serializable{
 		clusters = new ArrayList<Cluster>();
 
 		
-		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean","test",0,100000000,true);
-		single_rms = new Cluster(sequences,"agglomerative","single","rms","test",0,100000000,true);
-		single_minkowski = new Cluster(sequences,"agglomerative","single","minkowski","test",0,100000000,true);
-		single_maximum = new Cluster(sequences,"agglomerative","single","maximum","test",0,100000000,true);
-		single_absolute = new Cluster(sequences,"agglomerative","single","absolute","test",0,100000000,true);
-		single_cosine = new Cluster(sequences,"agglomerative","single","cosine","test",0,100000000,true);
-		
+//		single_euclid = new Cluster(sequences,"agglomerative","single","euclidean","test",0,100000000,true);
+//		single_rms = new Cluster(sequences,"agglomerative","single","rms","test",0,100000000,true);
+//		single_minkowski = new Cluster(sequences,"agglomerative","single","minkowski","test",0,100000000,true);
+//		single_maximum = new Cluster(sequences,"agglomerative","single","maximum","test",0,100000000,true);
+//		single_absolute = new Cluster(sequences,"agglomerative","single","absolute","test",0,100000000,true);
+//		single_cosine = new Cluster(sequences,"agglomerative","single","cosine","test",0,100000000,true);
+//		
 		complete_euclid = new Cluster(sequences,"agglomerative","complete","euclidean","test",0,100000000,true);
-		complete_rms = new Cluster(sequences,"agglomerative","complete","rms","test",0,100000000,true);
-		complete_minkowski = new Cluster(sequences,"agglomerative","complete","minkowski","test",0,100000000,true);
-		complete_maximum = new Cluster(sequences,"agglomerative","complete","maximum","test",0,100000000,true);
-		complete_absolute = new Cluster(sequences,"agglomerative","complete","absolute","test",0,100000000,true);
-		complete_cosine = new Cluster(sequences,"agglomerative","complete","cosine","test",0,100000000,true);
+//		complete_rms = new Cluster(sequences,"agglomerative","complete","rms","test",0,100000000,true);
+//		complete_minkowski = new Cluster(sequences,"agglomerative","complete","minkowski","test",0,100000000,true);
+//		complete_maximum = new Cluster(sequences,"agglomerative","complete","maximum","test",0,100000000,true);
+//		complete_absolute = new Cluster(sequences,"agglomerative","complete","absolute","test",0,100000000,true);
+//		complete_cosine = new Cluster(sequences,"agglomerative","complete","cosine","test",0,100000000,true);
 		
-		average_euclid = new Cluster(sequences,"agglomerative","average","euclidean","test",0,100000000,true);
-		average_rms = new Cluster(sequences,"agglomerative","average","rms","test",0,100000000,true);
-		average_minkowski = new Cluster(sequences,"agglomerative","average","minkowski","test",0,100000000,true);
-		average_maximum = new Cluster(sequences,"agglomerative","average","maximum","test",0,100000000,true);
-		average_absolute = new Cluster(sequences,"agglomerative","average","absolute","test",0,100000000,true);
-		average_cosine = new Cluster(sequences,"agglomerative","average","cosine","test",0,100000000,true);
+//		average_euclid = new Cluster(sequences,"agglomerative","average","euclidean","test",0,100000000,true);
+//		average_rms = new Cluster(sequences,"agglomerative","average","rms","test",0,100000000,true);
+//		average_minkowski = new Cluster(sequences,"agglomerative","average","minkowski","test",0,100000000,true);
+//		average_maximum = new Cluster(sequences,"agglomerative","average","maximum","test",0,100000000,true);
+//		average_absolute = new Cluster(sequences,"agglomerative","average","absolute","test",0,100000000,true);
+//		average_cosine = new Cluster(sequences,"agglomerative","average","cosine","test",0,100000000,true);
 		
 
-		clusters.add(single_euclid);
-		clusters.add(single_maximum);
-		clusters.add(single_absolute);
-		clusters.add(single_minkowski);
-		clusters.add(single_cosine);
-		clusters.add(single_rms);
-
+//		clusters.add(single_euclid);
+//		clusters.add(single_maximum);
+//		clusters.add(single_absolute);
+//		clusters.add(single_minkowski);
+//		clusters.add(single_cosine);
+//		clusters.add(single_rms);
+//
 		clusters.add(complete_euclid);
-		clusters.add(complete_maximum);
-		clusters.add(complete_absolute);
-		clusters.add(complete_minkowski);
-		clusters.add(complete_cosine);
-		clusters.add(complete_rms);
-
-		clusters.add(average_euclid);
-		clusters.add(average_maximum);
-		clusters.add(average_absolute);
-		clusters.add(average_minkowski);
-		clusters.add(average_cosine);
-		clusters.add(average_rms);
+//		clusters.add(complete_maximum);
+//		clusters.add(complete_absolute);
+//		clusters.add(complete_minkowski);
+//		clusters.add(complete_cosine);
+//		clusters.add(complete_rms);
+//
+//		clusters.add(average_euclid);
+//		clusters.add(average_maximum);
+//		clusters.add(average_absolute);
+//		clusters.add(average_minkowski);
+//		clusters.add(average_cosine);
+//		clusters.add(average_rms);
 		
 		
 
@@ -173,6 +174,15 @@ public class Data implements Serializable{
 			sequences.add(new Sequence(175,i*i));
 		}
 	}
+	
+
+	private void testDataLinear() {
+
+		for (int i = 0; i<270;i++) {
+			sequences.add(new Sequence(175,i));
+		}
+	}
+	
 	private void testDataRandom() {
 
 		for (int i = 0; i<270;i++) {
@@ -212,7 +222,19 @@ public class Data implements Serializable{
 		this.group_count = group_count;
 		
 		for(Cluster c:clusters)
-			c.makeSectionsSim(group_count);
+			c.makeSectionsSimMedian(group_count);
+	}
+	
+	public void sectionMedianSim (int group_count) {
+		//takes group count as percentage (0-100) value of max distance 
+		//=> 100-group count is similarity
+		if(group_count<0)group_count=0;
+		if(group_count>100)group_count = 100;
+		if(group_count == this.group_count) return;
+		this.group_count = group_count;
+		
+		for(Cluster c:clusters)
+			c.makeSectionsSimMedian(group_count);
 	}
 	
 	public void order(String mode) {

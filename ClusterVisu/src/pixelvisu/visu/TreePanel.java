@@ -62,11 +62,17 @@ public class TreePanel extends JPanel{
 	
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
-		int depth = sd.c.tree.getDepth();
 		f.setTitle(sd.c.name);
 		System.out.println("Painting Cluster "+sd.c.name);
 		double height_ratio = (0.6*h)/sd.c.treeorder.branches.get(0).similarity;
-		double width_ratio = (0.6*w)/sd.c.treeorder.data.getLength();
+		double width_ratio = (0.6*w)/sd.c.original.sequences.size();
+		
+		
+
+		ArrayList<Double> sims = sd.c.tree.getSimilarities();
+		int med_position = (int)(0.01*(float) (group_count)* (float)sims.size());
+		double sim =group_count;
+		
 		ArrayList<Node> plane = sd.c.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
@@ -85,7 +91,7 @@ public class TreePanel extends JPanel{
 //						(int) (cc.similarity*height_ratio),
 //						(int) (c.x_pos*width_ratio),
 //						(int) (c.similarity*height_ratio));
-				if(cc.similarity<this.sd.c.tree.getMaxSim() * 0.01 * group_count)
+				if(cc.similarity<sim)
 					g.setColor(Color.red);
 				
 				g.drawLine((int)(left_off+top_off+cc.x_pos*width_ratio),
@@ -127,11 +133,9 @@ public class TreePanel extends JPanel{
 //			
 			
 			}
-			depth--;
 			plane =hold;
 			if(lastleaf) {
 				//draw horizontal line
-				double sim =sd.c.tree.getMaxSim() * 0.01 * group_count;
 		        g.setColor(Color.RED);
 		        g.drawLine(0, (int)(sim*height_ratio), w, (int)(sim*height_ratio));
 				

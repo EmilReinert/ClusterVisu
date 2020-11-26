@@ -8,7 +8,11 @@ import pixelvisu.pipeline.Cluster;
 
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
-	int lockedPointer;
+	
+	int lockedPointer=0;
+	int mainPointer=0;
+	
+	
 	int group_count= 44;
 	String section = "similarity";
 	boolean contrast;
@@ -22,33 +26,18 @@ public class Data {
 	String comparedata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
 	String comparedata_two = "Data/4w_14_9_1h/node_memory_Cached_bytes.txt";
 	
+	String[] paths = new String[] {maindata_path,comparedata_path,comparedata_two};
 	
 	// Compare Methods
 	
 
-	SingleData single_euclid;
-	SingleData single_maximum;
-	SingleData single_weight;
-	SingleData single_trivial;
-	SingleData single_manhattan;
-
-	SingleData complete_euclid;
-	SingleData complete_maximum;
-	SingleData complete_weight;
-	SingleData complete_trivial;
-	SingleData complete_manhattan;
-	
-	SingleData average_euclid;
-	SingleData average_maximum;
-	SingleData average_weight;
-	SingleData average_trivial;
-	SingleData average_manhattan;
 	
 	public Data(int width, int height, Scale s, ColorMapping m)  {
 		circ = new Circuit();
 //		p = new TreePanel();
 		cm = m;
-		start = 0; end = 100000000;
+		sc =s;
+		setBounds(0, 10000);
 		try {
 			SingleData data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,Color.green,cm,  start, end);
 			SingleData data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
@@ -63,7 +52,6 @@ public class Data {
 			e.printStackTrace();
 		}
 		updateSection();
-		sc =s;
 		
 	}
 
@@ -92,8 +80,17 @@ public class Data {
 	public void down() {
 		circ.down();
 	}
+	
+	public void setDataPath(String path) {
+		mainPointer = 0;
+		for(int i =0;i<data.size();i++) {
+			if(data.get(i).path==path)
+				mainPointer = i;
+			
+		}
+	}
 	public SingleData getMain() {
-		return data.get(lockedPointer);
+		return data.get(mainPointer);
 	}
 	
 	

@@ -40,7 +40,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 	TreePanel p;
 	
 	Color bg_color;
-	int group_count =44; // percent of maximum similarity that is considered a group
+	int group_count =2; // percent of maximum similarity that is considered a group
 	int new_group_count=group_count;
 	Vec2 mouse_click = new Vec2(0,0);
 	int click_cluster=0;
@@ -64,7 +64,7 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		width=w; height = h-off;
 		group_count=new_group_count;
 		off = w*off;
-		data.section(10000000);
+		data.sectionMedianSim(group_count);
 		
 		drawBackground(pixels);
 		
@@ -73,29 +73,29 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		// DATA
 
 		// for single
-		drawData(pixels, data.single_euclid, off, width*height/3+off);
-		drawData(pixels, data.single_rms, off+width/6, width*height/3+off);
-		drawData(pixels, data.single_minkowski, off+2*width/6, width*height/3+off);
-		drawData(pixels, data.single_maximum, off+3*width/6, width*height/3+off);
-		drawData(pixels, data.single_absolute, off+4*width/6, width*height/3+off);
-		drawData(pixels, data.single_cosine, off+5*width/6, width*height/3+off);
+//		drawData(pixels, data.single_euclid, off, width*height/3+off);
+//		drawData(pixels, data.single_rms, off+width/6, width*height/3+off);
+//		drawData(pixels, data.single_minkowski, off+2*width/6, width*height/3+off);
+//		drawData(pixels, data.single_maximum, off+3*width/6, width*height/3+off);
+//		drawData(pixels, data.single_absolute, off+4*width/6, width*height/3+off);
+//		drawData(pixels, data.single_cosine, off+5*width/6, width*height/3+off);
 
 		
 		//for complete
 		drawData(pixels, data.complete_euclid, width*height/3+off, off+2*width*height/3);
-		drawData(pixels, data.complete_rms, width*height/3+off+width/6, off+2*width*height/3);
-		drawData(pixels, data.complete_minkowski, width*height/3+off+2*width/6, off+2*width*height/3);
-		drawData(pixels, data.complete_maximum, width*height/3+off+3*width/6, off+2*width*height/3);
-		drawData(pixels, data.complete_absolute, width*height/3+off+4*width/6, off+2*width*height/3);
-		drawData(pixels, data.complete_cosine, width*height/3+off+5*width/6, off+2*width*height/3);
+//		drawData(pixels, data.complete_rms, width*height/3+off+width/6, off+2*width*height/3);
+//		drawData(pixels, data.complete_minkowski, width*height/3+off+2*width/6, off+2*width*height/3);
+//		drawData(pixels, data.complete_maximum, width*height/3+off+3*width/6, off+2*width*height/3);
+//		drawData(pixels, data.complete_absolute, width*height/3+off+4*width/6, off+2*width*height/3);
+//		drawData(pixels, data.complete_cosine, width*height/3+off+5*width/6, off+2*width*height/3);
 		
 		//for average
-		drawData(pixels, data.average_euclid, 2*width*height/3+off, pixels.length);
-		drawData(pixels, data.average_rms, 2*width*height/3+off+width/6, pixels.length);
-		drawData(pixels, data.average_minkowski, 2*width*height/3+off+2*width/6, pixels.length);
-		drawData(pixels, data.average_maximum, 2*width*height/3+off+3*width/6, pixels.length);
-		drawData(pixels, data.average_absolute, 2*width*height/3+off+4*width/6, pixels.length);
-		drawData(pixels, data.average_cosine, 2*width*height/3+off+5*width/6, pixels.length);
+//		drawData(pixels, data.average_euclid, 2*width*height/3+off, pixels.length);
+//		drawData(pixels, data.average_rms, 2*width*height/3+off+width/6, pixels.length);
+//		drawData(pixels, data.average_minkowski, 2*width*height/3+off+2*width/6, pixels.length);
+//		drawData(pixels, data.average_maximum, 2*width*height/3+off+3*width/6, pixels.length);
+//		drawData(pixels, data.average_absolute, 2*width*height/3+off+4*width/6, pixels.length);
+//		drawData(pixels, data.average_cosine, 2*width*height/3+off+5*width/6, pixels.length);
 		
 		
 		//SECTIONS
@@ -103,28 +103,32 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		
 		//COMPRESSED
 		
-//		// for single
-//		drawBarsDen(pixels, data.single_euclid.flat_c, off, width*height/3+off);
-//		drawBarsDen(pixels, data.single_maximum.flat_c, off+width/5, width*height/3+off);
-//		drawBarsDen(pixels, data.single_weight.flat_c, off+2*width/5, width*height/3+off);
-//		drawBarsDen(pixels, data.single_trivial.flat_c, off+3*width/5, width*height/3+off);
-//		drawBarsDen(pixels, data.single_manhattan.flat_c, off+4*width/5, width*height/3+off);
-//
-//		
-//		//for complete
-//		drawBarsDen(pixels, data.complete_euclid.flat_c, width*height/3+off, off+2*width*height/3);
-//		drawBarsDen(pixels, data.complete_maximum.flat_c, width*height/3+off+width/5, off+2*width*height/3);
-//		drawBarsDen(pixels, data.complete_weight.flat_c, width*height/3+off+2*width/5, off+2*width*height/3);
-//		drawBarsDen(pixels, data.complete_trivial.flat_c, width*height/3+off+3*width/5, off+2*width*height/3);
-//		drawBarsDen(pixels, data.complete_manhattan.flat_c, width*height/3+off+4*width/5, off+2*width*height/3);
-//		
-//		//for average
-//		drawBarsDen(pixels, data.average_euclid.flat_c, 2*width*height/3+off, pixels.length);
-//		drawBarsDen(pixels, data.average_maximum.flat_c, 2*width*height/3+off+width/5, pixels.length);
-//		drawBarsDen(pixels, data.average_weight.flat_c, 2*width*height/3+off+2*width/5, pixels.length);
-//		drawBarsDen(pixels, data.average_trivial.flat_c, 2*width*height/3+off+3*width/5, pixels.length);
-//		drawBarsDen(pixels, data.average_manhattan.flat_c, 2*width*height/3+off+4*width/5, pixels.length);
-//		
+		// for single
+//		drawSections(pixels, data.single_euclid.flat, off, width*height/3+off);
+//		drawSections(pixels, data.single_rms.flat, off+width/6, width*height/3+off);
+//		drawSections(pixels, data.single_minkowski.flat, off+2*width/6, width*height/3+off);
+//		drawSections(pixels, data.single_maximum.flat, off+3*width/6, width*height/3+off);
+//		drawSections(pixels, data.single_absolute.flat, off+4*width/6, width*height/3+off);
+//		drawSections(pixels, data.single_cosine.flat, off+5*width/6, width*height/3+off);
+
+		
+		//for complete
+		drawSections(pixels, data.complete_euclid.flat, width*height/3+off, off+2*width*height/3);
+//		drawSections(pixels, data.complete_rms.flat, width*height/3+off+width/6, off+2*width*height/3);
+//		drawSections(pixels, data.complete_minkowski.flat, width*height/3+off+2*width/6, off+2*width*height/3);
+//		drawSections(pixels, data.complete_maximum.flat, width*height/3+off+3*width/6, off+2*width*height/3);
+//		drawSections(pixels, data.complete_absolute.flat, width*height/3+off+4*width/6, off+2*width*height/3);
+//		drawSections(pixels, data.complete_cosine.flat, width*height/3+off+5*width/6, off+2*width*height/3);
+		
+		//for average
+//		drawSections(pixels, data.average_euclid.flat, 2*width*height/3+off, pixels.length);
+//		drawSections(pixels, data.average_rms.flat, 2*width*height/3+off+width/6, pixels.length);
+//		drawSections(pixels, data.average_minkowski.flat, 2*width*height/3+off+2*width/6, pixels.length);
+//		drawSections(pixels, data.average_maximum.flat, 2*width*height/3+off+3*width/6, pixels.length);
+//		drawSections(pixels, data.average_absolute.flat, 2*width*height/3+off+4*width/6, pixels.length);
+//		drawSections(pixels, data.average_cosine.flat, 2*width*height/3+off+5*width/6, pixels.length);
+		
+		
 		
 		return ;
 	}	
@@ -166,8 +170,8 @@ public class VisuSeriation implements MouseListener,MouseMotionListener,MouseWhe
 		for(int i = 0; i<sec.size();i++) {
 			sec_idx =sec.get(i);
 			// drawing horizontal section
-			//drawLine(pixels,  (int) (width*sec_idx+top_off),(int) (width*sec_idx+top_off)+getLength()-1, graph_color,0.8f);
-			drawPoint(pixels,  (int) (width*sec_idx+top_off)+getLength()-width, graph_color);
+			drawLine(pixels,  (int) (width*sec_idx+top_off),(int) (width*sec_idx+top_off)+getLength()-1, graph_color,0.8f);
+			//drawPoint(pixels,  (int) (width*sec_idx+top_off)+getLength()-width, graph_color);
 
 		}
 		

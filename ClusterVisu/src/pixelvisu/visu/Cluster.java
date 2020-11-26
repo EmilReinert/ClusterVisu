@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Cluster implements Serializable {
 
@@ -184,7 +185,7 @@ public class Cluster implements Serializable {
 		// iterates over cluster tree and adds all groups with the min cluster length
 		group_count = maxsim;
 
-		double maxsim_local = tree.getMaxSim() * 0.01 * maxsim;
+		double maxsim_local = tree.getMaxDistance() * 0.01 * maxsim;
 		System.out.println("Sectioning with similarity: " + maxsim_local);
 		ArrayList<Node> groups = new ArrayList<Node>();
 		ArrayList<Node> singles = new ArrayList<Node>();
@@ -239,6 +240,81 @@ public class Cluster implements Serializable {
 		System.err.println("something went wrong doing sectioning");
 
 	}
+	
+	public void makeSectionsSimMedian(int median) {
+		// intakes similarity percentage value and sectiones by median similarity
+		group_count = median;
+
+		// determine median similarity
+		ArrayList<Double> sims = tree.getSimilarities();
+		int med_position = sims.size()-group_count-1;
+		// sort similarites
+		Collections.sort(sims);
+		if(med_position>sims.size()||med_position<0)
+		{
+			System.out.println("something went wrong with calculating median similarity");
+			System.out.println(sims.size()+" similarities found, investigating at: "+med_position);
+			return;
+		}
+		double sim_thresh = sims.get(med_position);
+				
+		double maxsim_local = sim_thresh;
+		System.out.println("Sectioning: "+name);
+		System.out.println("Sectioning with at: "+med_position+", with similarity: " + maxsim_local);
+		ArrayList<Node> groups = new ArrayList<Node>();
+		ArrayList<Node> singles = new ArrayList<Node>();
+		ArrayList<Node> plane = tree.branches;
+		for (int i = 0; i < 100000; i++) {
+			ArrayList<Node> hold = new ArrayList<Node>();
+			boolean lastleaf = true;
+			for (Node cc : plane) {
+				for (Node c : cc.branches) {
+					if (!c.isLeaf)
+						lastleaf = false;
+				}
+			}
+
+			for (Node cc : plane) {
+				for (Node c : cc.branches) {
+					if (!c.isLeaf) {
+						if (c.similarity <= maxsim_local)
+							groups.add(c);
+						else
+							hold.add(c);
+					}
+					else singles.add(c);
+				}
+			}
+			plane = hold;
+			if (lastleaf) {
+				
+				flat.sequences = new ArrayList<Sequence>();
+				int pos = 0;
+				ArrayList<Integer> secs = new ArrayList<Integer>();
+				ArrayList<Integer> dens = new ArrayList<Integer>();
+				for (Node c : groups) {
+					for (Sequence s : c.getFlatBranchesDepth().sequences) {
+						flat.add(s);
+					}
+					dens.add(c.getFlatBranchesDepth().sequences.size());
+					pos += c.getFlatBranchesDepth().sequences.size();
+					secs.add(pos);
+
+				}
+//				for(Node n: singles) {pos++;flat.add(n.data);secs.add(pos);}// if we dont look at singles like own groups
+				for(Node n: singles) {flat.add(n.data);}secs.add(pos+singles.size());
+				flat.sections = secs;
+				flat.densities = dens;
+				flat_c = new Bundle(flat);
+				return;
+
+			}
+		}
+
+		System.err.println("something went wrong doing sectioning");
+
+	}
+
 	
 	public void makeSectionsSize(int maxsim) {
 		// iterates over cluster tree and adds all groups with the min cluster length

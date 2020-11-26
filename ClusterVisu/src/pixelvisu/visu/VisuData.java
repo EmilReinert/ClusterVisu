@@ -36,7 +36,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	private int time =0;
 	
 	Data data;
-	int datapointer = 0;
 	Scale sc;
 	
 	Color bg_color;
@@ -61,17 +60,14 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	int posXY = 0;
 	
 	public VisuData(int w, int h,Data data, Color bg_c, Scale s,int pointer)  {
-		datapointer = 0;
 		width = w;
 		height = h;
 		bg_color= bg_c;
 
 		
 		this.data = data;
-		
 		length = data.getLength();
 		sc =s;
-		sc.setBounds(data.start, data.end);
 		data.updateSection();
 	}
 
@@ -100,8 +96,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		
 		
 		
-		if(data.data.get(datapointer).c!=null&&data.data.get(datapointer).c.flat_c!=null) {
-			drawBarsDen(pixels, data.data.get(datapointer), off, off+height/3*width);
+		if(data.getMain().c!=null&&data.getMain().c.flat_c!=null) {
+			drawBarsDen(pixels, data.getMain(), off, off+height/3*width);
 		}
 		
 		
@@ -142,7 +138,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 
 		sc.b = new ArrayList<String>();
 		
-		if(cl.c.flat_c==null)return;
+		if(cl==null||cl.c==null||cl.c.flat_c==null)return;
 		for(int i=0; i< cl.c.flat_c.getDepth();i++) {
 			if(denden)den =  (dens.get(i)+30)/5;// 5; //for static sizes
 			else den = 5;
@@ -524,7 +520,6 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			select = true;
 	
 		if(select) {
-			sc.setBounds((int)mouse_pressed.y, e.getX());
 			data.setBounds((int)mouse_pressed.y, e.getX());
 		}
 		else {

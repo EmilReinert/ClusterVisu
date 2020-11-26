@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -46,7 +47,7 @@ public class TreePanel extends JPanel{
             BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2D = image.createGraphics();
             f.paint(graphics2D);
-//            ImageIO.write(image,"png", new File("img/"+c.name+".png"));
+//            ImageIO.write(image,"png", new File("img/"+sd.name+".png"));
         }
         catch(Exception exception)
         {
@@ -68,11 +69,18 @@ public class TreePanel extends JPanel{
 	
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
-		int depth = sd.tree.getDepth();
 		f.setTitle(sd.name);
 		System.out.println("Painting Cluster "+sd.name);
 		double height_ratio = (0.6*h)/sd.treeorder.branches.get(0).similarity;
 		double width_ratio = (0.6*w)/sd.original.sequences.size();
+		
+		
+
+		ArrayList<Double> sims = sd.tree.getSimilarities();
+		Collections.sort(sims);
+		int med_position = sims.size()-group_count-1;
+		double sim =sims.get(med_position);
+		
 		ArrayList<Node> plane = sd.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
@@ -91,7 +99,7 @@ public class TreePanel extends JPanel{
 //						(int) (cc.similarity*height_ratio),
 //						(int) (c.x_pos*width_ratio),
 //						(int) (c.similarity*height_ratio));
-				if(cc.similarity<this.sd.tree.getMaxSim() * 0.01 * group_count)
+				if(cc.similarity<sim)
 					g.setColor(Color.red);
 				
 				g.drawLine((int)(left_off+top_off+cc.x_pos*width_ratio),
@@ -133,11 +141,9 @@ public class TreePanel extends JPanel{
 //			
 			
 			}
-			depth--;
 			plane =hold;
 			if(lastleaf) {
 				//draw horizontal line
-				double sim =sd.tree.getMaxSim() * 0.01 * group_count;
 		        g.setColor(Color.RED);
 		        g.drawLine(0, (int)(sim*height_ratio), w, (int)(sim*height_ratio));
 				

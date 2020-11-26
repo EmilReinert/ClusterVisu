@@ -28,12 +28,13 @@ public class Scale  {
 	public Scale(int with, int heit, Color bg) {
 		resize(with, heit);
 		start_idx=s=0;
-		end_idx = e=12000;
+		end_idx = e=2000;
 		this.bg = bg;
 //		zoom(1,new Vec2(0,0));
 	}
 	
 	public void resize(int with, int heit) {
+		end = with;
 		this.off = 30;width = with; height = heit-off;
 	}
 	
@@ -109,7 +110,7 @@ public class Scale  {
 	
 	public int getScaleIdx(int idx) {
 		// returns data at idx for scaled data
-		
+		if(idx<s) {return 0;}
 		float scale = end_idx-start_idx;
 		float pos = ((float)idx)/(width);
 //		System.out.println(pos);		System.out.println(idx+" to "+(int)(start_idx+pos*width));
@@ -121,7 +122,7 @@ public class Scale  {
 		float scale = end_idx-start_idx;
 		 scale =(((idx-start_idx)/scale)*width);
 		 
-		 if(scale<0)return -1;
+		 if(scale<0) { return -1;}
 		 else return (int) scale;
 	}
 	
@@ -134,7 +135,6 @@ public class Scale  {
 		// top selection ( rect and line)
 		g2d.setColor(new Color(0,0,0,0.2f));
 		g2d.fillRect(getUnscaledIdx(start), off-10,getUnscaledIdx(end)-getUnscaledIdx(start), 20);
-
 		g2d.setColor(new Color(1,0,0,1.0f));
 		g2d.drawLine(hover, off, hover, height*2);
 				
@@ -233,7 +233,9 @@ public class Scale  {
 
 	public void setBounds(int x, int y) {
 		// TODO Auto-generated method stub
+
 		start = getScaleIdx(x); end = getScaleIdx(y);
+
 	}
 
 	public void setSelect(int y) {

@@ -55,17 +55,16 @@ public class Controls extends JFrame implements MouseListener{
 	        }
 	    });
 	    add(bs); 
-	    JButton bs2=new JButton("size");  
+	    JButton bs2=new JButton("cluster");  
 	    bs2.setBounds(100,100,80,20);  
 	    bs2.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	           	data.section ="size";
-	           	data.updateSection();
+	        	data.updateClustering();
 	        }
 	    });
 	    add(bs2); 
-  
+
 	    JButton b2=new JButton("Color");  
 	    b2.setBounds(50,130,100,20);  
 	    b2.addActionListener(new ActionListener() {
@@ -75,6 +74,17 @@ public class Controls extends JFrame implements MouseListener{
 	        }
 	    });
 	    add(b2);  
+	    
+
+	    JComboBox j_data = new JComboBox<String>(data.paths);
+	    j_data.setBounds(50,180,100,20);  
+	    j_data.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	        	data.setDataPath((String)j_data.getSelectedItem());
+	        }
+	    });
+	    add(j_data);
 	    
 	    
 	    JButton bo=new JButton("density");  
@@ -100,7 +110,7 @@ public class Controls extends JFrame implements MouseListener{
 	    //SLIDER
 	    JSlider s = new JSlider(JSlider.HORIZONTAL, 0, 50, 10);
 	    data.group_count=s.getValue();
-	    s.setBounds(50, 50, 100,20);
+	    s.setBounds(50, 50, 200,20);
 	    s.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -117,7 +127,6 @@ public class Controls extends JFrame implements MouseListener{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	        	data.circ.c_idx=data.circ.getIndexOf((String)jsc.getSelectedItem());
-	        	data.updateClustering();
 	        }
 	    });
 	    add(jsc);
@@ -127,7 +136,6 @@ public class Controls extends JFrame implements MouseListener{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	        	data.circ.l_idx=data.circ.getIndexOf((String)jsl.getSelectedItem());
-	        	data.updateClustering();
 	        }
 	    });
 	    add(jsl);
@@ -137,7 +145,6 @@ public class Controls extends JFrame implements MouseListener{
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	        	data.circ.s_idx=data.circ.getIndexOf((String)jss.getSelectedItem());
-	        	data.updateClustering();
 	        }
 	    });
 	    add(jss);

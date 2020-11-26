@@ -13,18 +13,10 @@ public class Node implements Serializable{
 	public double similarity=-1; // similarity value of combined clusters
 	public float x_pos; // horizontal position for tree drawing
 	
-	public Node() {
-		x_pos =0;
-		similarity = 0;
-		branches = new ArrayList<Node>();
-		isLeaf = true;
-		data = new Sequence();
-	}
 	
 	public Node(Sequence s, int idx) {
 		// Making branch
 		x_pos = idx;
-		similarity = 0;
 		branches = new ArrayList<Node>();
 		isLeaf = true;
 		data = new Sequence(s);
@@ -123,7 +115,8 @@ public class Node implements Serializable{
 //			if(lastleaf)return ;
 //		}
 //	}
-	public double getMaxSim() {
+	public double getMaxDistance() {
+		// iterates over tree and retusn the max distance
 		double max = -1;
 		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		for(int i = 0; i<100000;i++) {
@@ -146,7 +139,8 @@ public class Node implements Serializable{
 		return -1;
 	}
 	
-	public int getDepth() {
+	public ArrayList<Double> getSimilarities() {
+		ArrayList<Double> sims = new ArrayList<Double>();
 		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		int depth = 0;
 		for(int i = 0; i<100000;i++) {
@@ -160,18 +154,20 @@ public class Node implements Serializable{
 			for(Node cc: plane) {for(Node c:cc.branches) {
 				
 				if(c.isLeaf) {}
-				else {hold.add(c);}
+				else {hold.add(c);
+				sims.add(c.similarity);}
 				size++;
 			}
 			}
 			plane =hold;
 			depth++;
-			if(lastleaf)return depth;
+			if(lastleaf)return sims;
 		}
-		return 0;
+		return sims;
 	}
 	
 	public int getSize() {
+		// returns amount of branches and leafs size of whole node tree
 		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
 		int leaf_sum = 0;
 		for(int i = 0; i<100000;i++) {
