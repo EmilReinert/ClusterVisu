@@ -209,7 +209,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		sc.b = new ArrayList<String>();
 		int step =0;
 		for (int n =0; n<length;n++) {
-			double pix= getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
+			double pix= 1;//getFisheyeY(mouse_hover, int2Vec(startpos+(n+step)*width));
 			for(int hei=0;hei<pix;hei++) {
 				sc.b.add(data.getOrNode(d, sec_idx,n));
 				

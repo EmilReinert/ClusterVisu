@@ -9,7 +9,6 @@ import pixelvisu.pipeline.Cluster;
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
 	
-	int lockedPointer=0;
 	int mainPointer=0;
 	
 	
@@ -39,7 +38,7 @@ public class Data {
 		sc =s;
 		setBounds(0, 10000);
 		try {
-			SingleData data_main = new SingleData(maindata_path, circ.getCircuit(), group_count,Color.green,cm,  start, end);
+			SingleData data_main = new SingleData(maindata_path, group_count,Color.green,cm);
 			SingleData data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
 			SingleData data_compare_two = new SingleData(comparedata_two, group_count, Color.orange, cm);
 			data.add(data_main);
@@ -51,21 +50,22 @@ public class Data {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		updateSection();
+		updateClustering();
 		
 	}
 
 	public void updateClustering() {
-		data.get(lockedPointer).updateClustering(circ.getCircuit(), group_count,start,end);
+		data.get(mainPointer).updateClustering(circ.getCircuit(), group_count,start,end);
 		updateSection();
 		
 	}
 	
 	public void updateSection() {
+		// updates locked section and then projection on the others
+		data.get(mainPointer).section(group_count,section);
 		for(int i = 0; i<data.size();i++)
-			if(i==lockedPointer) 
-				data.get(i).section(group_count,section);
-			else data.get(i).update(data.get(lockedPointer).c);
+			if(i==mainPointer) {}
+			else data.get(i).update(data.get(mainPointer).c);
 		
 		
 //		p.update(data_main.c, group_count);
@@ -131,7 +131,7 @@ public class Data {
 	public Color getColor(double value) {
 		// MAIN COLOR source
 		double scale =255;
-		value = (value/data.get(lockedPointer).max)*scale; // GLOBAL normalizing
+		value = (value/data.get(mainPointer).max)*scale; // GLOBAL normalizing
 		
 		Color hold = colorScale(value);
 		return hold;//
@@ -181,7 +181,7 @@ public class Data {
 	}
 	
 	public int getLength() {
-		return data.get(lockedPointer).getLength();
+		return data.get(mainPointer).getLength();
 	}
 	
 	public void contrast() {
