@@ -35,8 +35,11 @@ public class Cluster implements Serializable {
 		name = dataname + "/" + clustering + link + sim;
 //		System.out.println(				"Clustering from " + start+" to " +end);
 		System.out.println(name);
+		
 		//  MAKING FILES
 		tree = new Node(sequences);
+		System.out.println("Depth: "+sequences.getDepth()+", Sequence Length: "+sequences.getLength());
+		
 		clusterize(tree,clustering, link, sim,sequences.getDepth());
 		
 		flat = tree.getFlatBranchesDepth(); // untangles tree structure and returns the flattened tree
@@ -181,65 +184,7 @@ public class Cluster implements Serializable {
 		flat_c = new Bundle(flat);
 	}
 	
-	public void makeSectionsSim(int maxsim) {
-		// iterates over cluster tree and adds all groups with the min cluster length
-		group_count = maxsim;
-
-		double maxsim_local = tree.getMaxDistance() * 0.01 * maxsim;
-		System.out.println("Sectioning with similarity: " + maxsim_local);
-		ArrayList<Node> groups = new ArrayList<Node>();
-		ArrayList<Node> singles = new ArrayList<Node>();
-		ArrayList<Node> plane = tree.branches;
-		for (int i = 0; i < 100000; i++) {
-			ArrayList<Node> hold = new ArrayList<Node>();
-			boolean lastleaf = true;
-			for (Node cc : plane) {
-				for (Node c : cc.branches) {
-					if (!c.isLeaf)
-						lastleaf = false;
-				}
-			}
-
-			for (Node cc : plane) {
-				for (Node c : cc.branches) {
-					if (!c.isLeaf) {
-						if (c.similarity < maxsim_local)
-							groups.add(c);
-						else
-							hold.add(c);
-					}
-					else singles.add(c);
-				}
-			}
-			plane = hold;
-			if (lastleaf) {
-				
-				flat.sequences = new ArrayList<Sequence>();
-				int pos = 0;
-				ArrayList<Integer> secs = new ArrayList<Integer>();
-				ArrayList<Integer> dens = new ArrayList<Integer>();
-				for (Node c : groups) {
-					for (Sequence s : c.getFlatBranchesDepth().sequences) {
-						flat.add(s);
-					}
-					dens.add(c.getFlatBranchesDepth().sequences.size());
-					pos += c.getFlatBranchesDepth().sequences.size();
-					secs.add(pos);
-
-				}
-//				for(Node n: singles) {pos++;flat.add(n.data);secs.add(pos);}// if we dont look at singles like own groups
-				for(Node n: singles) {flat.add(n.data);}secs.add(pos+singles.size());
-				flat.sections = secs;
-				flat.densities = dens;
-				flat_c = new Bundle(flat);
-				return;
-
-			}
-		}
-
-		System.err.println("something went wrong doing sectioning");
-
-	}
+	
 	
 	public void makeSectionsSimMedian(int median) {
 		// intakes similarity percentage value and sectiones by median similarity
@@ -315,67 +260,6 @@ public class Cluster implements Serializable {
 
 	}
 
-	
-	public void makeSectionsSize(int maxsim) {
-		// iterates over cluster tree and adds all groups with the min cluster length
-		group_count = maxsim;
-
-		int groupcount = (int) ( maxsim);
-		System.out.println("Sectioning with group count: " + groupcount);
-		ArrayList<Node> groups = new ArrayList<Node>();
-		ArrayList<Node> singles = new ArrayList<Node>();
-		ArrayList<Node> plane = tree.branches;
-		for (int i = 0; i < 100000; i++) {
-			ArrayList<Node> hold = new ArrayList<Node>();
-			boolean lastleaf = true;
-			for (Node cc : plane) {
-				for (Node c : cc.branches) {
-					if (!c.isLeaf)
-						lastleaf = false;
-				}
-			}
-
-			for (Node cc : plane) {
-				for (Node c : cc.branches) {
-					if (!c.isLeaf) {
-						if (c.getSize() < groupcount)
-							groups.add(c);
-						else
-							hold.add(c);
-					}
-					else singles.add(c);
-				}
-			}
-			plane = hold;
-			if (lastleaf) {
-				
-				flat.sequences = new ArrayList<Sequence>();
-				int pos = 0;
-				ArrayList<Integer> secs = new ArrayList<Integer>();
-				ArrayList<Integer> dens = new ArrayList<Integer>();
-				for (Node c : groups) {
-					for (Sequence s : c.getFlatBranchesDepth().sequences) {
-						flat.add(s);
-					}
-					dens.add(c.getFlatBranchesDepth().sequences.size());
-					pos += c.getFlatBranchesDepth().sequences.size();
-					secs.add(pos);
-
-				}
-//				for(Node n: singles) {pos++;flat.add(n.data);secs.add(pos);}// if we dont look at singles like own groups
-				for(Node n: singles) {flat.add(n.data);}secs.add(pos+singles.size());
-				flat.sections = secs;
-				flat.densities = dens;
-				flat_c = new Bundle(flat);
-				return;
-
-			}
-		}
-
-		System.err.println("something went wrong doing sectioning");
-
-	}
-	
 
 	public static void serializeDataOut(String savepath,String name, Node ish) throws IOException {
 		FileOutputStream fos = new FileOutputStream(savepath+"/"+name);

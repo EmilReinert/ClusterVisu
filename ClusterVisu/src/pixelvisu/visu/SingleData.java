@@ -165,10 +165,7 @@ public class SingleData {
 		this.group_count = group_count;
 		System.out.println("Sectioning by "+mode+" Group Count = "+group_count+";");
 //		System.out.println(c.name);
-		if(mode == "similarity")
-			c.makeSectionsSim(group_count);
-		if(mode =="size")
-			c.makeSectionsSize(group_count);
+		c.makeSectionsSimMedian(group_count);
 		
 	}
 	

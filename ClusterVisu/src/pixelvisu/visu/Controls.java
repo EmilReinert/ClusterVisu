@@ -45,16 +45,17 @@ public class Controls extends JFrame implements MouseListener{
 
 	public void update() {
 		// BUTTON
-		JButton bs=new JButton("simi");  
-	    bs.setBounds(20,100,80,20);  
-	    bs.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	           data.section ="similarity";
-	           data.updateSection();
-	        }
-	    });
-	    add(bs); 
+//		JButton bs=new JButton("simi");  
+//	    bs.setBounds(20,100,80,20);  
+//	    bs.addActionListener(new ActionListener() {
+//	        @Override
+//	        public void actionPerformed(ActionEvent e) {
+//	           data.section ="similarity";
+//	           data.updateSection();
+//	        }
+//	    });
+//	    add(bs); 
+	    
 	    JButton bs2=new JButton("cluster");  
 	    bs2.setBounds(100,100,80,20);  
 	    bs2.addActionListener(new ActionListener() {
@@ -109,13 +110,14 @@ public class Controls extends JFrame implements MouseListener{
 	    
 	    //SLIDER
 	    JSlider s = new JSlider(JSlider.HORIZONTAL, 0, 50, 10);
-	    data.group_count=s.getValue();
 	    s.setBounds(50, 50, 200,20);
+	    s.setValue(data.group_count);
 	    s.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
 				data.group_count=s.getValue();
+				data.updateSection();
 			}
 	    });
 	    add(s);

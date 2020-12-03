@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -70,8 +71,10 @@ public class TreePanel extends JPanel{
 		
 
 		ArrayList<Double> sims = sd.c.tree.getSimilarities();
-		int med_position = (int)(0.01*(float) (group_count)* (float)sims.size());
-		double sim =group_count;
+		Collections.sort(sims);
+		int med_position = sims.size()-group_count-1;
+		double sim =sims.get(med_position);
+		
 		
 		ArrayList<Node> plane = sd.c.treeorder.branches;
 		for(int i = 0; i<100000;i++) {

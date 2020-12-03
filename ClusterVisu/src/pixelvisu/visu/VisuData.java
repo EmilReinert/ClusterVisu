@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import pixelvisu.seriation.TreePanel;
+
 
 
 
@@ -37,6 +39,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	
 	Data data;
 	Scale sc;
+	TreePanel p;
 	
 	Color bg_color;
 	int length ;
@@ -69,6 +72,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		length = data.getLength();
 		sc =s;
 		data.updateSection();
+		
+
+		p = new TreePanel();
 	}
 
 	
@@ -94,6 +100,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		time++;
 		hoverData =0; hoverNode = "";
 		
+
+		p.update(data.getMain().c,data.group_count);
 		
 		
 		if(data.getMain().c!=null&&data.getMain().c.flat_c!=null) {

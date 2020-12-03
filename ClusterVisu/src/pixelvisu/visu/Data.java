@@ -9,10 +9,10 @@ import pixelvisu.pipeline.Cluster;
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
 	
-	int mainPointer=0;
+	int mainPointer=2;
 	
 	
-	int group_count= 44;
+	int group_count= 2;
 	String section = "similarity";
 	boolean contrast;
 	Scale sc;
@@ -22,13 +22,13 @@ public class Data {
 //	TreePanel p;
 
 	
-	String[] paths = new String[] {"Data/4w_14_9_1h/node_memory_Active_bytes.txt","Data/4w_14_9_1h/node_memory_active_file_bytes.txt","Data/4w_14_9_1h/node_memory_Cached_bytes.txt"};
-//	String[] paths = new String[] {
-//			"Data/ipmi_1w_1.12_1h/current.txt",
-//			"Data/ipmi_1w_1.12_1h/fan_speed.txt",
-//			"Data/ipmi_1w_1.12_1h/power_supply_status.txt",
-//			"Data/ipmi_1w_1.12_1h/temperatures.txt",
-//			"Data/ipmi_1w_1.12_1h/voltages.txt"};
+//	String[] paths = new String[] {"Data/4w_14_9_1h/node_memory_Active_bytes.txt","Data/4w_14_9_1h/node_memory_active_file_bytes.txt","Data/4w_14_9_1h/node_memory_Cached_bytes.txt"};
+	String[] paths = new String[] {
+			"Data/ipmi_1w_1.12_1h/current.txt",
+			"Data/ipmi_1w_1.12_1h/fan_speed.txt",
+			"Data/ipmi_1w_1.12_1h/power_supply_status.txt",
+			"Data/ipmi_1w_1.12_1h/temperatures.txt",
+			"Data/ipmi_1w_1.12_1h/voltages.txt"};
 	
 	// Compare Methods
 	

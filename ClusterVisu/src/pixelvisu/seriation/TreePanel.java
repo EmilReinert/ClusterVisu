@@ -39,6 +39,8 @@ public class TreePanel extends JPanel{
 
 
 	public void update(Cluster sd,int group_count) {
+		if(this.group_count == group_count)return;
+		System.out.println("Hi");
 		this.group_count = group_count;
 		this.sd = sd;
 		repaint();
