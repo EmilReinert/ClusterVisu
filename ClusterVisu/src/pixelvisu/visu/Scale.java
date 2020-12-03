@@ -182,7 +182,7 @@ public class Scale  {
 					if (name != s.name)
 						continue;
 					curr.x = j;
-					curr.y = (s.get((int) i) * stepY + (float) height / 2 + off / 2);
+					curr.y = (-s.get((int) i) * stepY + (float) height  + off / 2);
 					g2d.drawLine((int) curr.x, (int) curr.y, (int) (prev.x), (int) (prev.y));
 					prev.x = curr.x + 2;
 					prev.y = curr.y;
