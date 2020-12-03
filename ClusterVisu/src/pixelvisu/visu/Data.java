@@ -21,11 +21,14 @@ public class Data {
 	int start, end; 
 //	TreePanel p;
 
-	String maindata_path ="Data/4w_14_9_1h/node_memory_Active_bytes.txt"; 
-	String comparedata_path = "Data/4w_14_9_1h/node_memory_active_file_bytes.txt";
-	String comparedata_two = "Data/4w_14_9_1h/node_memory_Cached_bytes.txt";
 	
-	String[] paths = new String[] {maindata_path,comparedata_path,comparedata_two};
+	String[] paths = new String[] {"Data/4w_14_9_1h/node_memory_Active_bytes.txt","Data/4w_14_9_1h/node_memory_active_file_bytes.txt","Data/4w_14_9_1h/node_memory_Cached_bytes.txt"};
+//	String[] paths = new String[] {
+//			"Data/ipmi_1w_1.12_1h/current.txt",
+//			"Data/ipmi_1w_1.12_1h/fan_speed.txt",
+//			"Data/ipmi_1w_1.12_1h/power_supply_status.txt",
+//			"Data/ipmi_1w_1.12_1h/temperatures.txt",
+//			"Data/ipmi_1w_1.12_1h/voltages.txt"};
 	
 	// Compare Methods
 	
@@ -38,12 +41,12 @@ public class Data {
 		sc =s;
 		setBounds(0, 10000);
 		try {
-			SingleData data_main = new SingleData(maindata_path, group_count,Color.green,cm);
-			SingleData data_compare = new SingleData(comparedata_path, group_count, Color.cyan, cm);
-			SingleData data_compare_two = new SingleData(comparedata_two, group_count, Color.orange, cm);
+			for(String p:paths) {
+				
+			SingleData data_main = new SingleData(p, group_count,Color.orange,cm);
+
 			data.add(data_main);
-			data.add(data_compare);
-			data.add(data_compare_two);
+			}
 			
 			
 		} catch (IOException e) {

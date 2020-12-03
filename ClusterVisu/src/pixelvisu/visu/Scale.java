@@ -15,7 +15,7 @@ public class Scale  {
 	String name = ""; // name of hover node
 	Data data;
 	int start=0, end=0; // Start and end on pixels
-	int hover = 0;
+	int hover = 0; // hover time idx
 	public boolean paintit = true;
 	ArrayList<String> b = new  ArrayList<String>();// contains bundle of selected nodes
 	
@@ -24,6 +24,8 @@ public class Scale  {
 	float s, e; // origninal start and end
 	float start_idx, end_idx; // start and end on data length
 	int cuts=24; //seconds // vertical time cut intervals after specific instances
+	
+	public int stamp = 0; // vertical stamp line, bookmark
 	
 	public Scale(int with, int heit, Color bg) {
 		resize(with, heit);
@@ -128,18 +130,80 @@ public class Scale  {
 	
 	public void paint(Graphics g, int ti) {
 		Graphics2D g2d = (Graphics2D)g;
-		// paints scale over data
-//		g.drawLine(0, 0, width, height);
-		
+
+		// graph loop
+		if (true) {// ti%10 ==0) {
+			g2d.setColor(new Color(1, 1, 1, 1f));
+			g2d.fillRect(0, height / 2, width, height);
+
+			// relative steps
+			double stepY = (double) height / (2 * data.getMain().max);
+
+			// step amount for index limit
+			double stepIDX = 10;// 20*(end_idx-start_idx)/data.getLength();
+
+			if (stepIDX < 1)
+				stepIDX = 1;
+			// graphs
+			g2d.setColor(new Color(0, 0, 0, 0.2f));
+			g2d.setStroke(new BasicStroke(2));
+
+			double i = 0;
+			for (Sequence s : data.getMain().sequences.sequences) {
+				if (!b.contains(s.name))
+					g2d.setColor(new Color(0, 0, 0, 0.1f));
+				else
+					g2d.setColor(new Color(0, 0.2f, 1, 0.1f));
+
+				Vec2 prev = new Vec2(0, height);
+				Vec2 curr = new Vec2(0, height);
+				for (int j = 0; j < width; j += stepIDX) {
+					i = getScaleIdx((int) j);
+					if (i >= s.getLength() || i < 0)
+						continue;
+					curr.x = j;
+					curr.y = (-s.get((int) i) * stepY + (float) height  + off / 2);
+					g2d.drawLine((int) curr.x, (int) curr.y, (int) (prev.x), (int) (prev.y));
+					prev.x = curr.x + 2;
+					prev.y = curr.y;
+				}
+
+			}
+
+			g2d.setColor(new Color(1, 0, 0, 1.0f));
+//				
+			for (Sequence s : data.getMain().sequences.sequences) {
+
+				Vec2 prev = new Vec2(0, height);
+				Vec2 curr = new Vec2(0, height);
+
+				for (int j = 0; j < width; j += stepIDX) {
+					i = getScaleIdx((int) j);
+					if (name != s.name)
+						continue;
+					curr.x = j;
+					curr.y = (s.get((int) i) * stepY + (float) height / 2 + off / 2);
+					g2d.drawLine((int) curr.x, (int) curr.y, (int) (prev.x), (int) (prev.y));
+					prev.x = curr.x + 2;
+					prev.y = curr.y;
+				}
+			}
+
+		}
 		
 		// top selection ( rect and line)
 		g2d.setColor(new Color(0,0,0,0.2f));
 		g2d.fillRect(getUnscaledIdx(start), off-10,getUnscaledIdx(end)-getUnscaledIdx(start), 20);
-		g2d.setColor(new Color(1,0,0,1.0f));
+		
+		//hover and stamp line
+		g2d.setColor(new Color(0,0,0,1.0f));
 		g2d.drawLine(hover, off, hover, height*2);
+
+		g2d.setColor(new Color(1,0,0,1.0f));
+		g2d.drawLine(getUnscaledIdx(stamp), off, getUnscaledIdx(stamp), height*2);
 				
 
-		// drawing cuts
+		// drawing cuts for top selection
 		if(bg==Color.black)g2d.setColor(new Color(1,1,1, 0.4f));
 		else g2d.setColor(new Color(0,0,0, 0.4f));
 		
@@ -174,61 +238,7 @@ public class Scale  {
 		g2d.drawString(hover_data, (int)mouse.y, (int)mouse.x-10);
 		
 		
-		if(ti%10 ==0) {
-			g2d.setColor(new Color(1, 1, 1,1f));
-			g2d.fillRect(0, height/2, width, height);
-			
-			//relative steps
-			double stepY = (double)height/ (2*data.getMain().max);
-			
-			//step amount for index limit
-			double stepIDX = 10;//20*(end_idx-start_idx)/data.getLength();
-			
-			if(stepIDX<1)stepIDX=1;
-			// graphs
-			g2d.setColor(new Color(0, 0, 0,0.2f));
-			g2d.setStroke(new BasicStroke(2));
-
-			double i = 0;
-			for(Sequence s:data.getMain().sequences.sequences) {
-				if(!b.contains(s.name))
-					g2d.setColor(new Color(0, 0, 0,0.1f));
-				else g2d.setColor(new Color(0, 0.2f, 1,0.1f));
-				
-				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
-				for(int j = 0; j<width;j+=stepIDX) {
-					i = getScaleIdx((int) j);
-					if (i>= s.getLength()||i<0) continue;
-					curr.x = j; curr.y= (s.get( (int) i)*stepY+(float)height/2+off/2);
-					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x), (int)(prev.y));
-					prev.x=curr.x+2;
-					prev.y =curr.y;
-					}
-
-
-				
-				
-			}
-			
-			g2d.setColor(new Color(1, 0, 0,1.0f));
-//				
-			for(Sequence s:data.getMain().sequences.sequences) {
-
-				Vec2 prev = new Vec2(0,height);Vec2 curr = new Vec2(0,height);
-
-				for(int j = 0; j<width;j+=stepIDX) {
-					i = getScaleIdx((int) j);
-					if(name!=s.name) continue;
-					curr.x = j; curr.y= (s.get( (int) i)*stepY+(float)height/2+off/2);
-					g2d.drawLine((int)curr.x, (int) curr.y,(int) (prev.x), (int)(prev.y));
-					prev.x=curr.x+2;
-					prev.y =curr.y;
-					}
-				
-				
-			}
-			
-		}
+		
 	}
 
 	public void setBounds(int x, int y) {
@@ -241,6 +251,10 @@ public class Scale  {
 	public void setSelect(int y) {
 		// TODO Auto-generated method stub
 		hover = y;
+	}
+	public void setStamp(int y) {
+		// TODO Auto-generated method stub
+		stamp = getScaleIdx(y);
 	}
 
 	public void setBundle(ArrayList<String> bundle) {

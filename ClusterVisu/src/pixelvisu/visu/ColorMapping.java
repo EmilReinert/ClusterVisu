@@ -39,8 +39,8 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		addMouseMotionListener(this);
 		points = new ArrayList<Vec2>();
 		points.add(new Vec2(0,0));
-		points.add(new Vec2( 61.0 , 12.0 ));
-		points.add(new Vec2 ( 119.0 , 35.0 ) );
+//		points.add(new Vec2( 61.0 , 12.0 ));
+//		points.add(new Vec2 ( 119.0 , 35.0 ) );
 		points.add(new Vec2(size, size));
 		makeMap();
 	}

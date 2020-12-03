@@ -151,7 +151,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			int ti = 0;
 			while(running) {
 				long now = System.nanoTime();
-				delta = delta + ((now-lastTime) / (1000000000.0/5));//60 = FPS
+				delta = delta + ((now-lastTime) / (1000000000.0/2));//60 = FPS
 				lastTime = now;
 				while (delta >= 1)//Make sure update is only happening 60 times a second
 				{

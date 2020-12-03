@@ -546,15 +546,23 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {}
-		else
+		if(mouse_hover.x+localOff<60) {
+			
+			sc.setStamp((int)mouse_hover.y);
+			if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {sc.setStamp(0);}
+			}
+		else {
 			mouse_click = new Vec2(e.getY()-localOff, e.getX());
+			if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {clicksquare= new Vec2(0,0);}
+		}
+		
+		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1)clicksquare = new Vec2(0,0);
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {}
 		else {
 			mouse_pressed =  new Vec2(e.getY()-localOff, e.getX());
 			mouse_dragged=  new Vec2(e.getY()-localOff, e.getX());
