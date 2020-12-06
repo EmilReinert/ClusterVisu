@@ -150,6 +150,8 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		for(int i=0; i< cl.c.flat_c.getDepth();i++) {
 			if(denden)den =  (dens.get(i)+30)/5;// 5; //for static sizes
 			else den = 5;
+			if(den>=50)
+				den = 50;
 			Vec2 square = new Vec2(start + (jump) * width, start + (jump + den) * width + 19*width/20);
 			
 			// HOVER BUNDLE
@@ -200,7 +202,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				if(diff_color>255)diff_color =255;
 				if(diff_fade>255)diff_fade =255;
 				diff_color = new Color(diff_fade,0,0 ).getRGB();
-				pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
+
+				
+				if(data.contrast)
+					pixels[n] =col_hold.getRGB();
+				else
+					pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
+				
 				
 				if(vec2Int(mouse_hover)==n)
 					hoverData=data.getValue(d,dataRowIdx,pos);

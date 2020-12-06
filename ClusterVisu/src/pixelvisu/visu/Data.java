@@ -9,10 +9,10 @@ import pixelvisu.pipeline.Cluster;
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
 	
-	int mainPointer=2;
+	int mainPointer=0;
 	
 	
-	int group_count= 2;
+	int group_count= 4;
 	String section = "similarity";
 	boolean contrast;
 	Scale sc;
