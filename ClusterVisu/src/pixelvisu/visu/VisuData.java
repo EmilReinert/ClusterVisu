@@ -568,8 +568,9 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {sc.setStamp(0);}
 			}
 		else {
-			mouse_click = new Vec2(e.getY()-localOff, e.getX());
-			if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {clicksquare= new Vec2(0,0);}
+			if (e.getModifiers() == MouseEvent.BUTTON3_MASK && e.getClickCount() == 1) {mouse_click = new Vec2(0,0);clicksquare= new Vec2(0,0);}
+			else 
+				mouse_click = new Vec2(e.getY()-localOff, e.getX());
 		}
 		
 		

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import pixelvisu.pipeline.Cluster;
 
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
@@ -23,12 +22,13 @@ public class Data {
 
 	
 //	String[] paths = new String[] {"Data/4w_14_9_1h/node_memory_Active_bytes.txt","Data/4w_14_9_1h/node_memory_active_file_bytes.txt","Data/4w_14_9_1h/node_memory_Cached_bytes.txt"};
+	String base_path = "Data/ipmi_1w_1.12_1h/";
 	String[] paths = new String[] {
-			"Data/ipmi_1w_1.12_1h/current.txt",
-			"Data/ipmi_1w_1.12_1h/fan_speed.txt",
-			"Data/ipmi_1w_1.12_1h/power_supply_status.txt",
-			"Data/ipmi_1w_1.12_1h/temperatures.txt",
-			"Data/ipmi_1w_1.12_1h/voltages.txt"};
+			"current.txt",
+			"fan_speed.txt",
+			"power_supply_status.txt",
+			"temperatures.txt",
+			"voltages.txt"};
 	
 	// Compare Methods
 	
@@ -43,7 +43,7 @@ public class Data {
 		try {
 			for(String p:paths) {
 				
-			SingleData data_main = new SingleData(p, group_count,Color.orange,cm);
+			SingleData data_main = new SingleData(base_path+p, group_count,Color.orange,cm);
 
 			data.add(data_main);
 			}
@@ -60,6 +60,7 @@ public class Data {
 	public void updateClustering() {
 		data.get(mainPointer).updateClustering(circ.getCircuit(), group_count,start,end);
 		updateSection();
+		cm.repaint();
 		
 	}
 	
@@ -87,7 +88,8 @@ public class Data {
 	public void setDataPath(String path) {
 		mainPointer = 0;
 		for(int i =0;i<data.size();i++) {
-			if(data.get(i).path==path)
+//			System.out.println(data.get(i).path+" "+base_path+path);
+			if(data.get(i).path.equals(base_path+path))
 				mainPointer = i;
 			
 		}

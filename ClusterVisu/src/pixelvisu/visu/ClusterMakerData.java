@@ -2,31 +2,19 @@ package pixelvisu.visu;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.awt.image.DataBufferByte;
-import java.awt.image.RenderedImage;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 
 public class ClusterMakerData extends JFrame implements Runnable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static int WIDTH = 300*3;//TODO make adjustable
 	public static int OFF = 30;
 	public static int HEIGHT = 600+OFF;	
@@ -168,6 +156,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			}
 		}
 		public static void main(String[] args)  {
+			@SuppressWarnings("unused")
 			ClusterMakerData clum = new ClusterMakerData();
 		}
 		

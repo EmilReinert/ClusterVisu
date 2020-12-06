@@ -6,6 +6,10 @@ import java.util.Collections;
 
 public class Bundle extends Group{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8008948639698449816L;
 	public ArrayList<Integer> densities; // 
 	public ArrayList<Sequence> original; // original sequence
 	public ArrayList<Integer> mapping; // mapping from original compressed to ordered compressed

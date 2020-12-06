@@ -82,6 +82,7 @@ public class Controls extends JFrame implements MouseListener{
 	    j_data.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
+	        	System.out.println("We do a switch");
 	        	data.setDataPath((String)j_data.getSelectedItem());
 	        }
 	    });

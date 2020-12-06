@@ -62,59 +62,6 @@ public class Node implements Serializable{
 
 	
 
-	
-	
-//	public void clusterize(Node other) {
-//		// cluster current children by already clustered other root-node structure
-//		
-//	}	
-	
-//	
-//	public void printCluster() {
-//		String s ="";
-//		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
-//		for(int i = 0; i<100000;i++) {
-//			ArrayList<Node> hold = new ArrayList<Node>();
-//			boolean lastleaf =true;
-//			for(Node cc: plane) {for(Node c:cc.branches) {
-//				if(!c.isLeaf)lastleaf=false;
-//			}}
-//			
-//			for(Node cc: plane) {for(Node c:cc.branches) {
-//				
-//				if(c.isLeaf)s+="o";
-//				else {s+="x";hold.add(c);}
-//				s+=",";
-//			}
-//			}
-//			System.out.println(s);s="";
-//			plane =hold;
-//			if(lastleaf)return ;
-//		}
-//	}
-//	
-//	public void printClusterSim() {
-//		String s ="";
-//		ArrayList<Node> plane = new ArrayList<Node>();plane.add(this);
-//		for(int i = 0; i<100000;i++) {
-//			ArrayList<Node> hold = new ArrayList<Node>();
-//			boolean lastleaf =true;
-//			for(Node cc: plane) {for(Node c:cc.branches) {
-//				if(!c.isLeaf)lastleaf=false;
-//			}}
-//			
-//			for(Node cc: plane) {for(Node c:cc.branches) {
-//				
-//				if(c.isLeaf)s+="o";
-//				else {s+="x";s+=c.similarity;hold.add(c);}
-//				s+=",";
-//			}
-//			}
-//			System.out.println(s);s="";
-//			plane =hold;
-//			if(lastleaf)return ;
-//		}
-//	}
 	public double getMaxDistance() {
 		// iterates over tree and retusn the max distance
 		double max = -1;
