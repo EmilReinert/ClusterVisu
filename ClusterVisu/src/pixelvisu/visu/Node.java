@@ -1,6 +1,5 @@
 package pixelvisu.visu;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

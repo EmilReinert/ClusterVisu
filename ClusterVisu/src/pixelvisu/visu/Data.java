@@ -25,9 +25,9 @@ public class Data {
 	String base_path = "Data/ipmi_1w_1.12_1h/";
 	String[] paths = new String[] {
 			"current.txt",
-			"fan_speed.txt",
-			"power_supply_status.txt",
-			"temperatures.txt",
+//			"fan_speed.txt",
+//			"power_supply_status.txt",
+//			"temperatures.txt",
 			"voltages.txt"};
 	
 	// Compare Methods
@@ -40,6 +40,8 @@ public class Data {
 		cm = m;
 		sc =s;
 		setBounds(0, 10000);
+
+//		setBounds(388,72);
 		try {
 			for(String p:paths) {
 				
@@ -124,6 +126,12 @@ public class Data {
 		return getColor(value);/////
 	}
 	
+
+
+	public int getSectionSize(SingleData d, int dataRowIdx) {
+		// TODO Auto-generated method stub
+		return d.getSectionSize(dataRowIdx);
+	}
 	
 
 	

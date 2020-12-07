@@ -91,7 +91,7 @@ public class SingleData {
 		if(circ.length!=3)
 			System.err.println("wrong circuit");
 		try {
-			System.out.println("clusering new circuit");
+			System.out.println("clusering - "+circ[0]+circ[1]+circ[2]+": from "+start+" to "+end);
 			c = new Cluster(sequences,circ[0],circ[1],circ[2],dataname, start, end,true);}
 		catch(Exception e) {
 
@@ -131,7 +131,7 @@ public class SingleData {
 				}
 			}
 			//saving data
-			serializeDataOut("save/data", path,sequences);
+//			serializeDataOut("save/data", path,sequences);
 			
 		
 		}
@@ -186,7 +186,11 @@ public class SingleData {
 		return c.flat_c.getNodeName(sec_idx, row);
 	}
 	
-	
+
+	public int getSectionSize(int dataRowIdx) {
+		// returns size of section at specific position
+		return 0;
+	}
 	
 	
 	

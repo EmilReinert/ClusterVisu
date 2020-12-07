@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
 
 public class Scale  {
 	// Horizontal Scale for data visu

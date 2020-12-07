@@ -1,16 +1,9 @@
 package pixelvisu.visu;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Vector;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -124,15 +117,6 @@ public class Controls extends JFrame implements MouseListener{
 	    add(s);
 	    
 	    //Circuit List
-	    JComboBox jsc = new JComboBox<String>(data.circ.clustering);
-	    jsc.setBounds(0,10,70,20);  
-	    jsc.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	        	data.circ.c_idx=data.circ.getIndexOf((String)jsc.getSelectedItem());
-	        }
-	    });
-	    add(jsc);
 	    JComboBox jsl = new JComboBox<String>(data.circ.linkage);
 	    jsl.setBounds(80,10,70,20);  
 	    jsl.addActionListener(new ActionListener() {

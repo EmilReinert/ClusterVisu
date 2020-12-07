@@ -1,9 +1,6 @@
 package pixelvisu.visu;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -11,15 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
 import pixelvisu.seriation.TreePanel;
 
@@ -176,7 +165,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 			// REPRESENTATIVE AVERAGE
 			else {
 //					if(isInsideSquare(mouse_hover,start + (jump-1) * width, start + (jump + den+2) * width + getLength())) 	den*=3;
-				drawDataBar(pixels,cl,  start + jump * width, i, den);
+				drawDataBar(pixels,cl,  start + jump * width, i, den, dens.get(i));
 				jumping = den + 2;
 			}
 			// drawing density dots
@@ -187,7 +176,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		
 	}
 	
-	public void drawDataBar(int[] pixels, SingleData d, int startpos,int dataRowIdx, int lenght) {
+	public void drawDataBar(int[] pixels, SingleData d, int startpos,int dataRowIdx, int lenght, int org_length) {
 		// draw a bar with SAME data
 		Color col_hold;
 		int diff_color = 0;
@@ -206,12 +195,13 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 				
 				if(data.contrast)
 					pixels[n] =col_hold.getRGB();
-				else
-					pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);
+				else {
+					pixels[n] =mixColors(diff_color, col_hold.getRGB(), 0.1f);}
 				
 				
-				if(vec2Int(mouse_hover)==n)
+				if(vec2Int(mouse_hover)==n) {
 					hoverData=data.getValue(d,dataRowIdx,pos);
+					hoverNode = "Size:"+org_length;}
 				}
 		}
 	}

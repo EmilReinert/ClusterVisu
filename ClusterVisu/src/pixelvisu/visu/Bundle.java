@@ -194,4 +194,10 @@ public class Bundle extends Group{
 		return original.get(sec_sum+i).get(j);
 	}
 
+
+	public int getSize(int dataRowIdx) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

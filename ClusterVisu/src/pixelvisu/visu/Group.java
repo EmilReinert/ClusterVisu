@@ -1,12 +1,6 @@
 package pixelvisu.visu;
 
 import java.awt.Color;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -191,9 +185,9 @@ public class Group implements Serializable{
 		for(int j = 0;j<getLength();j++) {
 			float sum = 0;
 			for (int i = start;i<=end;i++) {
-				sum+=get(i,j);
+				sum+=get(i,j)/(float)(end-start+1);
 			}
-			comb.add((int) (((sum)/(end-start))));
+			comb.add(sum);
 			
 		}
 		//System.out.println(start+" "+end);
@@ -208,9 +202,9 @@ public class Group implements Serializable{
 		for(int j = 0;j<getLength();j++) {
 			float sum = 0;
 			for (int i =0;i< ss.size();i++) {
-				sum+=ss.get(i).get(j); 
+				sum+=ss.get(i).get(j)/(float)(ss.size()); 
 			}
-			comb.add((int) (((sum)/(ss.size()))));
+			comb.add(sum);
 			
 		}
 		//System.out.println(start+" "+end);
@@ -229,22 +223,6 @@ public class Group implements Serializable{
 		return combineSequences(s);
 	}
 	
-	public Sequence measureDiff(ArrayList<Sequence> seqs){
-		// iterates over input sequences and returns the differential pattern as a Sequence
-		if(seqs.size() <=1)return new Sequence(getLength());
-		ArrayList<Sequence> s = new ArrayList<>();
-		Sequence average = combineSequences(seqs);
-
-		//iterate over all elements of sequence form start to end
-
-		for (int i = 0;i<seqs.size();i++) {
-			s.add(average.measureUncertain(seqs.get(i)));
-		}
-			
-		
-		//System.out.println(start+" "+end);
-		return combineSequences(s);
-	}
 	
 	
 	public void differOrder() {
