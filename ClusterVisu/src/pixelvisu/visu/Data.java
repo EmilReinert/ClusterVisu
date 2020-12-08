@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class Data {		
 	ArrayList<SingleData> data = new ArrayList<SingleData>();
 	
-	int mainPointer=0;
-	
+	int dataPointer=0;
+	int clusterPointer =0;
 	
 	int group_count= 4;
 	String section = "similarity";
@@ -22,13 +22,22 @@ public class Data {
 
 	
 //	String[] paths = new String[] {"Data/4w_14_9_1h/node_memory_Active_bytes.txt","Data/4w_14_9_1h/node_memory_active_file_bytes.txt","Data/4w_14_9_1h/node_memory_Cached_bytes.txt"};
-	String base_path = "Data/ipmi_1w_1.12_1h/";
-	String[] paths = new String[] {
-			"current.txt",
+//	String base_path = "Data/ipmi_1w_1.12_1h/";
+	
+//	String[] paths = new String[] {
+//			"current.txt",
 //			"fan_speed.txt",
 //			"power_supply_status.txt",
 //			"temperatures.txt",
-			"voltages.txt"};
+//			"voltages.txt"};
+
+	String base_path = "Data/1w_14_9_1h/";
+	String [] paths = new String[] {
+		"Active_bytes.txt",
+		"active_file_bytes.txt",
+		"Cached_bytes.txt"
+		
+	};
 	
 	// Compare Methods
 	
@@ -60,7 +69,8 @@ public class Data {
 	}
 
 	public void updateClustering() {
-		data.get(mainPointer).updateClustering(circ.getCircuit(), group_count,start,end);
+		clusterPointer= dataPointer;
+		data.get(dataPointer).updateClustering(circ.getCircuit(), group_count,start,end);
 		updateSection();
 		cm.repaint();
 		
@@ -68,10 +78,10 @@ public class Data {
 	
 	public void updateSection() {
 		// updates locked section and then projection on the others
-		data.get(mainPointer).section(group_count,section);
+		data.get(clusterPointer).section(group_count,section);
 		for(int i = 0; i<data.size();i++)
-			if(i==mainPointer) {}
-			else data.get(i).update(data.get(mainPointer).c);
+			if(i==clusterPointer) {}
+			else data.get(i).update(data.get(clusterPointer).c);
 		
 		
 //		p.update(data_main.c, group_count);
@@ -88,18 +98,20 @@ public class Data {
 	}
 	
 	public void setDataPath(String path) {
-		mainPointer = 0;
+		dataPointer = 0;
 		for(int i =0;i<data.size();i++) {
 //			System.out.println(data.get(i).path+" "+base_path+path);
 			if(data.get(i).path.equals(base_path+path))
-				mainPointer = i;
+				dataPointer = i;
 			
 		}
 	}
 	public SingleData getMain() {
-		return data.get(mainPointer);
+		return data.get(dataPointer);
 	}
-	
+	public SingleData getClustering() {
+		return data.get(clusterPointer);
+	}
 	
 	
 	public double getValue(SingleData d,int dataRowIdx, int pos) {
@@ -144,7 +156,7 @@ public class Data {
 	public Color getColor(double value) {
 		// MAIN COLOR source
 		double scale =255;
-		value = (value/data.get(mainPointer).max)*scale; // GLOBAL normalizing
+		value = (value/data.get(dataPointer).max)*scale; // GLOBAL normalizing
 		
 		Color hold = colorScale(value);
 		return hold;//
@@ -194,7 +206,7 @@ public class Data {
 	}
 	
 	public int getLength() {
-		return data.get(mainPointer).getLength();
+		return data.get(dataPointer).getLength();
 	}
 	
 	public void contrast() {

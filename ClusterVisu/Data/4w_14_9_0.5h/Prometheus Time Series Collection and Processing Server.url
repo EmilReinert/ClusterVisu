@@ -1,2 +1,0 @@
-[InternetShortcut]
-URL=https://prometheus.webis.de/graph?g0.range_input=2w&g0.end_input=2020-09-14%2000%3A00&g0.step_input=3600&g0.expr=node_disk_io_now&g0.tab=0

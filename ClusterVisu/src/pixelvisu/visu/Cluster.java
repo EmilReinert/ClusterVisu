@@ -83,7 +83,7 @@ public class Cluster implements Serializable {
 //						long time = System.nanoTime();System.out.println(((time - last_time) / 1000));last_time = time;
 					}
 				}
-				if((o%(int)(300/(10)))==0)System.out.print(",");
+				if((o%(int)(depth/(10)))==0)System.out.print(",");
 				merge(tree,a,b,min_diff);a=0;b =0; min_diff = 1000000;
 			}
 		

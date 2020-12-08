@@ -90,7 +90,7 @@ public class VisuData implements MouseListener,MouseMotionListener,MouseWheelLis
 		hoverData =0; hoverNode = "";
 		
 
-		p.update(data.getMain().c,data.group_count);
+		p.update(data.getClustering().c,data.group_count);
 		
 		
 		if(data.getMain().c!=null&&data.getMain().c.flat_c!=null) {

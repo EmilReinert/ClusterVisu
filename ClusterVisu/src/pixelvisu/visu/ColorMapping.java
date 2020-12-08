@@ -71,11 +71,11 @@ public class ColorMapping extends JPanel implements MouseListener, MouseMotionLi
 		g.setColor(new Color(0,0,0, 0.4f));
 		int value_cnt;
 		try{
-			value_cnt = data.getLength()*data.getMain().sequences.getDepth();
+			value_cnt = data.getLength()*data.getClustering().sequences.getDepth();
 
 			for(int i=0;i<size;i++) {
 				
-				g.drawLine(i, 0, i, data.getMain().values[i]/30);
+				g.drawLine(i, 0, i, data.getClustering().values[i]/30);
 			}
 			
 		

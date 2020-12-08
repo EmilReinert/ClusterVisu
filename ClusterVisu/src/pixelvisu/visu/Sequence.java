@@ -9,7 +9,7 @@ import org.json.JSONObject;
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
 //	ArrayList<Double> timestamps;
-	final int sect =10; // for horizontal clustering of size 'sect'
+	final int sect =100; // for horizontal clustering of size 'sect'
 	int sect_vis; // sections for 
 	String name ="x";
 	private int pos =0;
