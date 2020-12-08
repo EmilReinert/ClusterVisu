@@ -32,7 +32,7 @@ public class Controls extends JFrame  {
     		
 	
 	public Controls(Data d) {
-		w =300; h = 500;
+		w =300; h = 400;
 		data = d;
 		
 		setSize(w	,h); 
@@ -40,7 +40,7 @@ public class Controls extends JFrame  {
 		setResizable(true);
 		setVisible(true);
 		
-		
+		setTitle("Controls");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		update(0);
@@ -89,7 +89,7 @@ public class Controls extends JFrame  {
 	    add(jss);
 
 		    JTextArea tex1 = new JTextArea("Linkage and Metric:");
-		    tex.setBounds(getBoundnt());
+		    tex1.setBounds(getBoundnt());
 		    add(tex1);
 	    
 	    // Cluster Progress
@@ -111,57 +111,7 @@ public class Controls extends JFrame  {
 	    });
 	    add(bs2); 
 	    
-		    
-		    
-
-	    JButton b2=new JButton("BaseColor");  
-	    b2.setBounds(getBound());  
-	    b2.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	           data.contrast();
-	        }
-	    });
-	    add(b2);  
-
-	    JTextArea tex2 = new JTextArea("Color Options:");
-	    tex.setBounds(getBoundnt());
-	    add(tex2);
-	    
-	    JButton b5=new JButton("Min Max");  
-	    b5.setBounds(getBound());  
-	    b5.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	           data.minmax();
-	        }
-	    });
-	    add(b5);  
-
-	   
-	    
-	    
-	    JButton bo=new JButton("density");  
-	    bo.setBounds(getBound());  
-	    bo.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	           data.order("density");
-	        }
-	    });
-	    add(bo); 
-	    JButton bo2=new JButton("activity");  
-	    bo2.setBounds(getBound());  
-	    bo2.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	           data.order("weight");
-	        }
-	    });
-	    add(bo2); 
-	    
-	    
-	    //SLIDER
+	  //SLIDER
 	    JSlider s = new JSlider(JSlider.HORIZONTAL, 0, 50, 10);
 	    s.setBounds(getBound());
 	    s.setValue(data.group_count);
@@ -173,7 +123,64 @@ public class Controls extends JFrame  {
 				data.updateSection();
 			}
 	    });
-	    add(s);
+	    add(s); 
+	    JTextArea tex12 = new JTextArea("Sectioning:");
+	    tex12.setBounds(getBoundnt());
+	    add(tex12);
+		    
+		 getBound();
+
+	    JButton b2=new JButton("BaseColor");  
+	    b2.setBounds(50,bound_hold,100,20);  
+	    b2.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	           data.contrast();
+	        }
+	    });
+	    add(b2);  
+
+	    
+	    JButton b5=new JButton("Min Max");  
+	    b5.setBounds(150,bound_hold,100,20);  
+	    b5.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	           data.minmax();
+	        }
+	    });
+	    add(b5);  
+
+	    JTextArea tex2 = new JTextArea("Color Options:");
+	    tex2.setBounds(getBoundnt());
+	    add(tex2);
+	   
+	    getBound();
+	    
+	    
+	    JButton bo=new JButton("density");  
+	    bo.setBounds(50,bound_hold,100,20);    
+	    bo.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	           data.order("density");
+	        }
+	    });
+	    add(bo); 
+	    JButton bo2=new JButton("activity");  
+	    bo2.setBounds(150,bound_hold,100,20);  
+	    bo2.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	           data.order("weight");
+	        }
+	    });
+	    add(bo2); 
+	    
+	    JTextArea tex22 = new JTextArea("Sort by:");
+	    tex22.setBounds(getBoundnt());
+	    add(tex22);
+	    
 	    
 	    
 	    setVisible(true);
@@ -187,7 +194,7 @@ public class Controls extends JFrame  {
 	}
 	
 	Rectangle getBoundnt() {
-		return new Rectangle(50,bound_hold-15,200,20);
+		return new Rectangle(50,bound_hold-18,200,20);
 		
 	}
 	
