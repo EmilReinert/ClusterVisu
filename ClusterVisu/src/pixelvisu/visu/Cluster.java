@@ -27,8 +27,7 @@ public class Cluster implements Serializable {
 	public Cluster(Group sequences, String clustering, String link, String sim, String dataname, int start, int end, boolean save) throws IOException {
 		// Cluster creation (saving/loading) happens here
 		// Tree structure is defined as linked node instances
-		sequences.shuffle();
-		
+//		sequences.shuffle();
 		this.start = start; this.end = end;
 		original = sequences;
 		name = dataname + "/" + clustering + link + sim;
@@ -83,7 +82,7 @@ public class Cluster implements Serializable {
 //						long time = System.nanoTime();System.out.println(((time - last_time) / 1000));last_time = time;
 					}
 				}
-				if((o%(int)(depth/(10)))==0)System.out.print(",");
+				if((o%(int)(depth/(10)))==0) {System.out.print(",");}
 				merge(tree,a,b,min_diff);a=0;b =0; min_diff = 1000000;
 			}
 		

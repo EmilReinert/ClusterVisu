@@ -14,10 +14,12 @@ public class Data {
 	int group_count= 4;
 	String section = "similarity";
 	boolean contrast;
+	boolean minmax;
 	Scale sc;
 	ColorMapping cm;
 	Circuit circ;
 	int start, end; 
+	Controls con;
 //	TreePanel p;
 
 	
@@ -33,6 +35,8 @@ public class Data {
 
 	String base_path = "Data/1w_14_9_1h/";
 	String [] paths = new String[] {
+		"current.txt",
+		"voltages.txt",
 		"Active_bytes.txt",
 		"active_file_bytes.txt",
 		"Cached_bytes.txt"
@@ -85,8 +89,9 @@ public class Data {
 		
 		
 //		p.update(data_main.c, group_count);
-		contrast=!contrast;
+		contrast=!contrast;minmax=!minmax;
 		contrast();
+		minmax();
 		cm.repaint();
 		
 	}
@@ -135,6 +140,7 @@ public class Data {
 	public Color getOrColor(SingleData d,int sec_idx, int row, int idx) {
 		if(d.c==null&&d.c.flat_c==null)return null;
 		double value = d.c.flat_c.getOriginal(sec_idx, row,sc.getScaleIdx(idx));
+		if(minmax)if(value ==data.get(dataPointer).max||value==data.get(dataPointer).min)return Color.green;
 		return getColor(value);/////
 	}
 	
@@ -157,7 +163,7 @@ public class Data {
 		// MAIN COLOR source
 		double scale =255;
 		value = (value/data.get(dataPointer).max)*scale; // GLOBAL normalizing
-		
+		if(minmax)if(value ==data.get(dataPointer).max||value==data.get(dataPointer).min)return Color.green;
 		Color hold = colorScale(value);
 		return hold;//
 			
@@ -166,8 +172,10 @@ public class Data {
 	public Color colorScale(double val) {
 		int value = cm.color((int) val);
 		int r,g,b;
-		if(value<0)value=0;
-		if(value>255)value=255;
+		if(value<=0)
+			value=0;
+		if(value>=255)
+			value=255;
 		
 		if (contrast) {
 			if (value < 127.5) {
@@ -196,9 +204,6 @@ public class Data {
 	
 	
 	
-	
-	
-	
 	public void order(String mode) {
 		updateSection();
 		for(SingleData d: data)
@@ -219,6 +224,15 @@ public class Data {
 		cm.repaint();
 	}
 
+	public void minmax() {
+		if (minmax) {
+			minmax = false;
+		}
+		else {
+			minmax = true;
+		}
+		cm.repaint();
+	}
 
 	public static Color combineColors(Color color1, Color color2, float ra) {
 		float rb = 1-ra;

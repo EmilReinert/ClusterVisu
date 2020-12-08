@@ -28,7 +28,7 @@ public class ClusterMakerData extends JFrame implements Runnable {
 		public int[] pixels;
 		public byte[]pixels_b;
 		
-		public Controls controls;
+		
 		public VisuData visu; 
 		public Scale sc;
 		public ColorMapping cm;
@@ -45,11 +45,11 @@ public class ClusterMakerData extends JFrame implements Runnable {
 			cm.data =data;
 			sc.data = data;
 			sc.setMax(data.getLength());
-			Controls c = new Controls(data);
+			Controls con = new Controls(data);
 //			String path ="Data/Memory usage.json";
 //			Data d = new Data(path);
-			
-			controls = c;
+
+
 			thread = new Thread(this);
 			image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
 			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
