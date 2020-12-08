@@ -10,9 +10,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 
-import pixelvisu.seriation.TreePanel;
-
-
 
 
 

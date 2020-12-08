@@ -3,9 +3,6 @@ package pixelvisu.visu;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 public class Sequence implements Serializable {
 	ArrayList<Double> data;
 //	ArrayList<Double> timestamps;
@@ -59,24 +56,6 @@ public class Sequence implements Serializable {
 		max = s.max;
 	}
 
-	public Sequence(JSONArray a, int size, JSONObject nj) {
-		String n = nj.optString("instance");
-		this.name = n;
-
-		data = new ArrayList<>();
-		
-		// a is multidimensional so we have to first take the array at the index and 
-		// then extract the wanted data ( at 0 or 1 )
-		ArrayList<Float> data_hold = new ArrayList<>();
-		// Storing data in holder float arraylist so we can adjust them to
-		// x>=0 to 255 spectrum for all data// that is int color spectrum
-		JSONArray hold ;
-		for(int i = 0; i<size;i++) {
-			hold = a.getJSONArray(i);
-			data.add(hold.getDouble(1));
-		}
-		
-	}
 	
 	
 	

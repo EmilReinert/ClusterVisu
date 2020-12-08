@@ -158,7 +158,7 @@ public class Controls extends JFrame  {
 	    getBound();
 	    
 	    
-	    JButton bo=new JButton("density");  
+	    JButton bo=new JButton("size");  
 	    bo.setBounds(50,bound_hold,100,20);    
 	    bo.addActionListener(new ActionListener() {
 	        @Override

@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 
 public class TreePanel extends JPanel{
-	SingleData sd;
+	Cluster sd;
 	JFrame f;
 	int group_count =0; // for horizontal line
 	int w, h;
@@ -32,7 +32,9 @@ public class TreePanel extends JPanel{
 	
 
 
-	public void update(SingleData sd,int group_count) {
+	public void update(Cluster sd,int group_count) {
+		if(this.group_count == group_count)return;
+		System.out.println("Hi");
 		this.group_count = group_count;
 		this.sd = sd;
 		repaint();
@@ -41,7 +43,7 @@ public class TreePanel extends JPanel{
             BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2D = image.createGraphics();
             f.paint(graphics2D);
-//            ImageIO.write(image,"png", new File("img/"+c.name+".png"));
+//            ImageIO.write(image,"png", new File("img/"+sd.name+".png"));
         }
         catch(Exception exception)
         {
@@ -63,20 +65,19 @@ public class TreePanel extends JPanel{
 	
 	public void paintCluster( Graphics2D g) {
 		// will only be called if cluser is defined
-		f.setTitle(sd.c.name);
-		System.out.println("Painting Cluster "+sd.c.name);
-		double height_ratio = (0.6*h)/sd.c.treeorder.branches.get(0).similarity;
-		double width_ratio = (0.6*w)/sd.c.original.sequences.size();
+		f.setTitle(sd.name);
+		System.out.println("Painting Cluster "+sd.name);
+		double height_ratio = (0.6*h)/sd.treeorder.branches.get(0).similarity;
+		double width_ratio = (0.6*w)/sd.original.sequences.size();
 		
 		
 
-		ArrayList<Double> sims = sd.c.tree.getSimilarities();
+		ArrayList<Double> sims = sd.tree.getSimilarities();
 		Collections.sort(sims);
 		int med_position = sims.size()-group_count-1;
 		double sim =sims.get(med_position);
 		
-		
-		ArrayList<Node> plane = sd.c.treeorder.branches;
+		ArrayList<Node> plane = sd.treeorder.branches;
 		for(int i = 0; i<100000;i++) {
 			ArrayList<Node> hold = new ArrayList<Node>();
 			boolean lastleaf =true;

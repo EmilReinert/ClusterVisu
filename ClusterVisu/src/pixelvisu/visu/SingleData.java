@@ -17,9 +17,6 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 public class SingleData {
 	Group sequences;// unordered weights // image
 	Cluster c;
